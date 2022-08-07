@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="grey">#F5F5F5</color>
+    <color name="appcolor">#12A78A</color>
+    <color name="appcolor2">#1AC0A0</color>
+    <color name="appcolor3">#23A079</color>
+    <color name="orange">#FFAC42</color>
+    <color name="red">#FC6D5F</color>
+    <color name="yellow">#FFC67E</color>
+    <color name="dark_gray">#777777</color>
+    <color name="black2">#333333</color>
+    <color name="greymenu">#F8F8F8</color>
+
+    <!--    ///////////////////-->
+    <color name="colorPrimary">#00ae8d</color>
+    <color name="colorPrimaryDark">#00635a</color>
+    <color name="colorAccent">#009688</color>
+    <color name="colorAccent1">#f9f9f9</color>
+
+    <color name="colorAccentTransparent">#b3009688</color>
+    <color name="formSectionBackground">#b3009688</color>
+
+    <color name="note_background_color">#FFFFF0</color>
+
+    <color name="rv_seperator_color">#a9fcff</color>
+
+    <color name="colorOfflinePrimary">#617d8a</color>
+    <color name="colorOfflineDark">#FF4B626C</color>
+    <color name="colorOfflineAccent">#FF82A6B7</color>
+
+    <color name="colorPrimaryBordo">#FF990003</color>
+    <color name="colorPrimaryDarkBordo">#FF6B0002</color>
+    <color name="colorAccentBordo">#A3B60004</color>
+
+    <color name="arrowGrey">#f9f9f9</color>
+    <color name="superLightGrey">#f1f1f1</color>
+    <color name="veryLightGrey">#e9e9e9</color>
+    <color name="lightGrey">#d9d9d9</color>
+    <color name="darkGrey">#b6b6b6</color>
+    <color name="background">#FF0000 </color>
+
+    <color name="backgroundGrey_semicircle">#CCf9f9f9</color>
+    <color name="backgroundGrey">#f9f9f9</color>
+    <color name="greenMain">#008080</color>
+
+    <color name="Darkgrey">#353535</color>
+    <color name="ApplicationLight01Color">#f0f0f0</color>
+    <color name="ApplicationLight02Color">#dcdcdc</color>
+    <color name="ApplicationLight03Color">#cfcece</color>
+    <color name="ApplicationLight04Color">#a6a6a6</color>
+    <color name="ApplicationDarkColor">#4d4d4d</color>
+    <color name="recorder_bg">#F4511E</color>
+
+    <color name="CustomDarkBlue">#ff2f9dac</color>
+
+
+
+    <color name="default_waveform">#178b51</color>
+    <color name="default_waveformFill">#80FFC0</color>
+    <color name="default_playback_indicator">#ffff66</color>
+    <color name="default_timecode">#ddffffdd</color>
+    <color name="default_background">#000000</color>
+
+
+    <color name="highlight_color">#b1fff82a</color>
+    <color name="normal">#00AE8D</color>
+    <color name="important">#ff902b</color>
+    <color name="very_important">#ec2626</color>
+    <color name="blue">#0B88EC</color>
+    <color name="viewcolor">#707070</color>
+
+
+    <color name="line_color">#f32d13</color>
+    <color name="rectangle_color">#9f512d</color>
+    <color name="ellipse_color">#f32d13</color>
+
+</resources>

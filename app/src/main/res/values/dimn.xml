@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="font_xsmall_size">15sp</dimen>
+    <dimen name="font_small_size">16sp</dimen>
+    <dimen name="font_medium_size">17sp</dimen>
+    <dimen name="font_large_size">18sp</dimen>
+    <dimen name="font_xlarge_size">22sp</dimen>
+    <dimen name="font_xxlarge_size">25sp</dimen>
+    <dimen name="font_category_txt">15sp</dimen>
+</resources>

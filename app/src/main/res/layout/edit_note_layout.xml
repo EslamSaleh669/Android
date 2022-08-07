@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/grey"
+    android:orientation="vertical">
+
+
+    <include layout="@layout/toolbar_layout"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="5dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black2"
+            android:fontFamily="@font/myriadpro_regular"
+            android:textSize="16sp"
+            android:layout_marginTop="30dp"
+            android:text="@string/note"
+            />
+
+
+        <EditText
+            android:id="@+id/notetext"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/edittext_background"
+            android:fontFamily="@font/myriadpro_regular"
+            android:gravity="start"
+            android:inputType="text"
+            android:padding="15dp"
+            android:textColor="@color/black2"
+            android:textSize="17sp" />
+
+        <CheckBox
+            android:id="@+id/privacycheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privat"
+            android:textColor="@color/black2"
+            android:fontFamily="@font/myriadpro_regular"
+            android:textSize="17sp"
+            android:paddingEnd="12dp"
+            android:layout_marginTop="20dp"
+            />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:padding="30dp"
+        >
+
+
+        <TextView
+            android:id="@+id/btnCancelnote"
+            android:layout_width="144dp"
+            android:layout_height="44dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/reset_background"
+            android:fontFamily="@font/myriadpro_simibold"
+            android:gravity="center"
+            android:paddingStart="30dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="5dp"
+            android:text="@string/cancel"
+            android:textColor="@color/black2"
+            android:textSize="17sp"
+
+            />
+
+
+        <TextView
+            android:id="@+id/btnaddnote"
+            android:layout_width="144dp"
+            android:layout_height="44dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/green_background"
+            android:fontFamily="@font/myriadpro_simibold"
+            android:gravity="center"
+            android:paddingStart="30dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="5dp"
+            android:text="@string/add"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+
+            />
+
+    </RelativeLayout>
+</LinearLayout>

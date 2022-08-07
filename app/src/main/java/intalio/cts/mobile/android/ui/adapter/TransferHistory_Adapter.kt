@@ -1,0 +1,172 @@
+package intalio.cts.mobile.android.ui.adapter
+
+import android.app.Activity
+import android.os.Build
+import android.text.Html
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.borjabravo.readmoretextview.ReadMoreTextView
+import com.cts.mobile.android.R
+import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
+
+import intalio.cts.mobile.android.data.network.response.TransferHistoryDataItem
+import intalio.cts.mobile.android.ui.fragment.correspondencedetails.CorrespondenceDetailsViewModel
+import kotlinx.android.synthetic.main.toolbar_layout.*
+
+
+class TransferHistory_Adapter(
+    private val Transfers: ArrayList<TransferHistoryDataItem>,
+    val activity: Activity,
+    val viewModel: CorrespondenceDetailsViewModel,
+    val translator: ArrayList<DictionaryDataItem>
+) : RecyclerView.Adapter<TransferHistory_Adapter.AllNewsVHolder>() {
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllNewsVHolder =
+        AllNewsVHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.transferhistort_viewshape, parent, false)
+        )
+
+
+    override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
+        val normalTypeface = ResourcesCompat.getFont(activity, R.font.myriadpro_regular)
+        val boldTypeface = ResourcesCompat.getFont(activity, R.font.myriadpro_bold)
+
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+                holder.fromTxt.text = "${translator.find { it.keyword == "From" }!!.en}: "
+                holder.toTxt.text = "${translator.find { it.keyword == "To" }!!.en}: "
+                holder.transferDateTxt.text = "${translator.find { it.keyword == "TransferDate" }!!.en}: "
+                holder.instructionTxt.text = "${translator.find { it.keyword == "Instruction" }!!.en}: "
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                holder.fromTxt.text = "${translator.find { it.keyword == "From" }!!.ar}: "
+                holder.toTxt.text = "${translator.find { it.keyword == "To" }!!.ar}: "
+                holder.transferDateTxt.text = "${translator.find { it.keyword == "TransferDate" }!!.ar}: "
+                holder.instructionTxt.text = "${translator.find { it.keyword == "Instruction" }!!.ar}: "
+            }
+            viewModel.readLanguage() == "fr" -> {
+                holder.fromTxt.text = "${translator.find { it.keyword == "From" }!!.fr}: "
+                holder.toTxt.text = "${translator.find { it.keyword == "To" }!!.fr}: "
+                holder.transferDateTxt.text = "${translator.find { it.keyword == "TransferDate" }!!.fr}: "
+                holder.instructionTxt.text = "${translator.find { it.keyword == "Instruction" }!!.fr}: "
+            }
+        }
+
+
+        if (Transfers[position].fromUser.isNullOrEmpty()) {
+            holder.TransferSender.text = Transfers[position].fromStructure
+
+        } else {
+            val fullName = "${Transfers[position].fromStructure}/${Transfers[position].fromUser}"
+
+            if ("${Transfers[position].fromStructure}/${Transfers[position].fromUser}".length > 30) {
+                holder.TransferSender.text = "${fullName.substring(0, 30)}..."
+            } else {
+                holder.TransferSender.text =
+                    "${Transfers[position].fromStructure}/${Transfers[position].fromUser}"
+
+            }
+        }
+
+        if (Transfers[position].toUser.isNullOrEmpty()) {
+            holder.TransferReciever.text = Transfers[position].toStructure
+
+        } else {
+            val fullName = "${Transfers[position].toStructure}/${Transfers[position].toUser}"
+
+            if ("${Transfers[position].toStructure}/${Transfers[position].toUser}".length > 30) {
+                holder.TransferSender.text = "${fullName.substring(0, 30)}..."
+            } else {
+                holder.TransferSender.text =
+                    "${Transfers[position].toStructure}/${Transfers[position].toUser}"
+
+            }
+        }
+        holder.TransferDate.text = Transfers[position].transferDate
+
+        if (!Transfers[position].instruction.isNullOrEmpty()) {
+            holder.Instructions.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(Transfers[position].instruction, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml(Transfers[position].instruction)
+            }
+        }
+
+
+
+        if (Transfers[position].isRead!!) {
+            holder.TransferSender.typeface = normalTypeface
+            holder.TransferReciever.typeface = normalTypeface
+            holder.TransferDate.typeface = normalTypeface
+            holder.Instructions.typeface = normalTypeface
+
+        } else {
+
+            holder.TransferSender.typeface = boldTypeface
+            holder.TransferReciever.typeface = boldTypeface
+            holder.TransferDate.typeface = boldTypeface
+            holder.Instructions.typeface = boldTypeface
+        }
+
+
+
+        if (Transfers[position].sentToStructure == true) {
+            holder.transferSentTo.setImageResource(R.drawable.ic_bulding)
+
+        } else {
+            holder.transferSentTo.setImageResource(R.drawable.ic_touser)
+
+        }
+
+       if (Transfers[position].isOverDue == true) {
+            holder.transferOverdue.visibility = View.VISIBLE
+
+        } else {
+           holder.transferOverdue.visibility = View.GONE
+
+        }
+
+
+        if (position == Transfers.size - 1) {
+            holder.vieww.visibility = View.GONE
+        }
+    }
+
+    override fun getItemCount() = Transfers.size
+
+
+    class AllNewsVHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val TransferSender: TextView = itemView.findViewById(R.id.attchsender)
+        val TransferReciever: TextView = itemView.findViewById(R.id.attchreciever)
+        val TransferDate: TextView = itemView.findViewById(R.id.attchdate)
+        val Instructions: ReadMoreTextView = itemView.findViewById(R.id.attachinstructions)
+        val transferSentTo: ImageView = itemView.findViewById(R.id.transfer_sentto)
+
+        val fromTxt: TextView = itemView.findViewById(R.id.fromtxt)
+        val toTxt: TextView = itemView.findViewById(R.id.totxt)
+        val transferDateTxt: TextView = itemView.findViewById(R.id.transferdatetxt)
+        val instructionTxt: TextView = itemView.findViewById(R.id.instructionstxt)
+        val transferOverdue: ImageView = itemView.findViewById(R.id.transfer_overdue)
+
+
+
+        val vieww: View = itemView.findViewById(R.id.vieww)
+
+    }
+
+    fun addTransfer(moretransfers: ArrayList<TransferHistoryDataItem>) {
+        this.Transfers.addAll(moretransfers)
+        notifyDataSetChanged()
+    }
+
+}

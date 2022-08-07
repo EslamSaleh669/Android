@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="viewer_stamps_image_prefix" translatable="false">api/user/annotation/stamp/</string>
+    <string name="viewer_stamps_image_path" translatable="false">api/user/annotation/stamp/%1$s/%2$s?token=%3$s&amp;withDate=true</string>
+
+    <string name="viewer_signature_image_path" translatable="false">api/signature/template/%1$s/image?token=%2$s</string>
+
+    <string name="viewer_page_image_path" translatable="false">api/document/%1$s/version/%2$s/page/%3$s?token=%4$s&amp;withDate=true</string>
+
+</resources>

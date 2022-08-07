@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <base-config cleartextTrafficPermitted="true">
+<!--        <trust-anchors>-->
+<!--            <certificates src="system" />-->
+<!--        </trust-anchors>-->
+    </base-config>
+<!--    <domain-config cleartextTrafficPermitted="true">-->
+
+<!--        <domain includeSubdomains="true">ctsp.intalio.com</domain>-->
+<!--        <domain includeSubdomains="true">iamp.intalio.com</domain>-->
+
+
+<!--        <domain includeSubdomains="true">192.168.1.6</domain>-->
+<!--        <domain includeSubdomains="true">172.25.64.1</domain>-->
+<!--        <domain includeSubdomains="true">intalio-swe</domain>-->
+<!--        &lt;!&ndash;        <domain includeSubdomains="true">dmsp.intalio.com</domain>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <domain includeSubdomains="true">dmsp.intalio.com</domain>&ndash;&gt;-->
+
+
+<!--    </domain-config>-->
+</network-security-config>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:orientation="vertical">
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            >
+            <TextView
+                android:id="@+id/nonarchcreatedby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/black2"
+                android:textSize="16sp"
+                android:maxLength="40"
+                />
+            <ImageView
+                android:id="@+id/editnonarch"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toStartOf="@id/deletenonarch"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_viewer_edit_file" />
+
+            <ImageView
+                android:id="@+id/deletenonarch"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/delete" />
+
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/nonarchfilecount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:layout_marginEnd="5dp"
+                android:textColor="@color/appcolor" />
+
+            <TextView
+                android:id="@+id/nonarchfiletype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/appcolor" />
+
+        </LinearLayout>
+
+        <com.borjabravo.readmoretextview.ReadMoreTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:trimExpandedText="@string/read_less"
+            app:trimCollapsedText="@string/read_more"
+            android:fontFamily="@font/myriadpro_regular"
+            android:textColor="@color/ApplicationDarkColor"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp"
+            android:id="@+id/nonarchdescription"
+            app:trimMode="trimModeLength"
+            android:lineSpacingExtra="5dp"
+            app:trimLength="120"
+
+            app:colorClickableText="@color/appcolor"/>
+
+
+        <View
+            android:id="@+id/vieww"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#707070" />
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

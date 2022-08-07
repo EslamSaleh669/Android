@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/grey"
+    tools:context="intalio.cts.mobile.android.ui.activity.splash.ScanningActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/loginlogo"
+                android:layout_width="wrap_content"
+                android:layout_height="129dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/ic_loginlogo" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:id="@+id/intaliologo"
+                android:src="@drawable/inalio" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black2"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="Scan the QR code to configure the app settings."
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black2"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="امسح رمز الاستجابة السريعة لتكوين إعدادات التطبيق."
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black2"
+                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="Scannez le code QR pour configurer les paramètres de l'application."
+                />
+            <com.budiyev.android.codescanner.CodeScannerView
+                android:id="@+id/scanner_view"
+                android:layout_width="300dp"
+                android:layout_height="280dp"
+                android:layout_marginTop="25dp"
+                app:autoFocusButtonColor="@android:color/white"
+                app:autoFocusButtonVisible="true"
+                app:flashButtonColor="@android:color/white"
+                app:flashButtonVisible="true"
+                android:layout_gravity="center"
+                app:frameColor="@android:color/white"
+                app:frameCornersSize="50dp"
+                app:frameCornersRadius="0dp"
+                app:frameAspectRatioWidth="1"
+                app:frameAspectRatioHeight="1"
+                app:frameSize="0.70"
+                app:frameThickness="2dp"
+                app:maskColor="#77000000"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/loginbackground" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

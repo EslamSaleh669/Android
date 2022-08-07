@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <include layout="@layout/toolbar_layout"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="10dp"
+        android:id="@+id/attchrel"
+        android:visibility="gone"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/myriadpro_bold"
+            android:text="@string/attachments"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black2"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/uploadattach"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/green_background"
+            android:drawablePadding="5dp"
+            android:fontFamily="@font/myriadpro_simibold"
+            android:paddingStart="17dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="7dp"
+            android:text="@string/upload"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            app:drawableStartCompat="@drawable/ic_upload" />
+
+        <View
+            android:id="@+id/vieww"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/uploadattach"
+            android:layout_marginTop="10dp"
+            android:background="#707070" />
+    </RelativeLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rvTreeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <TextView
+        android:id="@+id/noDataFounded"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/sorry_no_data_founded"
+        android:textSize="19sp"
+        android:visibility="gone" />
+
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:id="@+id/rlTreeView">-->
+
+
+<!--    </RelativeLayout>-->
+
+</LinearLayout>

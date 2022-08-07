@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/datalin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/notecreatedby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:maxLength="40"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/privatenote"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:visibility="gone"
+                android:layout_toStartOf="@id/editnote"
+                android:src="@drawable/privatenote" />
+
+
+            <ImageView
+                android:id="@+id/editnote"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:layout_toStartOf="@id/deletenote"
+                android:src="@drawable/ic_viewer_edit_file" />
+
+            <ImageView
+                android:id="@+id/deletenote"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/delete" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/notedate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:fontFamily="@font/myriadpro_regular"
+            android:textColor="#777777"
+            android:textSize="14sp" />
+
+
+        <com.borjabravo.readmoretextview.ReadMoreTextView
+            android:id="@+id/notedescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/myriadpro_regular"
+            android:lineSpacingExtra="5dp"
+            android:textColor="@color/ApplicationDarkColor"
+            android:textSize="16sp"
+            app:colorClickableText="@color/appcolor"
+            app:trimCollapsedText="@string/read_more"
+            app:trimExpandedText="@string/read_less"
+            app:trimLength="120"
+            app:trimMode="trimModeLength" />
+
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/vieww"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/datalin"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="#707070" />
+
+</RelativeLayout>

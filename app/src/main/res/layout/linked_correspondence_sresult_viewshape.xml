@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="20dp"
+
+        >
+
+        <CheckBox
+            android:id="@+id/linkedattach"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/datalin"
+            android:layout_marginBottom="20dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black2"
+                android:text="in/01000000000/2021"
+                android:textSize="16sp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:id="@+id/linked_createdby"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_gray"
+                android:text="in/01000000000/2021"
+                android:textSize="14sp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:layout_marginTop="8dp"
+                android:id="@+id/linkedc_refnum"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_gray"
+                android:text="in/01000000000/2021"
+                android:textSize="14sp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:layout_marginTop="10dp"
+                android:id="@+id/linkedc_date"/>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/vieww"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/datalin"
+            android:background="#707070" />
+    </RelativeLayout>
+
+
+
+
+</androidx.cardview.widget.CardView>

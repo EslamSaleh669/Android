@@ -1,0 +1,170 @@
+package intalio.cts.mobile.android.ui.fragment.advancedsearch
+
+import android.app.Dialog
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.cts.mobile.android.R
+import intalio.cts.mobile.android.data.network.response.AdvancedSearchRequest
+import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
+import intalio.cts.mobile.android.ui.adapter.AdvancedSearchResultAdapter
+import intalio.cts.mobile.android.util.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.subjects.ReplaySubject
+import kotlinx.android.synthetic.main.fragment_searchresult.*
+import kotlinx.android.synthetic.main.toolbar_layout.*
+import kotlinx.android.synthetic.main.viewer_layout.back_icon
+import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Named
+import org.json.JSONObject
+
+
+
+
+class AdvancedSearchResultFragment : Fragment() {
+    private lateinit var translator:  ArrayList<DictionaryDataItem>
+
+
+    private lateinit var searchModel: AdvancedSearchRequest
+    private var typeOfSearch = 0
+
+
+    @Inject
+    @field:Named("advancedsearch")
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: AdvanceSearchViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(AdvanceSearchViewModel::class.java)
+    }
+
+    private val autoDispose: AutoDispose = AutoDispose()
+    var dialog: Dialog? = null
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        autoDispose.bindTo(this.lifecycle)
+
+        (activity?.application as MyApplication).appComponent?.inject(this)
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_searchresult, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        centered_txt.text = getString(R.string.search)
+        back_icon.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+        val result = arguments?.getSerializable(Constants.SEARCH_MODEL)
+        if (result.toString() != "null"){
+            searchModel = result as AdvancedSearchRequest
+            dialog = requireContext().launchLoadingDialog()
+            val searchObject = JSONObject()
+            searchObject.put("category", searchModel.category)
+            searchObject.put("subject", searchModel.subject)
+            searchObject.put("referenceNumber", searchModel.referenceNumber)
+            searchObject.put("fromStructure", searchModel.fromStructure)
+            searchObject.put("toStructure", searchModel.toStructure)
+            searchObject.put("fromTransferDate", searchModel.fromTransferDate)
+            searchObject.put("toTransferDate", searchModel.toTransferDate)
+            searchObject.put("priority", searchModel.priority)
+            searchObject.put("fromDate", searchModel.fromDate)
+            searchObject.put("toDate", searchModel.toDate)
+            searchObject.put("fromUser", searchModel.fromUser)
+            searchObject.put("toUser", searchModel.toUser)
+            searchObject.put("documentSender", searchModel.documentSender)
+            searchObject.put("documentReceiver", searchModel.documentReceiver)
+            searchObject.put("isOverdue", searchModel.isOverdue)
+            searchObject.put("documentId", searchModel.documentId)
+            searchObject.put("keyword", searchModel.keyword)
+            searchObject.put("status", searchModel.status)
+
+            getResult(searchObject)
+        }
+
+        requireArguments().getInt(Constants.SEARCH_TYPE).let {
+            typeOfSearch = it
+        }
+
+
+
+    }
+
+    private fun getResult(searchObject: JSONObject) {
+        viewModel.Items = ReplaySubject.create()
+
+        result_ecyclerview.adapter =
+            AdvancedSearchResultAdapter(arrayListOf(), requireActivity())
+        result_ecyclerview.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+
+        autoDispose.add(viewModel.Items.observeOn(AndroidSchedulers.mainThread()).subscribe({
+            dialog!!.dismiss()
+
+            val lastPosition: Int =
+                (result_ecyclerview.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+            if (it!!.isEmpty() && viewModel.limit == 0) {
+                resultnoDataFound.visibility = View.VISIBLE
+                result_ecyclerview.visibility = View.GONE
+
+            } else {
+                if (it.isNotEmpty()) {
+                    Timber.d("Data Loaded")
+                   (result_ecyclerview.adapter as AdvancedSearchResultAdapter).addMessages(it)
+
+                } else if (lastPosition > 10) {
+                    requireContext().makeToast(getString(R.string.no_moredata))
+                }
+            }
+        },{
+            dialog!!.dismiss()
+            resultnoDataFound.visibility = View.VISIBLE
+            result_ecyclerview.visibility = View.GONE
+            Timber.e(it)
+
+        }))
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            result_ecyclerview.setOnScrollChangeListener { view, i, i2, i3, i4 ->
+
+                val lastPosition: Int =
+                    (result_ecyclerview.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                viewModel.checkForItemsLoading(lastPosition,searchObject)
+
+            }
+        }
+
+        viewModel.loadMoreItems(searchObject)
+
+    }
+
+
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.disposable?.dispose()
+        viewModel.start = 0
+        viewModel.limit = 0
+
+    }
+
+}

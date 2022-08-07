@@ -1,0 +1,679 @@
+package intalio.cts.mobile.android.data.network
+
+
+import intalio.cts.mobile.android.data.model.AttachmentModel
+import intalio.cts.mobile.android.data.model.viewer.ViewerDocumentDetailsModel
+import intalio.cts.mobile.android.data.model.viewer.ViewerDocumentVersionModel
+import intalio.cts.mobile.android.data.network.response.*
+import io.reactivex.Observable
+import okhttp3.MultipartBody
+import okhttp3.Response
+import okhttp3.ResponseBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.http.*
+import retrofit2.http.POST
+
+
+interface ApiClient {
+    //http://192.168.1.4:9448/connect/token
+
+    @FormUrlEncoded
+    @POST()
+    fun userLogin(
+        @Url url: String,
+        @Field("client_id") clientId: String,
+        @Field("grant_type") GrantType: String,
+        @Field("username") email: String,
+        @Field("password") password: String,
+        @Field("scope") scope: String
+    ): Observable<TokenResponse>
+
+    // https://iamp.intalio.com/connect/token
+    @GET()
+    fun getUserBasicInfo(
+        @Header("Authorization") token: String,
+        @Url url: String
+    ): Observable<UserInfoResponse>
+
+//    @GET("TranslatorDictionary/List")
+//    fun getDictionary(
+//        @Header("Authorization") token: String,
+//        @Query("draw") draw: Int,
+//        @Query("start") start: Int,
+//        @Query("length") length: Int
+//
+//    ): Observable<DictionaryResponse>
+//
+
+    @GET()
+    fun getDictionary(
+        @Header("Authorization") token: String,
+        @Url url: String,
+        @Query("draw") draw: Int,
+        @Query("start") start: Int,
+        @Query("length") length: Int
+
+    ): Observable<DictionaryResponse>
+
+    @GET()
+    fun getUserFullData(
+        @Url url: String,
+        @Header("Authorization") token: String,
+        @Query("id") id: Int,
+        @Query("language") lang: String
+    ): Observable<UserFullDataResponseItem>
+    // https://iamp.intalio.com/api/GetUser
+
+    @GET()
+    fun geStructure(
+        @Url url: String,
+        @Header("Authorization") token: String,
+        @Query("id") id: Int,
+        @Query("language") lang: String
+    ): Observable<AllStructuresItem>
+    // https://iamp.intalio.com/api/GetUser
+
+
+    @GET()
+    fun getFullStructures(
+        @Url url: String,
+        @Header("Authorization") token: String,
+        @Query("startIndex") start: Int ,
+        @Query("pageSize") pageSize: Int,
+        @Query("language") language: Int
+
+    ): Observable<FullStructuresResponse>
+
+
+    @GET("Parameter/List")
+    fun getSettings(
+        @Header("Authorization") token: String
+    ): Observable<ArrayList<ParamSettingsResponseItem>>
+
+    @GET("Node/ListTreeNodes")
+    fun getNodesData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+    ): Observable<List<NodeResponseItem>>
+
+    @GET("Transfer/GetInboxCounts")
+    fun getInboxCount(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("nodeId") nodeId: Int
+    ): Observable<InboxCountResponse>
+
+
+    @GET("Transfer/GetSentCounts")
+    fun getSentCount(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("nodeId") nodeId: Int
+    ): Observable<InboxCountResponse>
+
+    @GET("Transfer/GetCompletedCounts")
+    fun getCompletedCount(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("nodeId") nodeId: Int
+    ): Observable<InboxCountResponse>
+
+    @GET("Document/GetMyRequestsCounts")
+    fun getRequestedCount(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("nodeId") nodeId: Int
+    ): Observable<InboxCountResponse>
+
+
+    @GET("Category/ListCategories")
+    fun getCategoriesData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+
+    ): Observable<List<CategoryResponseItem>>
+
+    @FormUrlEncoded
+    @POST()
+    fun getUserStructureData(
+        @Url url: String,
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("ids[]") ids: Array<Int>
+
+
+    ): Observable<ArrayList<UsersStructureItem>>
+//https://iamp.intalio.com/api/SearchUsersByStructureIds
+
+
+    @FormUrlEncoded
+    @POST()
+    fun  listUserExistenceAttributeInStructure(
+        @Url url: String,
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("ids[]") ids: Array<Int>,
+        @Field("attributeName") attributeName: String,
+        @Field("attributeValue") attributeValue: String,
+        @Field("returnedAttribute") returnedAttribute: String
+
+    ): Call<ResponseBody>
+
+
+    @GET("Status/ListStatuses")
+    fun getStatuses(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+
+    ): Observable<ArrayList<StatusesResponseItem>>
+
+
+    @GET("Purpose/ListPurposes")
+    fun getPurposes(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+
+    ): Observable<ArrayList<PurposesResponseItem>>
+
+
+    @GET("Priority/ListPriorities")
+    fun getPriorities(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+
+    ): Observable<ArrayList<PrioritiesResponseItem>>
+
+
+    @GET("Privacy/ListPrivacies")
+    fun getPrivacies(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+
+    ): Observable<ArrayList<PrivaciesResponseItem>>
+
+    @GET("Importance/ListImportances")
+    fun getImportances(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+
+    ): Observable<ArrayList<ImportancesResponseItem>>
+
+
+    @GET("Category/ListFullCategories")
+    fun getFullCategories(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+
+    ): Observable<ArrayList<FullCategoriesResponseItem>>
+
+
+    @GET("NonArchivedAttachmentsTypes/ListTypes")
+    fun getTypes(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String
+
+    ): Observable<ArrayList<TypesResponseItem>>
+
+
+    @POST()
+    fun getAllStructures(
+        @Url url: String,
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("text") text: String
+    ): Observable<AllStructuresResponse>
+
+    // "https://iamp.intalio.com/api/GetUsersAndStructuresWithSearchAttributes"
+    ////
+    @FormUrlEncoded
+    @POST("Transfer/ListInbox")
+    fun inboxData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("start") start: Int,
+        @Field("length") length: Int
+
+    ): Observable<CorrespondenceResponse>
+
+
+    @FormUrlEncoded
+    @POST("Transfer/ListSent")
+    fun sentData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("start") start: Int,
+        @Field("length") length: Int
+
+    ): Observable<CorrespondenceResponse>
+
+
+    @FormUrlEncoded
+    @POST("Transfer/ListCompleted")
+    fun completedData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("start") start: Int,
+        @Field("length") length: Int
+
+    ): Observable<CorrespondenceResponse>
+
+    @FormUrlEncoded
+    @POST("Document/ListMyRequests")
+    fun requestedData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("start") start: Int,
+        @Field("length") length: Int
+
+    ): Observable<CorrespondenceResponse>
+
+
+    @POST("Transfer/View")
+    fun viewAction(
+        @Header("Authorization") token: String,
+        @Query("id") transferId: Int
+
+    ): Call<ResponseBody>
+
+
+    @POST("Transfer/Lock")
+    fun lockTransfer(
+        @Header("Authorization") token: String,
+        @Query("id") transferId: Int
+
+    ): Call<ResponseBody>
+
+    @POST("Transfer/Recall")
+    fun recallTransfer(
+        @Header("Authorization") token: String,
+        @Query("id") transferId: Int
+
+    ):Call<ResponseBody>
+
+    @POST("Transfer/UnLock")
+    fun unlockTransfer(
+        @Header("Authorization") token: String,
+        @Query("id") transferId: Int
+
+    ):Call<ResponseBody>
+
+
+
+    @FormUrlEncoded
+    @POST("Transfer/DismissCarbonCopy")
+    fun transferDismissCopy(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("ids[]") ids: Array<Int?>
+
+    ): Observable<ArrayList<DismissCopyResponseItem>>
+
+
+    @GET("Document/GetDocumentBasicInfoByTransferId")
+    fun getDocumentBasicInfo(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("id") transferId: Int
+
+    ): Observable<DocumentBasicInfoResponse>
+
+
+    @GET("Document/GetDocument")
+    fun getDocument(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("id") documentId: Int
+
+    ): Observable<MetaDataResponse>
+
+
+
+    @GET("Document/GetDocumentByTransferId")
+    fun getMetaDataInfo(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("id") transferId: Int
+
+    ): Observable<MetaDataResponse>
+
+
+    @GET("Document/GetSearchDocument")
+    fun getSearchDocument(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("id") documentId: Int
+
+    ): Observable<MetaDataResponse>
+
+
+    @FormUrlEncoded
+    @POST("Delegation/List")
+    fun delegationsData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("start") start: Int,
+        @Field("length") length: Int
+
+    ): Observable<DelegationsResponse>
+
+    @FormUrlEncoded
+    @POST("Delegation/Save")
+    fun saveDelegation(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("ToUserId") toUserId: Int,
+        @Field("FromDate") fromDate: String,
+        @Field("ToDate") toDate: String,
+        @Field("CategoryIds[]") ids: ArrayList<Int>,
+    ): Observable<SaveDelegationResponse>
+
+    @FormUrlEncoded
+    @POST("Delegation/Save")
+    fun saveEditedDelegation(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("ToUserId") toUserId: Int,
+        @Field("FromDate") fromDate: String,
+        @Field("ToDate") toDate: String,
+        @Field("CategoryIds[]") ids: ArrayList<Int>,
+        @Field("Id") delegationId: Int
+    ): Observable<SaveDelegationResponse>
+
+
+    @DELETE("Delegation/Delete")
+    fun deleteDelegation(
+        @Header("Authorization") token: String,
+        @Query("ids[]") ids: ArrayList<Int>
+    ): Call<Void>
+
+
+    @GET("Note/List")
+    fun notesData(
+        @Header("Authorization") token: String,
+        @Query("documentId") documentId: Int,
+        @Query("start") start: Int,
+        @Query("length") length: Int
+
+    ): Observable<NotesResponse>
+
+
+    @FormUrlEncoded
+    @POST("Note/Index")
+    fun saveNote(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("DocumentId") DocumentId: Int,
+        @Field("TransferId") TransferId: Int,
+        @Field("Notes") Notes: String,
+        @Field("IsPrivate") IsPrivate: Boolean,
+    ): Observable<SaveNotesResponse>
+
+
+    @FormUrlEncoded
+    @POST("Note/Index")
+    fun saveEditedNote(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("DocumentId") DocumentId: Int,
+        @Field("TransferId") TransferId: Int,
+        @Field("Notes") Notes: String,
+        @Field("IsPrivate") IsPrivate: Boolean,
+        @Field("Id") nodeId: Int
+    ): Observable<SaveNotesResponse>
+
+    @DELETE("Note/Delete")
+    fun deleteNote(
+        @Header("Authorization") token: String,
+        @Query("id") noteID: Int,
+        @Query("documentId") DocumentId: Int,
+        @Query("transferId") TransferId: Int
+
+    ): Observable<Boolean>
+
+    @FormUrlEncoded
+    @POST("Transfer/ListTransferHistory")
+    fun transfersHistoryData(
+        @Header("Authorization") token: String,
+        @Query("documentId") documentId: Int,
+        @Field("start") start: Int,
+        @Field("length") length: Int
+
+    ): Observable<TransferHistoryResponse>
+
+
+    @GET("Transfer/GetTransferDetailsById")
+    fun getTransferDetails(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("id") transferId: Int
+
+    ): Observable<TransferDetailsResponse>
+
+
+    @GET("Transfer/GetTransferInfoById")
+    fun getMyTransfer(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("id") transferId: Int
+
+    ): Observable<MyTransferResponse>
+
+
+    @GET("NonArchivedAttachments/List")
+    fun nonArchData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("documentId") documentId: Int,
+        @Query("start") start: Int,
+        @Query("length") length: Int
+
+    ): Observable<NonArchAttachmentsResponse>
+
+
+    @POST("/NonArchivedAttachments/Index")
+    fun saveNonArch(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("DocumentId") DocumentId: Int,
+        @Query("TransferId") TransferId: Int,
+        @Query("TypeId") TypeId: Int,
+        @Query("Description") Description: String,
+        @Query("Quantity") Quantity: Int,
+    ): Observable<SaveNotesResponse>
+
+
+    @POST("/NonArchivedAttachments/Index")
+    fun saveEditedNonArch(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("DocumentId") DocumentId: Int,
+        @Query("TransferId") TransferId: Int,
+        @Query("TypeId") TypeId: Int,
+        @Query("Description") Description: String,
+        @Query("Quantity") Quantity: Int,
+        @Query("Id") nonarchID: Int,
+    ): Observable<SaveNotesResponse>
+
+
+    @DELETE("NonArchivedAttachments/Delete")
+    fun deleteNonArch(
+        @Header("Authorization") token: String,
+        @Query("id") nonarchID: Int,
+        @Query("documentId") DocumentId: Int,
+        @Query("transferId") TransferId: Int
+
+    ): Observable<Boolean>
+
+
+    @GET("LinkedDocument/List")
+    fun getLinkedC(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("documentId") documentId: Int
+    ): Observable<LinkedCorrespondenceResponse>
+
+    @DELETE("LinkedDocument/Delete")
+    fun deleteLinkedC(
+        @Header("Authorization") token: String,
+        @Query("id") noteID: Int,
+        @Query("documentId") DocumentId: Int,
+        @Query("transferId") TransferId: Int
+
+    ): Observable<Boolean>
+
+
+    @FormUrlEncoded
+    @POST("Transfer/Complete")
+    fun completeTransfer(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("ids[]") ids: Array<Int?>
+
+    ): Observable<ArrayList<CompleteTransferResponseItem>>
+
+
+    @GET("Document/GetTrackingData")
+    fun getVisualTracking(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("id") DocumentId: Int
+
+    ): Observable<ArrayList<VisualTrackingResponseItem>>
+
+
+    @POST("Transfer/Transfer")
+    fun transferTransfer(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Body model: List<TransferRequestModel>
+
+    ): Observable<ArrayList<TransferTransferResponseItem>>
+
+    @POST("Transfer/Reply")
+    @FormUrlEncoded
+    fun replyToUser(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("id") id: Int,
+        @Field("transferId") transferId: Int,
+        @Field("purposeId") purposeId: Int,
+        @Field("dueDate") dueDate: String,
+        @Field("instruction") instruction: String,
+        @Field("structureId") structureId: Int,
+        @Field("transferToType") transferToType: Int,
+        @Field("structureReceivers[]") structureReceivers: Array<Int>
+
+    ): Call<ResponseBody>
+
+
+    @POST("Transfer/Reply")
+    @FormUrlEncoded
+    fun replyToStructure(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("id") id: Int,
+        @Field("transferId") transferId: Int,
+        @Field("purposeId") purposeId: Int,
+        @Field("dueDate") dueDate: String,
+        @Field("instruction") instruction: String,
+        @Field("structureId") structureId: Int,
+        @Field("transferToType") transferToType: Int,
+        @Field("structureReceivers[]") structureReceivers: Array<Int>
+
+    ): Call<ResponseBody>
+
+
+    @FormUrlEncoded
+    @POST("Search/List")
+    fun advancedSearch(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("start") start: Int,
+        @Field("length") length: Int,
+        @Field("Model") FormData: JSONObject
+
+    ): Observable<AdvancedSearchResponse>
+
+    @GET("Attachment/List")
+    fun attachmentsData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("documentId") documentId: Int
+    ): Observable<ArrayList<AttachmentModel>>
+
+
+//    @POST("Attachment/Upload")
+//    @FormUrlEncoded
+//    fun uploadAttachment(
+//        @Header("Accept-Language") lang: String,
+//        @Header("Authorization") token: String,
+//        @Field("documentId") documentId: Int,
+//        @Field("transferId") transferId: Int,
+//        @Field("parentId") parentId: Int,
+//        @Field("categoryId") categoryId: Int,
+//        @Field("Name") Name: String,
+//        @Field("Extension") Extension: String,
+//        @Field("Data") Data: String,
+//    ): Observable<UploadAttachmentResponse>
+
+    @POST("Attachment/Upload")
+    fun uploadAttachment(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Body model: MultipartBody
+
+        ): Observable<UploadAttachmentResponse>
+
+    @POST("Attachment/UploadOriginalMail")
+
+    fun uploadOriginalAttachment(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Body model: MultipartBody
+
+        ): Observable<UploadAttachmentResponse>
+
+
+    @POST("Attachment/Replace")
+    fun replaceAttachment(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Body model: MultipartBody
+
+        ): Observable<UploadAttachmentResponse>
+
+    @POST("LinkedDocument/Index")
+    @FormUrlEncoded
+    fun addLinkedDocument(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("documentId") DocumentId: Int,
+        @Field("transferId") TransferId: Int,
+        @Field("linkDocumentIds[]") documentIds: Array<Int>
+
+    ): Observable<SaveNotesResponse>
+
+
+    @GET()
+    fun getViewerDocumentDetails(
+        @Url url: String,
+        @Header("Authorization") token: String,
+        @Query("ctsDocumentId") ctsDocumentId: String?,
+        @Query("ctsTransferId") ctsTransferId: String?,
+        @Query("isDraft") isDraft: Boolean
+    ): Observable<ViewerDocumentDetailsModel>
+
+
+    @GET()
+    fun getViewerDocumentVersions(
+        @Url url: String,
+        @Header("Authorization") token: String,
+        @Query("ctsDocumentId") ctsDocumentId: String?,
+        @Query("ctsTransferId") ctsTransferId: String?,
+        @Query("isDraft") isDraft: Boolean
+    ): Observable<List<ViewerDocumentVersionModel>>
+
+
+
+}

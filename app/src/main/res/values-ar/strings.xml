@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">نظام الإتصالات الإدارية</string>
+    <string name="sign_in_using">تسجيل الدخول بإستخدام</string>
+    <string name="or">أو</string>
+    <string name="type_your_search_here">ابحث هنا</string>
+    <string name="hellooo">مرحبا !</string>
+    <string name="view_inbox">صندوق الوارد</string>
+    <string name="network_error">لقد حدث خطأ ما</string>
+    <string name="invalid_login">تسجيل الدخول غير صالح</string>
+
+
+    <string name="home">الرئيسية</string>
+    <string name="delegation">تفويض</string>
+    <string name="dashboard">لوحة المعهلومات</string>
+    <string name="to_do_list">قائمة المهام</string>
+    <string name="advanced_search">بحث متقدم</string>
+    <string name="my_menu">قائمتي</string>
+    <string name="language">اللغة</string>
+    <string name="sign_out">تسجيل الخروج</string>
+    <string name="sort">رتب</string>
+    <string name="inbox">صندوق الوارد</string>
+    <string name="sent">مرسلة</string>
+    <string name="completed">منجز</string>
+    <string name="requested">طلباتي</string>
+    <string name="this_week">هذا الإسبوع</string>
+    <string name="in_progress">In Progress</string>
+    <string name="pending_signature">Pending Signature</string>
+    <string name="for_approval">For Approval</string>
+    <string name="delayed">مؤخر</string>
+    <string name="analytics">Analytics</string>
+    <string name="reference_number">رقم المرجع</string>
+    <string name="category">الفئة</string>
+    <string name="transfer_form">الجهة المرسلة</string>
+    <string name="from_transfer_date">من تاريخ التحويل</string>
+    <string name="to_transfer_date">إلى تاريخ التحويل</string>
+    <string name="transfer_to">الجهة المرسل اليها</string>
+    <string name="sender">المرسل</string>
+    <string name="recipient">المرسل إليه</string>
+    <string name="link_correspondence">الوثائق المرتبطة</string>
+    <string name="actions">أجراءات</string>
+    <string name="my_transfers">إحالتي</string>
+    <string name="notes">ملاحظات</string>
+    <string name="reply_to_user">الرد علي المستخدم</string>
+    <string name="reply_to_structure">الرد علي الهيكل</string>
+    <string name="complete">إكمال</string>
+    <string name="transfer">تحويل</string>
+    <string name="show_attachments">عرض المرفقات</string>
+    <string name="attach">إرفاق</string>
+    <string name="transfer_history">تاريخ الإحالات</string>
+    <string name="visual_tracking">التتبع البصري</string>
+    <string name="scan">فحص</string>
+    <string name="kpis">KPIs</string>
+    <string name="instruction_to_receiver">تعليمات للمرسل إليه</string>
+    <string name="to_user">إلى المستخدم</string>
+    <string name="from_user">من المستخدم</string>
+
+    <string name="to_structure">إلى البنية</string>
+    <string name="from_structure">من البنية</string>
+    <string name="message">الرسالة</string>
+    <string name="send">إرسال</string>
+    <string name="sending_entity">من</string>
+    <string name="receiving_entity">إلى</string>
+    <string name="receiver">المرسل إليه</string>
+    <string name="position">Position</string>
+    <string name="transfer_from">Transfer From</string>
+    <string name="due_date">تاريخ الاستحقاق</string>
+    <string name="due_datee">تاريخ الاستحقاق :</string>
+    <string name="transfer_date">تاريخ الاحالة</string>
+    <string name="linked_Corresp">الوثائق المرتبطة</string>
+    <string name="delegated_users">المفوضون</string>
+    ///////////////
+    <string name="mainpage">الصفحة الرئيسية</string>
+    <string name="gridrowstyle">Grid Row Style</string>
+
+
+    <string name="company">everteam.gs</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">الإعدادت</string>
+
+
+    <string name="AreYouSureYouWantToGenerateLetter">Are you sure you want to generate a letter for the following recipients?</string>
+    <string name="developerpassword">Developer Password</string>
+    <string name="showurl">show url</string>
+
+    <string name="restoreDocument">استعادة المستند</string>
+    <string name="restoreDocumentMessage">هل أنت متأكد أنك تريد استعادة المستند الأصلي؟</string>
+    <string name="synchronize">مزامنة</string>
+    <string name="signAndReplyMessage">هل أنت متأكد أنك تريد التوقيع والرد على هذا التحويل؟</string>
+
+    <string name="paint">رسم</string>
+
+    <string name="loading_data">جاري تحميل البيبانات..</string>
+    <string name="title_activity_shared_prefrence_dialog">SharedPrefrenceDialog</string>
+
+    <string name="serverError">حدث خطأ في الخادم ، يرجى الاتصال بإدارة النظام</string>
+    <string name="documentSavedError">خطأ في حفظ المستند</string>
+    <string name="insurance_msg">هل تريد الخروج من التطبيق ؟</string>
+
+    <string name="arabic">العربية</string>
+    <string name="french">الفرنسية</string>
+
+    <string name="username">إسم المستخدم</string>
+    <string name="password">كلمة السر</string>
+    <string name="english">الإنجليزية</string>
+
+    <string name="login">تسجيل الدخول</string>
+    <string name="invalidLoginMessage">خطأ في الإسم أو كلمة المرور</string>
+    <string name="error">خطأ</string>
+    <string name="saveAnnotations">حفظ التعليقات</string>
+    <string name="noSignatureRegion">لا توجد مناطق توقيع محددة مسبقاً</string>
+    <string name="noSignature">لا يوجد توقيع محدد مسبقاً</string>
+
+    <string name="welcome">مرحبا</string>
+    <string name="mydelegates">تفويضاتي:</string>
+    <string name="copyright">حقوق النشر محفوظة &#169; everteam-gs ٢٠١٧ </string>
+    <string name="titleApp">نظام المراسلات الإدارية</string>
+    <string name="incoming">وارد</string>
+    <string name="outgoing">صادر</string>
+    <string name="internal">داخلي</string>
+    <string name="simplesearch">بحث بسيط</string>
+    <string name="reports">التقارير</string>
+    <string name="offlinemode">غير متصل بالشبكة</string>
+    <string name="advancedsearch">بحث متقدم</string>
+    <string name="bam">رصد الأنشطة</string>
+    <string name="settings">الإعدادات</string>
+    <string name="attachments">المرفقات</string>
+    <string name="Attachments">المرفقات</string>
+    <string name="AddNew">ارفاق</string>
+    <string name="Transfer">إحالة</string>
+    <string name="multipleTransfer"></string>
+    <string name="Complete">ارشفة</string>
+    <string name="CompleteTitle">هل حقاً تريد ارشفة المراسلة؟</string>
+    <string name="Reply">رد</string>
+    <string name="add">إضافة</string>
+    <string name="annotations_template">ملاحظات محددة مسبقاً</string>
+    <string name="add_template">إضافة نموذج</string>
+
+    <string name="ReplyTo">رد على</string>
+    <string name="Dismiss">إلغاء</string>
+    <string name="DismissCopy">تحرير النسخة</string>
+    <string name="action">الإجراء</string>
+    <string name="quickactions">الإجراءات</string>
+    <string name="low">عادي</string>
+    <string name="ShowAttachments">عرض المرفقات</string>
+    <string name="medium">متوسط</string>
+    <string name="urgent">عاجل</string>
+    <string name="topurgent">عاجل جداً</string>
+    <string name="cts">نظام الإتصالات الإدارية</string>
+    <string name="title_activity_viewer">مراسلة</string>
+
+    <string name="nbrOfCorrespondence">عدد المراسلات في الصفحة:</string>
+    <string name="addDelegate">تفويض</string>
+    <string name="delegate_user">تفويض شخص</string>
+
+
+    <string name="editSignature">تعديل التوقيع</string>
+    <string name="displaySettings">خصائص العرض</string>
+    <string name="offlineSettings">خصائص الوضع الغير المتصل</string>
+
+    <string name="underConstruction">قيد التنفيذ</string>
+
+    <string name="btn_save_signature">حفظ الإمضاء</string>
+    <string name="tools">أدوات</string>
+    <string name="colors">ألوان</string>
+    <string name="signature">التوقيع</string>
+    <string name="signatureUpdate">حفظ التوقيع بنجاح</string>
+
+    <string name="dismissMessage">هل أنت متأكد أنك تريد صرف هذه الإحالة؟</string>
+
+    <!-- Warnings -->
+    <string name="clearCacheWarning">هل حقاً تريد محو ذاكرة التخزين؟</string>
+    <string name="uploadWarning">الرجاء تحميل ملف</string>
+    <string name="loginWarning">الرجاء ملئ كافة الحقول المطلوبة</string>
+    <string name="searchWarning">الرجاء ملئ معايير البحث</string>
+    <string name="categoryWarning">الرجاء إدخال إسم البريد الصحيح</string>
+    <string name="transfersWarning">الرجاء إدخال أسماء الإحالة الصحيحة</string>
+    <string name="purposeWarning">الرجاء إدخال إجراء صحيح</string>
+    <string name="senderWarning">الرجاء إدخال مرسل صحيح</string>
+    <string name="recipientWarning">الرجاء إدخال مرسل إليه صحيح</string>
+    <string name="fileWarning">الرجاء إدخال إسم ملف صحيح</string>
+    <string name="addSignatureWarning">حقل التوقيع فارغ، الرجاء إضافة توقيع</string>
+    <string name="addNoteWarning">حقل التعليق فارغ، الرجاء إضافة تعليق</string>
+    <string name="warning">إنذار</string>
+    <string name="ok">موافق</string>
+    <string name="requiredField">الحقول الإلزامية</string>
+    <string name="fill_search_criteria">يرجى ملء معايير البحث</string>
+    <string name="wrong_date_less">لا يمكن إختيار تاريخ أصغر من</string>
+    <string name="wrong_cashed_date_less">لا يمكن إختيار تاريخ أصغر من الذي تم اختياره</string>
+
+    <string name="wrong_date_greater">لا يمكن إختيار تاريخ أكبر من</string>
+
+
+    <string name="transferWarning">سبق أن اخترت هذا المستلم</string>
+    <string name="duplictedcategory">سبق أن اخترت هذه الفئة </string>
+    <string name="addTransferWarning">الرجاء إضافة إحالة</string>
+    <string name="isOriginalWarning">المراسلة محجوزة من قبل</string>
+    <string name="originalMailWarning">الكتاب الأصلي غير موجود</string>
+    <string name="requestTimeout">تعذر الحصول على البيانات، يرجى المحاولة لاحقاً، أو التحقق من مسؤول الشبكة</string>
+    <string name="downloadWarning">الرجاء إختيار المراسلات قبل التحميل</string>
+    <string name="ignore_sync_cancel">هل تريد مزامنة البيانات؟</string>
+    <string name="ignore">تجاهل</string>
+    <string name="sync">مزامنة</string>
+
+
+    <string name="clear_photo">مسح الصورة</string>
+    <string name="take_photo">تصوير</string>
+    <string name="choose_photo">اختيار الصورة</string>
+
+
+    <string name="yes">نعم</string>
+    <string name="no">كلا</string>
+    <string name="search">بحث</string>
+    <string name="upload">تحميل</string>
+    <string name="fileName">الاسم</string>
+    <string name="save">حفظ</string>
+    <string name="reset">تفريغ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="title_stop_voicenote">هل تريد إيقاف التسجيل؟</string>
+    <string name="transferDateFrom">من تاريخ</string>
+    <string name="transferDateTo">إلى تاريخ</string>
+    <string name="remove">إزالة</string>
+
+    <!-- Delegate -->
+    <string name="delegate">تفويض</string>
+    <string name="user">مستخدم</string>
+    <string name="privacy">سرية</string>
+    <string name="from">من</string>
+    <string name="to">إلى</string>
+    <string name="can_sign">يمكنه التوقيع</string>
+    <string name="old_document">إظهار المراسلات القديمة</string>
+    <string name="onbehalfof">بالتفويض عن</string>
+
+    <!-- Transfer -->
+    <string name="users">مستخدمين</string>
+    <string name="structures">المنظمة</string>
+    <string name="purposes">إجراءات</string>
+    <string name="purpose">إجراء</string>
+    <string name="purposee">إجراء :</string>
+    <string name="transferDueDate">تاريخ إستحقاق الإحالة</string>
+    <string name="instructions">التعليمات</string>
+    <string name="removeAll">إلغاء الكل</string>
+    <string name="transferAddNew">إضافة جديد</string>
+    <string name="delete">إلغاء</string>
+    <string name="deleted">تم الحذف</string>
+    <string name="removeTransferWarning">هل أنت متأكد أنك تريد إلغاء هذه الإحالة؟</string>
+    <string name="removeAllTransferWarning">هل أنت متأكد أنك تريد إلغاء كل الإحالات؟</string>
+
+    <!-- AdvancedSearch -->
+    <string name="refNumber">رقم البريد</string>
+    <string name="dateRegistered">تاريخ التسجيل</string>
+    <string name="transferFrom">التحويل من المستخدم</string>
+    <string name="transferTo">تحويل للمستخدم</string>
+    <string name="subject">الموضوع</string>
+
+    <string name="Success">نجاح</string>
+    <string name="uploadSuccess">تم تحميل الملف</string>
+
+    <string name="noCorrespondences">لا يوجد بيانات</string>
+
+    <string name="loadmore">المزيد</string>
+
+    <string name="download_failed_document">خطأ في تنزيل المستند</string>
+
+    <string name="properties">الخصائص</string>
+    <string name="background_color">لون الخلفية</string>
+    <string name="font_size">حجم الخط</string>
+    <string name="borderWidth">عرض الحدود</string>
+    <string name="font_color">لون الخط</string>
+    <string name="border_color">لون الحدود</string>
+
+    <string name="note">تعليق</string>
+    <string name="addSignature">إضافة توقيع</string>
+
+    <string name="logout">تسجيل الخروج</string>
+    <string name="logoutmessage">هل حقاً تريد تسجيل الخروج؟</string>
+
+    <string name="lock">حجز</string>
+    <string name="unlock">إلغاء الحجز</string>
+
+    <!-- Instruction dialog -->
+    <string name="lockCategory">محجوز</string>
+    <string name="locked_locked">محجوز</string>
+    <string name="locked_unlocked">غير محجوز</string>
+    <string name="locked_lockedotheruser">محجوز من</string>
+
+    <string name="privacyCategory">سرية</string>
+    <string name="privacy_normal">عادي</string>
+    <string name="privacy_secret">سري</string>
+    <string name="privacy_top_secret">سري للغاية</string>
+    <string name="privacy_public">عام</string>
+    <string name="privacy_internal">داخلي</string>
+    <string name="privacy_limited">محدود التداول</string>
+    <string name="privacy_empty">-</string>
+
+    <string name="priorityCategory">أولوية</string>
+    <string name="priority_normal">عادي</string>
+    <string name="priority_medium">متوسط</string>
+    <string name="priority_high">عاجل</string>
+    <string name="priority_top_urgent">عاجل جداً</string>
+    <string name="priority_empty">-</string>
+
+    <string name="categoryCategory">نوع البريد</string>
+    <string name="category_incomming">وارد</string>
+    <string name="category_external">صادر</string>
+    <string name="category_internal">داخلي</string>
+    <string name="category_empty">-</string>
+    <string name="category_internal_broadcast">تعميم داخلي</string>
+
+    <string name="category_cc">نسخة</string>
+    <string name="serviceUrl">رابط الخدمة</string>
+    <string name="operationCompleted">تمت العملية</string>
+
+    <string name="unsignDocument">حذف التوقيع</string>
+    <string name="unsignDocumentMessage">هل حقاً تريد حذف التوقيع</string>
+    <string name="unsign">حذف التوقيع</string>
+
+    <string name="version">الإصدار</string>
+    <string name="documentSaved">تم حفظ الملف</string>
+
+    <string name="comments">تعليق</string>
+    <string name="filter">تصفية</string>
+
+    <!-- Metadata -->
+    <string name="Ref">الرقم</string>
+    <string name="Subject">الموضوع</string>
+    <string name="Sender">المرسل</string>
+    <string name="Recipient">المرسل إليه</string>
+    <string name="InstructionsFromSender">الملاحظات</string>
+    <string name="FromUser">من</string>
+    <string name="Date">التاريخ</string>
+    <string name="Privacy">السرية</string>
+
+    <string name="syncMessage">هل أنت متأكد أنك تريد الإتصال بالشبكة؟</string>
+
+    <string name="connectionerror">هناك خطأ في الإتصال على شبكة الإنترنت</string>
+
+    <string name="questionMark">؟</string>
+
+    <string name="downloadprogress">سير التنزيل</string>
+
+    <string name="ccedWarning">عليك إضافة إحالة واحدة على الأقل ليست نسخة</string>
+
+    <string name="URL">الرابط</string>
+    <string name="timeout">وقت إنتهاء الإتصال بلشبكة</string>
+
+    <string name="download">تنزيل</string>
+
+    <string name="onlinemode">إتصال بالشبكة</string>
+
+    <string name="downloadMessage">هل أنت متأكد أنك تريد الإنفصال عن الشبكة؟</string>
+
+    <string name="succeeded">تم أداء وظيفتهم بنجاح</string>
+    <string name="notsucceeded">لم يتم أداء وظيفتهم</string>
+    <string name="profile_image">الصورة الشخصية</string>
+
+    <string name="Track">تتبع</string>
+    <string name="VisualTrack">تتبع بصري</string>
+    <string name="add_structure_or_user">إضافة قسم أو مستخدم</string>
+    <string name="name">نموذج</string>
+    <string name="removeTemplateWarning">هل حقاً تريد محو النموذج؟</string>
+    <string name="tracking">تتبع</string>
+    <string name="auditactions">بيان العمليات</string>
+    <string name="active">فعال</string>
+    <string name="inactive">غير فعال</string>
+    <string name="accounts">حسابات</string>
+    <string name="menu">القائمة</string>
+    <string name="clearCache">مسح الذاكرة</string>
+    <string name="SignReply">إمضاء ورد</string>
+    <string name="SignTransfer">إمضاء وإحالة</string>
+
+    <string name="contact">مستخدم</string>
+    <string name="machinename">إسم الآلة</string>
+    <string name="operation">العملية</string>
+
+    <string name="content">محتوى</string>
+    <string name="instructionsToReceiver">تعليمات للملتقي</string>
+    <string name="correspondences">المراسلات</string>
+
+    <!-- Viewer Menu -->
+    <string name="back">رجوع</string>
+    <string name="file">الملف</string>
+    <string name="edit">تعديل</string>
+    <string name="edited">تم التعديل</string>
+
+    <string name="menu_signature">إمضاء</string>
+    <string name="sign">توقيع</string>
+    <string name="signall">توقيع كل الصفحات</string>
+    <string name="handsign">توقيع باليد</string>
+    <string name="handsignall">توقيع باليد</string>
+    <string name="initial">وسم</string>
+    <string name="initialall">وسم الكل</string>
+    <string name="print">طباعة</string>
+    <string name="prepareforsignature">التحضير للتوقيع</string>
+    <string name="preparemultipleforsignature">تحضير الكل للتوقيع</string>
+    <string name="restore">إستعادة البريد الأصلي</string>
+    <string name="ActionsLog">بيان العمليات</string>
+    <string name="highlight">تسليط الضوء</string>
+    <string name="menu_note">ملاحظة</string>
+    <string name="notetemplate">نموذج ملاحظة</string>
+    <string name="handwrite">كتابة باليد</string>
+    <string name="stamp">ختم</string>
+    <string name="approved">موافقة</string>
+    <string name="confidential">سري</string>
+    <string name="menu_final">نهائي</string>
+    <string name="reviewed">مراجعة</string>
+    <string name="revised">منقحة</string>
+    <string name="draft">مسودة</string>
+
+    <!-- AnnotationsPermissions -->
+    <string name="permission_added">تمت إضافة الإذن</string>
+    <string name="permissions_added">تمت إضافة الأذونات</string>
+    <string name="permission_exist">توجد أذونات لهؤلاء المستخدمين</string>
+    <string name="permission_saved">تم الحفظ</string>
+    <string name="security_type">نوع الأمان</string>
+    <string name="inclusive">شامل (سيكون بإمكان المستخدمين المحددين رؤية التعليقات)</string>
+    <string name="exclusive">حصري (لن يكون بإمكان المستخدمين المحددين رؤية التعليقات)</string>
+    <string name="permissions">الإذن</string>
+    <string name="everyone">الكل</string>
+    <string name="specific">مستخدمين أو مجموعات محددة</string>
+    <string name="view">عرض</string>
+    <string name="force">بالقوّة</string>
+    <string name="view_permissions">عرض الأذونات</string>
+    <string name="delete_permission">هل حقاً تريد إزالة هذا الإذن؟</string>
+
+    <string name="report_details">تفاصيل التقرير</string>
+    <string name="no_data">لايوجد بيانات</string>
+
+    <string name="searchNotAvailable">البحث غير متاح</string>
+
+    <string name="Tasks">مهام</string>
+    <string name="Info">معلومات</string>
+    <string name="MyTransfer">إحالاتي</string>
+    <string name="TransferHistory">سجل الإحالات</string>
+
+    <string name="overdue_since">مستحق منذ</string>
+    <string name="overdue_day">يوم</string>
+    <string name="overdue_days">أيام</string>
+
+    <string name="FileExtension">امتداد الملف</string>
+    <string name="FileSize">حجم الملف</string>
+    <string name="NumberOfAttachments">عدد المستندات</string>
+    <string name="NumberOfNotes">عدد الملاحظات</string>
+    <string name="NumberOfPages">عدد الصفحات</string>
+    <string name="NumberOfLinkedCorrespondences">عدد المراسلات المربوطة</string>
+
+    <string name="DueDate">تاريخ الاستحقاق</string>
+
+    <string name="type">النوع</string>
+    <string name="direct">مباشر</string>
+
+    <!-- Reports -->
+    <string name="ActionType">نوع العمل</string>
+    <string name="AuditMessage">إسم الآلة</string>
+    <string name="OperationTime">تفاصيل العملية</string>
+    <string name="MachineName">تاريخ العملية</string>
+
+    <string name="DOC_REFERENCE">رقم المرجع</string>
+    <string name="ArchivedBySTC">ارشفة من جهة</string>
+    <string name="ArchivedBy">ارشفة من</string>
+    <string name="ArchivedOn">تمت الأرشفة في</string>
+    <string name="ArchiveLocation">موقع الأرشفة</string>
+
+
+    <string name="correspondence">Correspondence</string>
+    <string name="delegate_person">الاسم الكامل</string>
+    <string name="from_date">من تاريخ</string>
+    <string name="delivery_notes">ملاحظات التسليم</string>
+    <string name="delegate_inboxes">تفويض البريد الوارد</string>
+    <string name="to_date">إلي تاريخ</string>
+    <string name="linked_correspondence">الوثائق المرتبطة</string>
+    <string name="submit">إرسال</string>
+    <string name="close">إغلاق</string>
+    <string name="read_more">أقرأ المزيد</string>
+    <string name="read_less">أقرأ أقل</string>
+    <string name="privat">خاصة</string>
+    <string name="please_add_note">يرجي اضافة ملاحظتك </string>
+    <string name="non_arch_attachments">الغير المؤرشفة</string>
+    <string name="edit_attachment">تعديل المرفق</string>
+    <string name="quantity">الكمية</string>
+    <string name="description">الوصف</string>
+    <string name="required">(مطلوب)</string>
+    <string name="categories">الفئات</string>
+    <string name="change_language">تغيير اللغة</string>
+    <string name="you_have_15_new_messages">لديك 15 رسالة جديدة</string>
+    <string name="locked">تم الإغلاق</string>
+    <string name="done">تم</string>
+    <string name="completedone">تم الإنهاء</string>
+    <string name="doc_saved">تم الحفظ</string>
+
+    <string name="no_moredata">لا يوجد المزيد</string>
+    <string name="sorry_no_data_founded">لا توجد بيانات للعرض</string>
+
+    <string name="access_token_expires_at">Access token expires at: %s</string>
+    <string name="no_access_token_returned">No access token returned</string>
+    <string name="no_refresh_token_returned">No refresh token returned</string>
+    <string name="refresh_token_returned">Refresh token returned</string>
+    <string name="no_id_token_returned">No ID token returned</string>
+    <string name="id_token_returned">ID token returned</string>
+    <string name="no_access_token_expiry">Access time has no defined expiry</string>
+    <string name="access_token_expired">Access token has expired</string>
+    <string name="status">الحالة</string>
+    <string name="press_back_aagain">اضغط مرة اخري للخروج</string>
+    <string name="selection">لقد اخترت</string>
+    <string name="longclick">اختر مجلد</string>
+    <string name="file_Already_exist">تم حفظ هذا الملف من قبل</string>
+    <string name="please_select_corresp">يرجي اختيار وثيقة واحدة علي الأقل</string>
+    <string name="not_carbon_copy">العنصر المحدد ليس نسخة كربونية</string>
+    <string name="delete_note_confirm">هل أنت متأكد أنك تريد حذف هذه الملاحظة ؟ </string>
+    <string name="delete_item_confirm">هل أنت متأكد أنك تريد حذف هذا العنصر ؟</string>
+    <string name="created_date">تاريخ الإنشاء</string>
+    <string name="opened_date">تاريخ القراءة</string>
+    <string name="created_by">إنشاء بواسطة</string>
+    <string name="fromm">من :</string>
+    <string name="too">إلي :</string>
+    <string name="transfer_datee">تاريخ الاستحقاق :</string>
+    <string name="instructionss">تعليمات :</string>
+    <string name="please_save_transfer">الرجاء حفظ إحالة واحدة علي الأقل</string>
+    <string name="attributes">خصائص</string>
+    <string name="original_doc__already_uploaded">تم تحميل المستند الأصلي بالفعل</string>
+    <string name="save_annotations_before_managing_permissions">عليك حفظ التعليقات قبل تعديل الأذونات</string>
+<!--    <string name="viewer_page_image_path" translatable="false">api/document/%1$s/version/%2$s/page/%3$s?token=%4$s&amp;withDate=true</string>-->
+    <string name="viewer_root_api_url">https://dmsp.intalio.com/VIEWER/</string>
+
+
+    <string name="checkin">تحرير</string>
+    <string name="checkin_message">رسالة التحرير</string>
+    <string name="discard_checkout">تجاهل</string>
+    <string name="checkout">سحب</string>
+    <string name="download_with_annotations">تنزيل مع الملصقات</string>
+    <string name="print_with_annotations">طباعة مع الملصقات</string>
+
+    <string name="rectangle">مستطيل</string>
+    <string name="ellipse">بيضاوي</string>
+    <string name="line">خط</string>
+    <string name="blackout">حاجب</string>
+    <string name="addNote">إضافة تعليق</string>
+
+    <string name="signatures_template">إمضاءات محددة مسبقاً</string>
+    <string name="lock_transfer_conirm">هل أنت متأكد أنك تريد حجز العنصر المحدد؟</string>
+    <string name="unlock_transfer_conirm">هل أنت متأكد أنك تريد إلغاء قفل العنصر المحدد؟</string>
+    <string name="recall_transfer_conirm">هل أنت متأكد أنك تريد استرداد هذه الإحالة؟</string>
+    <string name="no_original_mail">تعذر إكمال المراسلة بسبب نقص المستند الأصلي</string>
+    <string name="attachments_locked_by_current_user">تحتوي المراسلات على مرفقات مقفلة بواسطة المستخدم الحالي</string>
+    <string name="there_is_file_checkedout">هناك ملف تم حجزه، يرجى التأكد من إيداعه أو تجاهل الحجز</string>
+    <string name="original_doc_checkedout">تم حجز المستند الأصلي، يرجى التأكد من إيداعه أو تجاهل الحجز</string>
+    <string name="complete_msg_confirm">هل أنت متأكد أنك تريد إكمال هذا التحويل؟</string>
+    <string name="dismiss_copy_confirm">هل أنت متأكد أنك تريد تحرير هذه النسخة الكربونية؟</string>
+    <string name="structure_recievers_error">لا تحتوي الإدارات التالية على مستلمي الإدارة بدرجة سرية المستند:</string>
+    <string name="users_donthave_privacy">المستخدمون التالون ليس لديهم الدرجة السرية المحددة: </string>
+    <string name="continue_confirm">هل أنت متأكد أنك تريد الاستمرار؟ </string>
+    <string name="lessthan_duedate">selected date must be less than transfer due date</string>
+
+
+</resources>

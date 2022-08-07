@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="20dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/fromlin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="locale"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/fromm"
+                android:id="@+id/fromtxt"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/attchsender"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/transfer_overdue"
+                android:layout_width="13dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="5dp"
+                android:visibility="gone"
+                android:src="@drawable/overdue" />
+
+            <ImageView
+                android:id="@+id/transfer_sentto"
+                android:layout_width="13dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="5dp"
+                android:visibility="visible"
+                android:src="@drawable/ic_touser" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fromlin"
+            android:layout_marginTop="8dp"
+            android:id="@+id/tolin"
+            android:layoutDirection="locale"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/too"
+                android:gravity="start"
+                android:id="@+id/totxt"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:id="@+id/attchreciever"
+                />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tolin"
+            android:layout_marginTop="12dp"
+            android:id="@+id/datelin"
+            android:layoutDirection="locale"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/transfer_datee"
+                android:id="@+id/transferdatetxt"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:id="@+id/attchdate"
+                />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/instructionstxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/datelin"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/myriadpro_simibold"
+            android:gravity="start"
+            android:layoutDirection="locale"
+            android:text="@string/instructionss"
+            android:textColor="@color/black2"
+            android:textDirection="locale"
+            android:textSize="16sp" />
+
+        <com.borjabravo.readmoretextview.ReadMoreTextView
+            android:id="@+id/attachinstructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/instructionstxt"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/myriadpro_regular"
+            android:lineSpacingExtra="5dp"
+            android:textColor="@color/ApplicationDarkColor"
+            android:textSize="16sp"
+            android:gravity="start"
+            android:layoutDirection="locale"
+            android:textDirection="locale"
+            app:colorClickableText="@color/appcolor"
+            app:trimCollapsedText="@string/read_more"
+            app:trimExpandedText="@string/read_less"
+            app:trimLength="100"
+            app:trimMode="trimModeLength" />
+
+
+        <View
+            android:id="@+id/vieww"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/attachinstructions"
+            android:layout_marginBottom="5dp"
+            android:background="#707070" />
+    </RelativeLayout>
+
+
+
+
+</androidx.cardview.widget.CardView>

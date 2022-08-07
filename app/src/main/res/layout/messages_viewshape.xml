@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="5dp"
+    android:id="@+id/messagerel"
+    android:background="@color/grey"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/message_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="visible"
+        android:src="@drawable/ic_dot_meduim" />
+
+
+    <LinearLayout
+        android:id="@+id/messagelin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_toEndOf="@+id/message_dot"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/message_sentfrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/myriadpro_regular"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:text="Developer/Eslam Saleh"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/message_refnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/myriadpro_regular"
+            android:maxLines="1"
+            android:text="In/00013/2021"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/message_subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/myriadpro_regular"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:text="subject goes here"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:fontFamily="@font/myriadpro_simibold"
+        android:text="3:45 PM"
+        android:textColor="@color/appcolor3"
+        android:textSize="14sp" />
+
+
+    <LinearLayout
+        android:id="@+id/iconslin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/messagelin"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/message_sentto"
+            android:layout_width="13dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="5dp"
+            android:visibility="visible"
+            android:src="@drawable/ic_touser" />
+
+        <ImageView
+            android:id="@+id/message_cced"
+            android:layout_width="13dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="5dp"
+            android:visibility="invisible"
+            android:src="@drawable/ic_cc_icon" />
+
+
+        <ImageView
+            android:id="@+id/message_broadcast"
+            android:layout_width="13dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="5dp"
+            android:visibility="invisible"
+            android:src="@drawable/ic_broadcast" />
+
+
+        <ImageView
+            android:id="@+id/message_overdue"
+            android:layout_width="13dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="5dp"
+            android:visibility="invisible"
+            android:src="@drawable/overdue" />
+
+        <ImageView
+            android:id="@+id/message_lock"
+            android:layout_width="11dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="7dp"
+            android:src="@drawable/ic_lock"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/message_importance"
+            android:layout_width="11dp"
+            android:layout_height="16dp"
+            android:visibility="invisible"
+            android:src="@drawable/ic_exc_mark" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/message_recall"
+            android:visibility="gone"
+            android:background="@drawable/green_background"
+            android:padding="5dp">
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="16dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_recall" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+        <View
+            android:id="@+id/viewwinbox"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@+id/messagelin"
+            android:background="@color/darkGrey" />
+
+</RelativeLayout>
+

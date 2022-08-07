@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="30dp"
+            android:orientation="vertical">
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/black2"
+                android:textSize="16sp"
+                android:id="@+id/fromstructurelabel"
+                android:text="@string/from_structure"/>
+
+            <TextView
+                android:id="@+id/from_structure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/black2"
+                android:textSize="16sp"
+                android:id="@+id/fromuserlabel"
+                android:text="@string/from_user"/>
+
+            <TextView
+                android:id="@+id/from_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/black2"
+                android:textSize="16sp"
+                android:id="@+id/purposelabel"
+                android:text="@string/purpose"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:id="@+id/purpose"/>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/black2"
+                android:textSize="16sp"
+                android:id="@+id/createddatelabel"
+                android:text="@string/created_date"/>
+
+            <TextView
+                android:id="@+id/created_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layoutDirection="ltr"
+                android:textDirection="ltr"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+             <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/black2"
+                android:textSize="16sp"
+                android:layoutDirection="ltr"
+                android:textDirection="ltr"
+                android:id="@+id/opendatelabel"
+                android:text="@string/opened_date"/>
+
+            <TextView
+                android:id="@+id/opened_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/black2"
+                android:textSize="16sp"
+                android:id="@+id/duedatelabel"
+                android:text="@string/due_date"/>
+
+            <TextView
+                android:id="@+id/due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:textColor="@color/black2"
+                android:textSize="16sp"
+                android:id="@+id/instructionslabel"
+                android:text="@string/instructions"/>
+
+            <TextView
+                android:id="@+id/instructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:layout_marginTop="22dp"
+                android:text="locked by"
+                android:id="@+id/lockedbylabel"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:id="@+id/lockedby"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:layout_marginTop="22dp"
+                android:text="locked date"
+                android:id="@+id/lockeddatelabel"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:layoutDirection="ltr"
+                android:textDirection="ltr"
+                android:id="@+id/lockeddate"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:layout_marginTop="22dp"
+                android:text="@string/subject"
+                android:id="@+id/subjectlabel"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:id="@+id/subject"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_bold"
+                android:layout_marginTop="22dp"
+                android:text="@string/sending_entity"
+                android:textColor="@color/black2"
+                android:id="@+id/sending_entity_label"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:id="@+id/sending_entity"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#707070"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:text="@string/receiving_entity"
+                android:textColor="@color/black2"
+                android:id="@+id/receiving_entity_label"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/receiving_entity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+</LinearLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+   >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="20dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="label"
+            android:textColor="@color/black2"
+            android:gravity="start"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/myriadpro_bold"
+            android:id="@+id/metadataLabel"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/ApplicationDarkColor"
+            android:gravity="start"
+            android:text="value"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/myriadpro_regular"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/metadataValue"/>
+
+
+        <View
+            android:id="@+id/vieww"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/datalin"
+            android:layout_marginBottom="5dp"
+            android:background="#707070" />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

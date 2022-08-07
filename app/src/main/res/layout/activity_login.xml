@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:textDirection="locale"
+    android:layoutDirection="locale"
+    android:orientation="vertical"
+    tools:context="intalio.cts.mobile.android.ui.activity.auth.login.LoginActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey"
+            android:textDirection="locale"
+            android:layoutDirection="locale"
+            >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:src="@drawable/loginbackground" />
+
+
+            <ImageView
+                android:id="@+id/loginlogo"
+                android:layout_width="wrap_content"
+                android:layout_height="129dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/ic_loginlogo" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/loginlogo"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:id="@+id/intaliologo"
+                android:src="@drawable/inalio" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:id="@+id/loginlin"
+                android:layout_below="@+id/intaliologo"
+                android:layout_centerHorizontal="true"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/myriadpro_bold"
+                    android:text="@string/username"
+                    android:textColor="@color/appcolor"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="47dp"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/username"
+                    android:inputType="text"
+                    android:background="@drawable/edittext_background"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:paddingStart="10dp"
+                    android:layoutDirection="locale"
+                    android:paddingEnd="5dp"
+                    android:textDirection="locale"
+                    android:hint="@string/username"
+                    android:fontFamily="@font/myriadpro_regular"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/password"
+                    android:textSize="16sp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/appcolor"
+                    android:fontFamily="@font/myriadpro_bold"
+                    />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="47dp"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/password"
+                    android:inputType="textWebPassword"
+                    android:background="@drawable/edittext_background"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="5dp"
+                    android:textAlignment="viewStart"
+                    android:hint="@string/password"
+                    android:fontFamily="@font/myriadpro_regular"
+                    />
+
+
+                <Button
+                    android:layout_width="284dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_background"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/login"
+                    android:id="@+id/login"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/myriadpro_simibold"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/loginlin"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginEnd="60dp"
+                    android:gravity="center"
+                    >
+
+
+                    <View
+                        android:layout_width="112dp"
+                        android:layout_height="1dp"
+                        android:layout_centerVertical="true"
+                        android:background="#D0D0D0" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:fontFamily="@font/myriadpro_bold"
+                        android:text="@string/or"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+
+                    <View
+                        android:layout_width="112dp"
+                        android:layout_height="1dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="#D0D0D0" />
+
+
+                </RelativeLayout>
+
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/myriadpro_simibold"
+                    android:text="@string/sign_in_using"
+                    android:textColor="@color/black"
+                    android:textSize="17sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:src="@drawable/ic_fingerprint" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="V 1.0.1"
+                android:textColor="@color/darkGrey"
+                android:textSize="15sp" />
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

@@ -1,0 +1,14 @@
+{
+    "client_id": "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc",
+    "redirect_uri": "net.openid.appauthdemo:/login",
+    "authorization_scope": "IdentityServerApi openid profile offline_access",
+    "discovery_uri": "https://iamp.intalio.com/.well-known/openid-configuration",
+    "end_session_redirect_uri": "net.openid.appauthdemo:/logout",
+
+    "authorization_endpoint_uri": "",
+    "token_endpoint_uri": "",
+    "registration_endpoint_uri": "",
+    "user_info_endpoint_uri": "",
+    "https_required": true
+
+ }

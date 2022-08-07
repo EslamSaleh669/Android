@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/rl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/viewerMenuLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/viewer_bottom_menu"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorPrimary"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:weightSum="100">
+
+                    <LinearLayout
+                        android:id="@+id/llSave"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="15"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:weightSum="100">
+
+                        <ImageButton
+                            android:id="@+id/btnSave"
+                            android:layout_width="30dp"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="70"
+                            android:background="@color/colorPrimary"
+                            android:padding="@dimen/viewer_bottom_icons_padding_save"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/save_icon" />
+
+                        <TextView
+                            android:id="@+id/saveText"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="30"
+                            android:gravity="center"
+                            android:maxLines="2"
+                            android:text="@string/save"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/menu_label_text_size" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/white" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="84"
+                        android:background="@color/colorPrimary"
+                        android:paddingStart="@dimen/menu_padding"
+                        android:paddingEnd="@dimen/menu_padding" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@id/viewerMenuLayout"
+                    android:layoutDirection="ltr">
+
+                    <TextView
+                        android:id="@+id/tvNoAttachments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:indeterminate="true"
+                        android:text="No Attachments"
+                        android:textColor="@color/darkGrey"
+                        android:textSize="25sp"
+                        android:textStyle="bold|italic"
+                        android:visibility="gone" />
+
+                    <ProgressBar
+                        android:id="@+id/downloadProgress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:indeterminate="true" />
+
+                    <TextView
+                        android:id="@+id/tvFailedToDownload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/download_failed_document"
+                        android:visibility="invisible" />
+
+                    <intalio.cts.mobile.android.util.ViewerLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvViewer"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true" />
+                    </intalio.cts.mobile.android.util.ViewerLayout>
+
+                    <com.futuremind.recyclerviewfastscroll.FastScroller
+                        android:id="@+id/fastscroll"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:orientation="vertical" />
+
+                    <androidx.coordinatorlayout.widget.CoordinatorLayout
+                        android:id="@+id/cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@android:color/transparent"
+                        android:elevation="10dp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBarViewer"
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
+                android:indeterminate="true"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

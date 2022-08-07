@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="20dp"
+    android:background="@color/white"
+    >
+
+
+    <ImageView
+        android:layout_width="22dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_attach"
+        android:layout_marginEnd="17dp"
+        android:id="@+id/attach"
+        android:layout_centerVertical="true"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:id="@+id/datalin"
+        android:layout_marginBottom="20dp"
+        android:layout_toEndOf="@id/attach">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black2"
+                android:text="in/01000000000/2021"
+                android:textSize="16sp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:id="@+id/linked_refnum"/>
+
+            <ImageView
+                android:id="@+id/deletelinkedc"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/delete" />
+
+        </RelativeLayout>
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dark_gray"
+            android:text="in/01000000000/2021"
+            android:textSize="14sp"
+            android:fontFamily="@font/myriadpro_bold"
+            android:layout_marginTop="8dp"
+            android:id="@+id/linked_date"/>
+
+    </LinearLayout>
+    <View
+        android:id="@+id/vieww"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/datalin"
+        android:layout_marginBottom="5dp"
+        android:background="#707070" />
+</RelativeLayout>

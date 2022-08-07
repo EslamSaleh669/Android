@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="89dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:id="@+id/nodelin"
+        android:background="@color/white"
+        >
+
+
+        <ImageView
+            android:id="@+id/nodeImage"
+            android:layout_width="58dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_inboxicon" />
+
+        <TextView
+            android:id="@+id/nodetitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/nodeImage"
+            android:fontFamily="@font/myriadpro_regular"
+            android:text="Inbox"
+            android:textColor="@color/black2"
+            android:textSize="17sp" />
+
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:layout_toStartOf="@+id/nodeNext"
+            android:background="@drawable/counter_background"
+            android:gravity="center"
+            android:minWidth="28dp"
+            android:paddingStart="5dp"
+            android:id="@+id/counterFrame"
+            android:paddingEnd="5dp">
+
+            <TextView
+                android:id="@+id/nodeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/myriadpro_bold"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/countProgress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible" />
+
+        </FrameLayout>
+
+
+        <ImageView
+            android:id="@+id/nodeNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

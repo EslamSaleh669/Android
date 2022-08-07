@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F0F0"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="40dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/actions"
+                android:id="@+id/attrutestring"
+                android:textColor="@color/black2"
+                android:textSize="18sp" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/metadat_btn"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_metadat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attributes"
+                    android:textSize="18sp"
+                    android:id="@+id/attributestxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/link_btn"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_link_correspondence"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/link_correspondence"
+                    android:textSize="18sp"
+                    android:id="@+id/linkedctxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/mytransfers_btn"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_my_transfers" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_transfers"
+                    android:textSize="18sp"
+                    android:id="@+id/mytransfertxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginTop="30dp"
+                android:background="#707070"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="27dp"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/actions"
+                android:id="@+id/actionstring"
+                android:textColor="@color/black2"
+                android:textSize="18sp" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/notes_btn"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_notes"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/notes"
+                    android:textSize="18sp"
+                    android:id="@+id/notestxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/reply_user_btn"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_reply"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reply_to_user"
+                    android:textSize="18sp"
+                    android:id="@+id/replytousertxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/reply_structure_btn"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_reply"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reply_to_structure"
+                    android:textSize="18sp"
+                    android:id="@+id/replytostructuretxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/transfer_btn"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_transfer_message"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/transfer"
+                    android:textSize="18sp"
+                    android:id="@+id/transfertxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/unlock_btn"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/menu_unlock" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unlock"
+                    android:textSize="18sp"
+                    android:id="@+id/unlocktxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/dismis_copy_btn"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/dismiss" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/DismissCopy"
+                    android:textSize="18sp"
+                    android:id="@+id/dismisscoppytxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/complete_btn"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_complete_message" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/complete"
+                    android:textSize="18sp"
+                    android:id="@+id/completetxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginTop="30dp"
+                android:id="@+id/actionview"
+                android:background="#707070"/>
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/attachments"
+                android:layout_marginTop="30dp"
+                android:id="@+id/attachmentsstring"
+                android:layout_marginStart="20dp"
+                android:textSize="18sp"
+                android:textColor="@color/black2"/>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/show_attachs_btn"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_show_attachments"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attachments"
+                    android:textSize="18sp"
+                    android:id="@+id/attachmentstxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/nonarchive_attachs_btn"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/nonarchivedattch"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/non_arch_attachments"
+                    android:textSize="18sp"
+                    android:id="@+id/nonarchtxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginTop="30dp"
+                android:background="#707070"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/transfer_history"
+                android:layout_marginTop="27dp"
+                android:id="@+id/transferhistorystring"
+                android:layout_marginStart="20dp"
+                android:textSize="18sp"
+                android:textColor="@color/black2"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/transferhistory_btn"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/transferhistory"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/transfer_history"
+                    android:textSize="18sp"
+                    android:id="@+id/transferhistorytxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="21dp"
+                android:id="@+id/visual_tracking_btn"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_visual_tracking"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/visual_tracking"
+                    android:textSize="18sp"
+                    android:id="@+id/visualtrackingtxt"
+                    android:textColor="@color/black2"
+                    android:layout_marginStart="15dp"
+                    />
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
