@@ -52,6 +52,7 @@ class ScanningActivity : AppCompatActivity() {
 //        Lingver.getInstance().setLocale(this, Locale(lan))
 
 
+
         loginlogo.setOnClickListener {
 //
             val  scannerModel = ScanResponse()
