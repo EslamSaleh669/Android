@@ -109,7 +109,7 @@ class CorrespondenceFragment : Fragment(), CorrespondenceAdapter.InterfacePositi
         arguments?.getString(Constants.NODE_INHERIT)?.let {
             if (it != "") {
                 CatNode_Inherit = it
-                initBottomNav(CatNode_Inherit)
+                //               initBottomNav(CatNode_Inherit)
                 when (it) {
                     "Inbox" -> {
                         getInbox(delegationId)
@@ -131,7 +131,7 @@ class CorrespondenceFragment : Fragment(), CorrespondenceAdapter.InterfacePositi
             }
         }
 
-         bottomNavigationClick()
+        // bottomNavigationClick()
 
 
     }

@@ -30,46 +30,46 @@
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_homeicon" />
 
-            <!--            <TextView-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:text="@string/filter"-->
-            <!--                android:id="@+id/filter"-->
-            <!--                android:layout_alignParentEnd="true"-->
-            <!--                android:layout_centerVertical="true"-->
-            <!--                android:textColor="@color/black"-->
-            <!--                android:background="@drawable/search_button_background"-->
-            <!--                android:paddingStart="15dp"-->
-            <!--                android:paddingEnd="15dp"-->
-            <!--                app:drawableStartCompat="@drawable/ic_filter"-->
-            <!--                android:drawablePadding="5dp"-->
-            <!--                android:paddingTop="5dp"-->
-            <!--                android:paddingBottom="5dp"-->
-            <!--                android:fontFamily="@font/myriadpro_regular"-->
-            <!--                android:textSize="16sp"-->
-            <!--                android:visibility="gone"-->
-            <!--                android:layout_marginEnd="20dp"-->
-            <!--                />-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/filter"-->
+<!--                android:id="@+id/filter"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:background="@drawable/search_button_background"-->
+<!--                android:paddingStart="15dp"-->
+<!--                android:paddingEnd="15dp"-->
+<!--                app:drawableStartCompat="@drawable/ic_filter"-->
+<!--                android:drawablePadding="5dp"-->
+<!--                android:paddingTop="5dp"-->
+<!--                android:paddingBottom="5dp"-->
+<!--                android:fontFamily="@font/myriadpro_regular"-->
+<!--                android:textSize="16sp"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_marginEnd="20dp"-->
+<!--                />-->
 
-            <!--            <TextView-->
-            <!--                android:id="@+id/sort"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_centerVertical="true"-->
-            <!--                android:layout_marginEnd="10dp"-->
-            <!--                android:layout_toStartOf="@id/filter"-->
-            <!--                android:background="@drawable/search_button_background"-->
-            <!--                android:drawablePadding="5dp"-->
-            <!--                android:fontFamily="@font/myriadpro_regular"-->
-            <!--                android:paddingStart="15dp"-->
-            <!--                android:paddingTop="5dp"-->
-            <!--                android:paddingEnd="15dp"-->
-            <!--                android:paddingBottom="5dp"-->
-            <!--                android:text="@string/sort"-->
-            <!--                android:visibility="gone"-->
-            <!--                android:textColor="@color/black"-->
-            <!--                android:textSize="16sp"-->
-            <!--                app:drawableStartCompat="@drawable/ic_sort" />-->
+<!--            <TextView-->
+<!--                android:id="@+id/sort"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                android:layout_toStartOf="@id/filter"-->
+<!--                android:background="@drawable/search_button_background"-->
+<!--                android:drawablePadding="5dp"-->
+<!--                android:fontFamily="@font/myriadpro_regular"-->
+<!--                android:paddingStart="15dp"-->
+<!--                android:paddingTop="5dp"-->
+<!--                android:paddingEnd="15dp"-->
+<!--                android:paddingBottom="5dp"-->
+<!--                android:text="@string/sort"-->
+<!--                android:visibility="gone"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="16sp"-->
+<!--                app:drawableStartCompat="@drawable/ic_sort" />-->
 
 
 
@@ -170,7 +170,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="10dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:cardElevation="5dp">
 
 
@@ -291,7 +291,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="gone"
                 android:layout_weight="1">
 
                 <ImageView

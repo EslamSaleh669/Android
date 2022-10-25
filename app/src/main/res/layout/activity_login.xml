@@ -37,12 +37,12 @@
                 android:src="@drawable/ic_loginlogo" />
 
             <ImageView
-                android:id="@+id/intaliologo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/loginlogo"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
+                android:id="@+id/intaliologo"
                 android:src="@drawable/inalio" />
 
             <LinearLayout
@@ -195,7 +195,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_below="@+id/loginlin"
                 android:fontFamily="@font/myriadpro_regular"
-                android:text="V1.0.1"
+                android:text="V2.0.0"
                 android:textColor="@color/darkGrey"
                 android:textSize="15sp" />
         </RelativeLayout>

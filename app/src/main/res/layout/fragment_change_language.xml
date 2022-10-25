@@ -88,7 +88,6 @@
         android:layout_height="wrap_content"
         android:paddingStart="25dp"
         android:paddingEnd="25dp"
-        android:visibility="gone"
         >
 
         <TextView

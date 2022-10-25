@@ -108,29 +108,29 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
         }
 
 
-//       viewModel.readSavedDelegator().let {
-//           if (it !=null){
-//
-//               if (it.fromUserId == 0){
-//                   nodestitle.text = myCorrespondence
-//                   getNodesData()
-//               }
-//               else{
-//                   nodestitle.text = "${it.fromUser} ${transfers}"
-//                   getDelegatedNodesData(it.id!!)
-//               }
-//
-//           }else{
-//               nodestitle.text = myCorrespondence
-//               getNodesData()
-//           }
-//       }
+       viewModel.readSavedDelegator().let {
+           if (it !=null){
+
+               if (it.fromUserId == 0){
+                   nodestitle.text = myCorrespondence
+                   getNodesData()
+               }
+               else{
+                   nodestitle.text = "${it.fromUser} ${transfers}"
+                   getDelegatedNodesData(it.id!!)
+               }
+
+           }else{
+               nodestitle.text = myCorrespondence
+               getNodesData()
+           }
+       }
 
 
 
 
 
-        drawer_icon.setOnClickListener {
+         drawer_icon.setOnClickListener {
             requireActivity().drawer_layout.openDrawer(GravityCompat.START)
         }
 
@@ -146,7 +146,6 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
         getCategoriesData()
         getStatuses()
         getPurposes()
-        getNodesData()
         getPriorities()
         getPrivacies()
         getImportances()
@@ -183,8 +182,8 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
             val nodes = ArrayList<NodeResponseItem>()
             for (item in it) {
-                if (item.inherit != null && item.parentNodeId == null) {
-                    if (item.inherit == "Inbox" || item.inherit == "Completed"
+                if (item.inherit != null) {
+                    if (item.inherit == "Inbox" || item.inherit == "Completed" || item.inherit == "Closed"
                         || item.inherit == "MyRequests" || item.inherit == "Sent"
                     ) {
                         nodes.add(item)
@@ -193,35 +192,34 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
             }
 
-            nodes.sortBy { it.order }
 
 
             viewModel.saveNodes(nodes)
 
-//            val requiredNodes = ArrayList<NodeResponseItem>()
-//            for (item in it) {
-//
-//                if (item.visible == true) {
-//
-//                    requiredNodes.add(item)
-//                }
-//
-//
-//            }
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                requiredNodes.removeIf { it.inherit == "Draft" }
-//            }
-//            requiredNodes.sortBy { it -> it.order }
-//            getNodesAsATree(requiredNodes)
-//
+            val requiredNodes = ArrayList<NodeResponseItem>()
+            for (item in it) {
+
+                if (item.visible == true) {
+
+                    requiredNodes.add(item)
+                }
+
+
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                requiredNodes.removeIf { it.inherit == "Draft" }
+            }
+            requiredNodes.sortBy { it -> it.order }
+            getNodesAsATree(requiredNodes)
+
 
             //   nodes.add(bam)
-            //    nodes.add(advancedSearch)
-
-            noderecycler.adapter =
-                NodesAdapter(nodes, requireActivity(), viewModel, autoDispose,0)
-            noderecycler.layoutManager =
-                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            nodes.add(advancedSearch)
+//
+//            noderecycler.adapter =
+//                NodesAdapter(nodes, requireActivity(), viewModel, autoDispose)
+//            noderecycler.layoutManager =
+//                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
             dialog!!.dismiss()
 
@@ -812,7 +810,7 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
         }, {
             Timber.e(it)
-            requireActivity().makeToast(it.toString())
+//            requireActivity().makeToast(it.toString())
 
         }))
     }
@@ -951,13 +949,13 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
         when {
             viewModel.readLanguage() == "en" -> {
                 transfers = translator.find { it.keyword == "Transfers" }!!.en!!
-            }
+             }
             viewModel.readLanguage() == "ar" -> {
                 transfers = translator.find { it.keyword == "Transfers" }!!.ar!!
-            }
+             }
             viewModel.readLanguage() == "fr" -> {
                 transfers = translator.find { it.keyword == "Transfers" }!!.fr!!
-            }
+             }
         }
 
 

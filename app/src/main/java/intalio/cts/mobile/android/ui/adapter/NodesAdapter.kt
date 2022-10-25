@@ -45,7 +45,7 @@ class NodesAdapter(
                 autoDispose.add(
                     viewModel.inboxCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                            holder.nodeCounter.text = it.total.toString()
+                            holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
 
                             holder.nodeCounter.visibility = View.VISIBLE
@@ -63,7 +63,7 @@ class NodesAdapter(
                 autoDispose.add(
                     viewModel.sentCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                            holder.nodeCounter.text = it.total.toString()
+                            holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
 
                             holder.nodeCounter.visibility = View.VISIBLE
@@ -80,7 +80,7 @@ class NodesAdapter(
                 autoDispose.add(
                     viewModel.completedCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                            holder.nodeCounter.text = it.total.toString()
+                            holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
 
                             holder.nodeCounter.visibility = View.VISIBLE
@@ -98,7 +98,7 @@ class NodesAdapter(
                 autoDispose.add(
                     viewModel.closedCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                            holder.nodeCounter.text = it.total.toString()
+                            holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
 
                             holder.nodeCounter.visibility = View.VISIBLE
@@ -115,7 +115,7 @@ class NodesAdapter(
                 autoDispose.add(
                     viewModel.requestedCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                            holder.nodeCounter.text = it.total.toString()
+                            holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
 
                             holder.nodeCounter.visibility = View.VISIBLE

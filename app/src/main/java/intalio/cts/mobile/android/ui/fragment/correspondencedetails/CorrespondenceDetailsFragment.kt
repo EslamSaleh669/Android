@@ -749,27 +749,22 @@ class CorrespondenceDetailsFragment : Fragment() {
             view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
             view.findViewById<View>(R.id.transfer_btn).visibility = View.GONE
             view.findViewById<View>(R.id.complete_btn).visibility = View.GONE
-            view.findViewById<View>(R.id.actionstring).visibility = View.GONE
-            view.findViewById<View>(R.id.actionview).visibility = View.GONE
+
 
 
 
             if (model.messageLock == "cced") {
                 view.findViewById<View>(R.id.dismis_copy_btn).visibility = View.VISIBLE
-                view.findViewById<View>(R.id.actionstring).visibility = View.VISIBLE
-                view.findViewById<View>(R.id.actionview).visibility = View.VISIBLE
+
 
             } else
                 if (model.messageLock == "broadcastlockedbyme") {
                     view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
                     view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
-
                     if (model.isexternalbroadcast) {
                         view.findViewById<View>(R.id.transfer_btn).visibility = View.VISIBLE
                         view.findViewById<View>(R.id.reply_user_btn).visibility = View.VISIBLE
                         view.findViewById<View>(R.id.reply_structure_btn).visibility = View.VISIBLE
-                        view.findViewById<View>(R.id.actionstring).visibility = View.VISIBLE
-                        view.findViewById<View>(R.id.actionview).visibility = View.VISIBLE
                     } else {
                         view.findViewById<View>(R.id.transfer_btn).visibility = View.GONE
                         view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
@@ -777,8 +772,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                     }
                     view.findViewById<View>(R.id.complete_btn).visibility = View.VISIBLE
                     view.findViewById<View>(R.id.unlock_btn).visibility = View.VISIBLE
-                    view.findViewById<View>(R.id.actionstring).visibility = View.VISIBLE
-                    view.findViewById<View>(R.id.actionview).visibility = View.VISIBLE
+
                     canDoAction = true
 
                 } else if (model.messageLock == "broadcastnotlocked") {
@@ -808,8 +802,6 @@ class CorrespondenceDetailsFragment : Fragment() {
                     view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
                     view.findViewById<View>(R.id.transfer_btn).visibility = View.GONE
                     view.findViewById<View>(R.id.complete_btn).visibility = View.GONE
-                    view.findViewById<View>(R.id.actionstring).visibility = View.GONE
-                    view.findViewById<View>(R.id.actionview).visibility = View.GONE
 
                 }
         }
@@ -1083,12 +1075,6 @@ class CorrespondenceDetailsFragment : Fragment() {
 
         }
 
-        view.findViewById<View>(R.id.link_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
 
         val x = (resources.displayMetrics.widthPixels * 0.80).toInt()
         popupWindow = PopupWindow(view, x, LinearLayout.LayoutParams.WRAP_CONTENT, true)
@@ -1388,12 +1374,10 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
         }
-        view.findViewById<View>(R.id.link_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.actionstring).visibility = View.GONE
-        view.findViewById<View>(R.id.actionview).visibility = View.GONE
+//        view.findViewById<View>(R.id.link_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
 
         //  hideActions()
 
@@ -1566,12 +1550,10 @@ class CorrespondenceDetailsFragment : Fragment() {
 
         }
 
-        view.findViewById<View>(R.id.link_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.actionstring).visibility = View.GONE
-        view.findViewById<View>(R.id.actionview).visibility = View.GONE
+//        view.findViewById<View>(R.id.link_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
 
         // hideActions()
         val x = (resources.displayMetrics.widthPixels * 0.80).toInt()
