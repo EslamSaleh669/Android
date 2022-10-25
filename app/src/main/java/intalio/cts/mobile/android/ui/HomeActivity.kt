@@ -185,6 +185,7 @@ class HomeActivity : AppCompatActivity() {
                 getSharedPreferences(Constants.SCANNER_PREF, Context.MODE_PRIVATE)
             sharedPref.edit().clear().apply()
 
+
             getSharedPreferences(Constants.SHARED_NAME, Context.MODE_PRIVATE)?.edit {
                 putString(Constants.LANG_KEY, lan)
             }
