@@ -11,7 +11,8 @@ class Constants {
         var BASE_URL = "http://xxxx:6969"
         var BASE_URL2 = "http://xxxx:9949"
         var VIEWER_URL = "xxxxxxxx"
-       // var CLIENT_ID = "5c7d368c-2053-40a5-b005-caa6647a0070"
+
+        // var CLIENT_ID = "5c7d368c-2053-40a5-b005-caa6647a0070"
         var CLIENT_ID = "xxxxxxxx"
 
 //        var BASE_URL = "http://172.25.64.1:8090"
@@ -23,7 +24,7 @@ class Constants {
         const val GRANT_TYPE = "password"
         const val ENCRYPTION_KEY = "xxxYYYxxxZZZxxxE"
 
-const val scope = "IdentityServerApi"
+        const val scope = "IdentityServerApi"
 
         const val SHARED_NAME = "userData"
         const val USER_TOKEN_KEY = "usertoken"
@@ -33,9 +34,11 @@ const val scope = "IdentityServerApi"
         const val SETTINGS_KEY = "settingskey"
         const val USER_STRUCTURE_KEY = "usersstructure"
         const val USER_FULL_DATA = "userfulldata"
+        const val DELEGATOR_DATA = "delegatordata"
         const val SCANNER_MODEL = "scannermodel"
         const val SCANNER_PREF = "scannerpref"
         const val STATUSES_DATA = "statusesdata"
+        const val NODES_DATA = "nodesdata"
         const val PURPOSES_DATA = "purposesdata"
         const val PRIORITIES_DATA = "prioritiesdata"
         const val PRIVACIES_DATA = "privaciesdata"
@@ -49,9 +52,9 @@ const val scope = "IdentityServerApi"
         const val ORIGINAL_FILE_ID = "origffileid"
 
 
-
         const val LANG_KEY = "lang"
-        const val NODE_ID = "node_id"
+        const val NODE_INHERIT = "node_inherit"
+        const val NODES_MODEL = "nodes_model"
         const val NODE_NAME = "node_name"
         const val TRANSFER_ID = "transferid"
         const val CANDOACTION = "candoactiomn"
@@ -72,13 +75,11 @@ const val scope = "IdentityServerApi"
         const val PATH = "path"
         const val LATEST_PATH = "latestpath"
         const val STRUCTURE_MODEL = "strucmodel"
+        const val TRANSLATION_MODEL = "translationmodel"
         const val CURRENT_LANG = "currentlang"
         const val LOCKED_BY = "lockedby"
+        const val LOCKED_BY_Delegator = "lockedbydelegator"
         const val LOCKED_DATE = "lockeddate"
-
-
-
-
 
 
         const val USERONLINE = "useronlinee"
@@ -129,7 +130,9 @@ const val scope = "IdentityServerApi"
         const val DELETE_TEMPLATE_RESULT = 200
         const val ANNOTATION_PERMISSION_RESULT = 201
         const val ANNOTATION_DELETE_PERMISSION_RESULT = 202
-            const val SELECT_SIGNATURE_TEMPLATE = 204
+        const val SELECT_SIGNATURE_TEMPLATE = 204
+
+        var DATE_FROM = ""
 
 
     }

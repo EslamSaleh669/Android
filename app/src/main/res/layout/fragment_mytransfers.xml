@@ -1,36 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar_layout"/>
+
+    <include layout="@layout/toolbar_layout" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey"
-        >
+        android:background="@color/grey">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="30dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="30dp">
 
 
+<!--            <ImageView-->
+<!--                android:id="@+id/testpdfimg"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:scaleType="center" />-->
 
+<!--            <com.github.barteksc.pdfviewer.PDFView-->
+<!--                android:id="@+id/pdfView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"/>-->
 
             <TextView
+                android:id="@+id/fromstructurelabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/myriadpro_bold"
+                android:text="@string/from_structure"
                 android:textColor="@color/black2"
-                android:textSize="16sp"
-                android:id="@+id/fromstructurelabel"
-                android:text="@string/from_structure"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/from_structure"
@@ -46,18 +56,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
 
             <TextView
+                android:id="@+id/fromuserlabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:fontFamily="@font/myriadpro_bold"
+                android:text="@string/from_user"
                 android:textColor="@color/black2"
-                android:textSize="16sp"
-                android:id="@+id/fromuserlabel"
-                android:text="@string/from_user"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/from_user"
@@ -73,74 +83,74 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
 
             <TextView
+                android:id="@+id/purposelabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:fontFamily="@font/myriadpro_bold"
+                android:text="@string/purpose"
                 android:textColor="@color/black2"
-                android:textSize="16sp"
-                android:id="@+id/purposelabel"
-                android:text="@string/purpose"/>
+                android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/purpose"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
                 android:fontFamily="@font/myriadpro_regular"
                 android:textColor="@color/black2"
-                android:id="@+id/purpose"/>
+                android:textSize="16sp" />
 
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
 
             <TextView
+                android:id="@+id/createddatelabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:fontFamily="@font/myriadpro_bold"
+                android:text="@string/created_date"
                 android:textColor="@color/black2"
-                android:textSize="16sp"
-                android:id="@+id/createddatelabel"
-                android:text="@string/created_date"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/created_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layoutDirection="ltr"
-                android:textDirection="ltr"
                 android:fontFamily="@font/myriadpro_regular"
+                android:layoutDirection="ltr"
                 android:textColor="@color/black2"
+                android:textDirection="ltr"
                 android:textSize="16sp" />
 
-             <View
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
             <TextView
+                android:id="@+id/opendatelabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:fontFamily="@font/myriadpro_bold"
-                android:textColor="@color/black2"
-                android:textSize="16sp"
                 android:layoutDirection="ltr"
+                android:text="@string/opened_date"
+                android:textColor="@color/black2"
                 android:textDirection="ltr"
-                android:id="@+id/opendatelabel"
-                android:text="@string/opened_date"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/opened_date"
@@ -156,17 +166,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
             <TextView
+                android:id="@+id/duedatelabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:fontFamily="@font/myriadpro_bold"
+                android:text="@string/due_date"
                 android:textColor="@color/black2"
-                android:textSize="16sp"
-                android:id="@+id/duedatelabel"
-                android:text="@string/due_date"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/due_date"
@@ -182,17 +192,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
             <TextView
+                android:id="@+id/instructionslabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:fontFamily="@font/myriadpro_bold"
+                android:text="@string/instructions"
                 android:textColor="@color/black2"
-                android:textSize="16sp"
-                android:id="@+id/instructionslabel"
-                android:text="@string/instructions"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/instructions"
@@ -208,119 +218,122 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/myriadpro_bold"
-                android:layout_marginTop="22dp"
-                android:text="locked by"
                 android:id="@+id/lockedbylabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:text="locked by"
                 android:textColor="@color/black2"
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/lockedby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
                 android:fontFamily="@font/myriadpro_regular"
                 android:textColor="@color/black2"
-                android:id="@+id/lockedby"/>
+                android:textSize="16sp" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
-             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/myriadpro_bold"
-                android:layout_marginTop="22dp"
-                android:text="locked date"
+            <TextView
                 android:id="@+id/lockeddatelabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
+                android:text="locked date"
                 android:textColor="@color/black2"
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/lockeddate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
                 android:fontFamily="@font/myriadpro_regular"
-                android:textColor="@color/black2"
                 android:layoutDirection="ltr"
+                android:textColor="@color/black2"
                 android:textDirection="ltr"
-                android:id="@+id/lockeddate"/>
+                android:textSize="16sp" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
 
             <TextView
+                android:id="@+id/subjectlabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/myriadpro_bold"
                 android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
                 android:text="@string/subject"
-                android:id="@+id/subjectlabel"
                 android:textColor="@color/black2"
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/subject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
                 android:fontFamily="@font/myriadpro_regular"
                 android:textColor="@color/black2"
-                android:id="@+id/subject"/>
+                android:textSize="16sp" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
 
             <TextView
+                android:id="@+id/sending_entity_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/myriadpro_bold"
                 android:layout_marginTop="22dp"
+                android:fontFamily="@font/myriadpro_bold"
                 android:text="@string/sending_entity"
                 android:textColor="@color/black2"
-                android:id="@+id/sending_entity_label"
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/sending_entity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
                 android:fontFamily="@font/myriadpro_regular"
                 android:textColor="@color/black2"
-                android:id="@+id/sending_entity"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
-                android:background="#707070"/>
+                android:background="#707070" />
 
 
             <TextView
+                android:id="@+id/receiving_entity_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:fontFamily="@font/myriadpro_bold"
                 android:text="@string/receiving_entity"
                 android:textColor="@color/black2"
-                android:id="@+id/receiving_entity_label"
                 android:textSize="16sp" />
 
             <TextView
@@ -335,8 +348,6 @@
 
         </LinearLayout>
     </ScrollView>
-
-
 
 
 </LinearLayout>

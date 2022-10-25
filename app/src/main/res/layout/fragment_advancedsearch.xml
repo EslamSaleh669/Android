@@ -25,14 +25,69 @@
             android:paddingEnd="30dp"
             android:paddingBottom="20dp">
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/myriadpro_regular"
+                android:text="@string/category"
+                android:id="@+id/category_label"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/categoryAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawablePadding="10dp"
+                android:dropDownHeight="wrap_content"
+                android:gravity="center_vertical"
+                android:hint="@string/categoryCategory"
+                android:imeOptions="actionDone"
+                android:inputType="textPersonName"
+                android:lines="1"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="@string/reference_number"
+                android:textColor="@color/black2"
+                android:id="@+id/refnumber_label"
+                android:textSize="16sp" />
+
+
+            <EditText
+                android:id="@+id/etRefNumber"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:fontFamily="@font/myriadpro_regular"
+                android:hint="@string/reference_number"
+                android:imeOptions="actionDone"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColor="@color/black2"
+                android:textSize="15sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
                 android:text="@string/subject"
                 android:textColor="@color/black2"
+                android:id="@+id/subject_label"
                 android:textSize="16sp" />
 
             <EditText
@@ -54,36 +109,97 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/myriadpro_regular"
-                android:text="@string/reference_number"
+                android:text="@string/status"
                 android:textColor="@color/black2"
+                android:id="@+id/status_label"
                 android:textSize="16sp" />
 
-
-            <EditText
-                android:id="@+id/etRefNumber"
+            <AutoCompleteTextView
+                android:id="@+id/statusAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="47dp"
                 android:layout_marginTop="6dp"
                 android:background="@drawable/edittext_background"
-                android:fontFamily="@font/myriadpro_regular"
-                android:hint="@string/reference_number"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawablePadding="10dp"
+                android:dropDownHeight="wrap_content"
+                android:gravity="center_vertical"
+                android:hint="@string/status"
                 android:imeOptions="actionDone"
+                android:inputType="textPersonName"
+                android:lines="1"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:textColor="@color/black2"
                 android:textSize="15sp" />
+
+
+
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/myriadpro_regular"
-                android:text="@string/category"
+                android:text="@string/from_date"
+                android:textColor="@color/black2"
+                android:id="@+id/fromdate_label"
+                android:textSize="16sp" />
+
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/Fromdate"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:drawableEnd="@drawable/ic_select_date"
+                android:focusableInTouchMode="false"
+                android:hint="@string/from_date"
+                android:inputType="date"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
+
+
+            <TextView
+                android:id="@+id/todate_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="@string/to_date"
                 android:textColor="@color/black2"
                 android:textSize="16sp" />
 
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/Todate"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:focusableInTouchMode="false"
+                android:inputType="date"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:textSize="15sp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:hint="@string/to_date"
+                android:drawableEnd="@drawable/ic_select_date"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="@string/priorityCategory"
+                android:textColor="@color/black2"
+                android:id="@+id/priority_label"
+                android:textSize="16sp" />
+
+
             <AutoCompleteTextView
-                android:id="@+id/categoryAutoComplete"
+                android:id="@+id/priorityAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="47dp"
                 android:layout_marginTop="6dp"
@@ -91,7 +207,68 @@
                 android:dropDownHeight="wrap_content"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:drawablePadding="10dp"
-                android:hint="@string/categoryCategory"
+                android:hint="@string/priorityCategory"
+                android:imeOptions="actionDone"
+                android:lines="1"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:gravity="center_vertical"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="@string/sending_entity"
+                android:textColor="@color/black2"
+                android:id="@+id/senEntity_label"
+                android:textSize="16sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/sendingEntityAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:dropDownHeight="wrap_content"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawablePadding="10dp"
+                android:hint="@string/sending_entity"
+                android:imeOptions="actionDone"
+                android:lines="1"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:gravity="center_vertical"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="@string/receiving_entity"
+                android:textColor="@color/black2"
+                android:id="@+id/recEntity_label"
+                android:textSize="16sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/receivingEntityAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:dropDownHeight="wrap_content"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawablePadding="10dp"
+                android:hint="@string/receiving_entity"
                 android:imeOptions="actionDone"
                 android:lines="1"
                 android:inputType="textPersonName"
@@ -105,14 +282,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/myriadpro_regular"
-                android:text="@string/transfer_form"
+                android:text="@string/transferFrom"
                 android:textColor="@color/black2"
+                android:id="@+id/transfer_From_user_label"
                 android:textSize="16sp" />
 
-
-
             <AutoCompleteTextView
-                android:id="@+id/TransferFromAutoComplete"
+                android:id="@+id/transferFromUserAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="47dp"
                 android:layout_marginTop="6dp"
@@ -136,12 +312,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/myriadpro_regular"
-                android:text="@string/transfer_to"
+                android:text="@string/transferTo"
                 android:textColor="@color/black2"
+                android:id="@+id/transfer_To_user_label"
                 android:textSize="16sp" />
 
             <AutoCompleteTextView
-                android:id="@+id/TransferToAutoComplete"
+                android:id="@+id/transferToUserAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="47dp"
                 android:layout_marginTop="6dp"
@@ -159,6 +336,67 @@
                 android:textSize="15sp" />
 
 
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="@string/from_structure"
+                android:textColor="@color/black2"
+                android:id="@+id/transfer_From_structure_label"
+                android:textSize="16sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/transferFromStructureAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:dropDownHeight="wrap_content"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawablePadding="10dp"
+                android:hint="@string/from_structure"
+                android:imeOptions="actionDone"
+                android:lines="1"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:gravity="center_vertical"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="@string/to_structure"
+                android:textColor="@color/black2"
+                android:id="@+id/transfer_To_Structure_label"
+                android:textSize="16sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/transferToStructureAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:dropDownHeight="wrap_content"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawablePadding="10dp"
+                android:hint="@string/to_structure"
+                android:imeOptions="actionDone"
+                android:lines="1"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:gravity="center_vertical"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -166,6 +404,7 @@
                 android:fontFamily="@font/myriadpro_regular"
                 android:text="@string/from_transfer_date"
                 android:textColor="@color/black2"
+                android:id="@+id/transfer_From_date_label"
                 android:textSize="16sp" />
 
 
@@ -190,6 +429,7 @@
                 android:fontFamily="@font/myriadpro_regular"
                 android:text="@string/to_transfer_date"
                 android:textColor="@color/black2"
+                android:id="@+id/transfer_to_date_label"
                 android:textSize="16sp" />
 
 
@@ -208,35 +448,45 @@
                 android:hint="@string/to_transfer_date"
                 android:drawableEnd="@drawable/ic_select_date"
                 />
+
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/myriadpro_regular"
-                android:text="@string/purpose"
+                android:text="Keyword"
                 android:textColor="@color/black2"
+                android:id="@+id/keyword_label"
                 android:textSize="16sp" />
 
-
-            <AutoCompleteTextView
-                android:id="@+id/PurposeAutoComplete"
+            <EditText
+                android:id="@+id/searchKeyword"
                 android:layout_width="match_parent"
                 android:layout_height="47dp"
                 android:layout_marginTop="6dp"
                 android:background="@drawable/edittext_background"
-                android:dropDownHeight="wrap_content"
-                android:drawableEnd="@drawable/ic_arrow_down"
-                android:drawablePadding="10dp"
-                android:hint="@string/purpose"
-                android:imeOptions="actionDone"
-                android:lines="1"
-                android:inputType="textPersonName"
+                android:fontFamily="@font/myriadpro_regular"
+                android:hint="Keyword"
+                android:inputType="text"
                 android:paddingStart="10dp"
-                android:gravity="center_vertical"
                 android:paddingEnd="10dp"
+                android:textColor="@color/black2"
                 android:textSize="15sp" />
 
 
+            <CheckBox
+                android:id="@+id/OverdueCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="overdue"
+                android:textColor="@color/black2"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textSize="16sp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="15dp"
+                />
 
         </LinearLayout>
 
@@ -264,9 +514,9 @@
             android:paddingEnd="30dp"
             android:paddingBottom="5dp"
             android:text="@string/reset"
-
             android:textColor="@color/black2"
-            android:textSize="17sp"
+            android:textSize="15sp"
+
 
             />
         <TextView
@@ -291,7 +541,7 @@
             android:paddingBottom="5dp"
             android:text="@string/search"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="15sp"
 
             />
 

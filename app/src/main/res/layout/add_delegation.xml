@@ -39,6 +39,7 @@
                     android:textColor="@color/black2"
                     android:fontFamily="@font/myriadpro_regular"
                     android:layout_marginEnd="3dp"
+                    android:id="@+id/fullname_label"
                     android:textSize="16sp" />
 
                 <TextView
@@ -46,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="italic"
                     android:text="@string/required"
+                    android:id="@+id/requiredfullname_label"
                     android:textColor="@color/dark_gray"
                     android:textSize="13sp" />
 
@@ -79,6 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/from_date"
+                    android:id="@+id/delgationfromdatedate_label"
                     android:textColor="@color/black2"
                     android:fontFamily="@font/myriadpro_regular"
                     android:layout_marginEnd="3dp"
@@ -89,6 +92,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="italic"
                     android:text="@string/required"
+                    android:id="@+id/requredfromdate_label"
                     android:textColor="@color/dark_gray"
                     android:textSize="13sp" />
 
@@ -119,6 +123,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/to_date"
                     android:textColor="@color/black2"
+                    android:id="@+id/delegationtodate_label"
                     android:fontFamily="@font/myriadpro_regular"
                     android:layout_marginEnd="3dp"
                     android:textSize="16sp" />
@@ -128,6 +133,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="italic"
                     android:text="@string/required"
+                    android:id="@+id/requiredtodate_label"
                     android:textColor="@color/dark_gray"
                     android:textSize="13sp" />
 
@@ -159,6 +165,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/categories"
                     android:textColor="@color/black2"
+                    android:id="@+id/categories_label"
                     android:fontFamily="@font/myriadpro_regular"
                     android:layout_marginEnd="3dp"
                     android:textSize="16sp" />
@@ -168,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="italic"
                     android:text="@string/required"
+                    android:id="@+id/requiredcategories_label"
                     android:textColor="@color/dark_gray"
                     android:textSize="13sp" />
 
@@ -179,7 +187,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="6dp"
                 android:background="@drawable/ic_addrec_background"
-                android:drawableStart="@drawable/ic_user_add"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:drawablePadding="10dp"
                 android:dropDownHeight="wrap_content"
@@ -196,6 +203,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginTop="10dp"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
                 android:background="@drawable/ic_recivers_background"
                 android:nestedScrollingEnabled="true"
                 android:padding="10dp" />
@@ -230,7 +239,7 @@
             android:paddingBottom="5dp"
             android:text="@string/cancel"
             android:textColor="@color/black2"
-            android:textSize="17sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -253,7 +262,7 @@
             android:paddingBottom="5dp"
             android:text="@string/save"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="15sp"
 
             />
 

@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +14,7 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cts.mobile.android.R
+import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
 import intalio.cts.mobile.android.data.network.response.NonArchDataItem
 import intalio.cts.mobile.android.data.network.response.TypesResponseItem
 import intalio.cts.mobile.android.ui.adapter.NonArchAdapter
@@ -30,11 +30,13 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClicked{
-    private var Node_Id :Int = 0
+    private var Node_Inherit :String = ""
     private var DocumentId:Int = 0
     private var TransferId:Int = 0
     private var canDoAction:Boolean = false
+    private lateinit var translator: java.util.ArrayList<DictionaryDataItem>
 
+    private var delegationId = 0
 
     @Inject
     @field:Named("nonarchattachments")
@@ -72,14 +74,16 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
         super.onViewCreated(view, savedInstanceState)
         viewModel.NonArch = ReplaySubject.create()
 
+        translator = viewModel.readDictionary()!!.data!!
+        setLabels()
 
-        centered_txt.text = requireActivity().getText(R.string.non_arch_attachments)
-        back_icon.setOnClickListener {
+
+         back_icon.setOnClickListener {
             activity?.onBackPressed()
         }
 
-        requireArguments().getInt(Constants.NODE_ID).let {
-            Node_Id = it
+        requireArguments().getString(Constants.NODE_INHERIT).let {
+            Node_Inherit = it!!
         }
 
         requireArguments().getInt(Constants.DOCUMENT_ID).let {
@@ -95,10 +99,18 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
             canDoAction = it
         }
 
-        if (Node_Id == 2 && canDoAction) {
+        if (Node_Inherit == "Inbox" && canDoAction) {
             nonrel.visibility = View.VISIBLE }
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
 
-        getNonArch(DocumentId)
+                it.id!!
+
+            } else {
+                0
+            }
+        }
+        getNonArch(DocumentId,delegationId)
 
 
         addnonarch.setOnClickListener {
@@ -124,9 +136,29 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
     }
 
 
-    private fun getNonArch(DoctId: Int) {
+    private fun getNonArch(DoctId: Int, delegationId: Int) {
+        var noMoreData = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                noMoreData = "No more data"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                noMoreData = "لا يوجد المزيد"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                noMoreData = "Plus de données"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.fr!!
+            }
+        }
+
         nonarchrecycler.adapter =
-            NonArchAdapter(arrayListOf(), requireActivity(),this,Node_Id,canDoAction)
+            NonArchAdapter(arrayListOf(), requireActivity(),this,Node_Inherit,canDoAction)
         nonarchrecycler.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
@@ -136,6 +168,7 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
             dialog!!.dismiss()
             val lastPosition: Int =
                 (nonarchrecycler.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+
 
              if (it!!.isEmpty() && viewModel.limit == 0) {
                  noDataFounded.visibility = View.VISIBLE
@@ -147,7 +180,7 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
                     (nonarchrecycler.adapter as NonArchAdapter).addNonArch(it)
 
                 } else if (lastPosition > 10) {
-                    requireContext().makeToast(getString(R.string.no_moredata))
+                    requireContext().makeToast(noMoreData)
                 }
             }
         },{
@@ -164,12 +197,12 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
 
                 val lastPosition: Int =
                     (nonarchrecycler.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-                viewModel.checkForNonArchLoading(lastPosition, DoctId)
+                viewModel.checkForNonArchLoading(lastPosition, DoctId,delegationId)
 
             }
         }
 
-        viewModel.loadMoreNonArch(DoctId)
+        viewModel.loadMoreNonArch(DoctId,delegationId)
 
     }
 
@@ -188,21 +221,55 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
     }
 
     private fun showDialog(nonarchid: Int) {
+
+        var deleteConfirmation = ""
+        var yes = ""
+        var no = ""
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+
+                deleteConfirmation = translator.find { it.keyword == "DeleteRowConfirmation" }!!.en!!
+                yes = translator.find { it.keyword == "Yes" }!!.en!!
+                no = translator.find { it.keyword == "No" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                deleteConfirmation = translator.find { it.keyword == "DeleteRowConfirmation" }!!.ar!!
+                yes = translator.find { it.keyword == "Yes" }!!.ar!!
+                no = translator.find { it.keyword == "No" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+
+                deleteConfirmation = translator.find { it.keyword == "DeleteRowConfirmation" }!!.fr!!
+                yes = translator.find { it.keyword == "Yes" }!!.fr!!
+                no = translator.find { it.keyword == "No" }!!.fr!!
+
+            }
+        }
         val width = (resources.displayMetrics.widthPixels * 0.99).toInt()
         val alertDialog = AlertDialog.Builder(activity)
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setMessage(getString(R.string.delete_item_confirm))
-            .setPositiveButton(getString(R.string.yes), DialogInterface.OnClickListener { dialog, i ->
+            .setMessage(deleteConfirmation)
+            .setPositiveButton(yes, DialogInterface.OnClickListener { dialog, i ->
                 dialog.dismiss()
 
-                autoDispose.add(viewModel.deleteNonArch(nonarchid,DocumentId,TransferId).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                autoDispose.add(viewModel.deleteNonArch(nonarchid,DocumentId,TransferId,delegationId).observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
 
                         if (it.equals(true)){
-                            requireActivity().makeToast(getString(R.string.deleted))
-                            (nonarchrecycler.adapter as NonArchAdapter).removeNoneArch(nonarchid)
+                             (nonarchrecycler.adapter as NonArchAdapter).removeNoneArch(nonarchid)
 
                         }
+
+
 
                     },
                     {
@@ -211,7 +278,7 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
 
                     }))
             })
-            .setNegativeButton(getString(R.string.no), DialogInterface.OnClickListener { dialogInterface, i ->
+            .setNegativeButton(no, DialogInterface.OnClickListener { dialogInterface, i ->
                 dialogInterface.dismiss()
 
 
@@ -226,6 +293,8 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
     }
 
     private fun showNonArchDialog(position: Int , model: NonArchDataItem) {
+
+
         var typeSelectedId = model.typeId
 
         val customDialog = Dialog(requireContext(),R.style.FullScreenDialog)
@@ -233,10 +302,66 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
         customDialog.setCancelable(false)
         customDialog.setContentView(R.layout.edit_nonarch_layout)
 
-        customDialog.findViewById<TextView>(R.id.centered_txt).setText(R.string.edit_attachment)
-        customDialog.findViewById<ImageView>(R.id.back_icon).setOnClickListener {
+         customDialog.findViewById<ImageView>(R.id.back_icon).setOnClickListener {
             customDialog.dismiss()
         }
+
+        var requiredFields = ""
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+
+                customDialog.findViewById<TextView>(R.id.type_label).text = translator.find { it.keyword == "Type" }!!.en
+                customDialog.findViewById<TextView>(R.id.attchtypeautocomplete).hint = translator.find { it.keyword == "Type" }!!.en
+                customDialog.findViewById<TextView>(R.id.quantity_label).text = translator.find { it.keyword == "Quantity" }!!.en
+                customDialog.findViewById<TextView>(R.id.attchquantity).hint = translator.find { it.keyword == "Quantity" }!!.en
+                customDialog.findViewById<TextView>(R.id.description_label).text = translator.find { it.keyword == "Description" }!!.en
+                customDialog.findViewById<TextView>(R.id.btnSaveattch).text = translator.find { it.keyword == "Save" }!!.en
+                customDialog.findViewById<TextView>(R.id.btnCancelattch).text = translator.find { it.keyword == "Cancel" }!!.en
+                customDialog.findViewById<TextView>(R.id.centered_txt).text = translator.find { it.keyword == "Edit" }!!.en
+
+                customDialog.findViewById<TextView>(R.id.requiredtype_label).text = "(required)"
+                customDialog.findViewById<TextView>(R.id.requiredquantity_label).text = "(required)"
+
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                customDialog.findViewById<TextView>(R.id.type_label).text = translator.find { it.keyword == "Type" }!!.ar
+                customDialog.findViewById<TextView>(R.id.attchtypeautocomplete).hint = translator.find { it.keyword == "Type" }!!.ar
+                customDialog.findViewById<TextView>(R.id.quantity_label).text = translator.find { it.keyword == "Quantity" }!!.ar
+                customDialog.findViewById<TextView>(R.id.attchquantity).hint = translator.find { it.keyword == "Quantity" }!!.ar
+                customDialog.findViewById<TextView>(R.id.description_label).text = translator.find { it.keyword == "Description" }!!.ar
+                customDialog.findViewById<TextView>(R.id.btnSaveattch).text = translator.find { it.keyword == "Save" }!!.ar
+                customDialog.findViewById<TextView>(R.id.btnCancelattch).text = translator.find { it.keyword == "Cancel" }!!.ar
+                customDialog.findViewById<TextView>(R.id.centered_txt).text = translator.find { it.keyword == "Edit" }!!.ar
+
+                customDialog.findViewById<TextView>(R.id.requiredtype_label).text = "(الزامي)"
+                customDialog.findViewById<TextView>(R.id.requiredquantity_label).text = "(الزامي)"
+
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.ar!!
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+                customDialog.findViewById<TextView>(R.id.type_label).text = translator.find { it.keyword == "Type" }!!.fr
+                customDialog.findViewById<TextView>(R.id.attchtypeautocomplete).hint = translator.find { it.keyword == "Type" }!!.fr
+                customDialog.findViewById<TextView>(R.id.quantity_label).text = translator.find { it.keyword == "Quantity" }!!.fr
+                customDialog.findViewById<TextView>(R.id.attchquantity).hint = translator.find { it.keyword == "Quantity" }!!.fr
+                customDialog.findViewById<TextView>(R.id.description_label).text = translator.find { it.keyword == "Description" }!!.fr
+                customDialog.findViewById<TextView>(R.id.btnSaveattch).text = translator.find { it.keyword == "Save" }!!.fr
+                customDialog.findViewById<TextView>(R.id.btnCancelattch).text = translator.find { it.keyword == "Cancel" }!!.fr
+                customDialog.findViewById<TextView>(R.id.centered_txt).text = translator.find { it.keyword == "Edit" }!!.fr
+
+                customDialog.findViewById<TextView>(R.id.requiredtype_label).text = "(requis)"
+                customDialog.findViewById<TextView>(R.id.requiredquantity_label).text = "(requis)"
+
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.fr!!
+            }
+        }
+
+
         val attachTypeAutoComplete = customDialog.findViewById<AutoCompleteTextView>(R.id.attchtypeautocomplete)
         val attachmentCount = customDialog.findViewById<EditText>(R.id.attchquantity)
         val attachmentDescription= customDialog.findViewById<EditText>(R.id.attchdesc)
@@ -307,7 +432,7 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
 
             if (quantity == "")
             {
-                requireActivity().makeToast(getString(R.string.requiredField))
+                requireActivity().makeToast(requiredFields)
             }else{
 
                 model.description = desctription
@@ -318,31 +443,33 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
                 addEditedNonArch(DocumentId,TransferId,desctription.trim(),quantity.toInt(),
                     typeSelectedId!!, model.id!!
                 )
+                (nonarchrecycler.adapter as NonArchAdapter).modifyNonArch(position,model)
 
+                customDialog.dismiss()
             }
 
-            (nonarchrecycler.adapter as NonArchAdapter).modifyNonArch(position,model)
 
-            customDialog.dismiss()
         }
         noBtn.setOnClickListener {
             customDialog.dismiss()
 
         }
+
+
         customDialog.show()
 
     }
 
-
     private fun addEditedNonArch(DoctId: Int , transID:Int , desc:String , quantity : Int,selectedType:Int ,nonarchid: Int) {
 
-        autoDispose.add(viewModel.saveEditedNonArch(DoctId,transID,selectedType,desc,quantity,nonarchid).observeOn(AndroidSchedulers.mainThread()).subscribe(
+
+        autoDispose.add(viewModel.saveEditedNonArch(DoctId,transID,selectedType,desc,quantity,nonarchid,delegationId).observeOn(AndroidSchedulers.mainThread()).subscribe(
             {
 
                 dialog!!.dismiss()
 
                 if (it.id!! > 0){
-                    requireActivity().makeToast(getString(R.string.edited))
+
                 }else{
                     requireActivity().makeToast(it.message.toString())
                 }
@@ -357,6 +484,40 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
 
     }
 
+    private fun setLabels() {
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                nonarch_label.text = translator.find { it.keyword == "NonArchivedAttachments" }!!.en
+                addnonarch.text = translator.find { it.keyword == "Add" }!!.en
+                centered_txt.text = translator.find { it.keyword == "NonArchivedAttachments" }!!.en
+
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                nonarch_label.text = translator.find { it.keyword == "NonArchivedAttachments" }!!.ar
+                addnonarch.text = translator.find { it.keyword == "Add" }!!.ar
+                centered_txt.text = translator.find { it.keyword == "NonArchivedAttachments" }!!.ar
+
+
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                nonarch_label.text = translator.find { it.keyword == "NonArchivedAttachments" }!!.fr
+                addnonarch.text = translator.find { it.keyword == "Add" }!!.fr
+                centered_txt.text = translator.find { it.keyword == "NonArchivedAttachments" }!!.fr
+
+
+            }
+        }
+    }
 
 
 

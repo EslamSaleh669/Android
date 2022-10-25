@@ -28,6 +28,7 @@
             android:fontFamily="@font/myriadpro_regular"
             android:textSize="16sp"
             android:layout_marginTop="30dp"
+            android:id="@+id/note_label"
             android:text="@string/note"
             />
 

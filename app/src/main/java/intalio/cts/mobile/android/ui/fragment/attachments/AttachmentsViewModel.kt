@@ -13,9 +13,9 @@ import org.json.JSONObject
 class AttachmentsViewModel (private val userRepo: UserRepo, private val adminRepo: AdminRepo) : ViewModel() {
 
 
-    fun attachmentsData(documentId:Int):
+    fun attachmentsData(documentId:Int, delegationId:Int):
             Observable<ArrayList<AttachmentModel>> =
-        adminRepo.attachmentsData(documentId)
+        adminRepo.attachmentsData(documentId,delegationId)
 
 
 
@@ -26,5 +26,6 @@ class AttachmentsViewModel (private val userRepo: UserRepo, private val adminRep
 
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
     fun readLanguage (): String = userRepo.currentLang()
+    fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
 
 }

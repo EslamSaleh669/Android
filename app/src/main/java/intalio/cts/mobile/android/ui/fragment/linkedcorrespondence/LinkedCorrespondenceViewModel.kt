@@ -42,17 +42,23 @@ class LinkedCorrespondenceViewModel (private val userRepo: UserRepo, private val
     }
 
 
-    fun getLinkedC(documentId:Int): Observable<LinkedCorrespondenceResponse> =
-        adminRepo.getLinkedC(documentId)
+    fun getLinkedC(documentId: Int, delegationId: Int): Observable<LinkedCorrespondenceResponse> =
+        adminRepo.getLinkedC(documentId,delegationId)
 
-    fun deleteLinkedC(linkedId: Int, documentId:Int, transferId:Int): Observable<Boolean> =
-        adminRepo.deleteLinkedC(linkedId,documentId,transferId)
+    fun deleteLinkedC(linkedId: Int, documentId:Int, transferId:Int,delegationId:Int): Observable<Boolean> =
+        adminRepo.deleteLinkedC(linkedId,documentId,transferId,delegationId)
 
-    fun addLinkedDocument(documentIds: Array<Int>, documentId:Int, transferId:Int): Observable<SaveNotesResponse> =
-        adminRepo.addLinkedDocument(documentIds,documentId,transferId)
+    fun addLinkedDocument(documentIds: Array<Int>, documentId:Int, transferId:Int,delegationId:Int): Observable<SaveNotesResponse> =
+        adminRepo.addLinkedDocument(documentIds,documentId,transferId,delegationId)
 
 
 
+    fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
+
+    fun readLanguage (): String = userRepo.currentLang()
+
+
+    fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
 
 
     override fun onCleared() {

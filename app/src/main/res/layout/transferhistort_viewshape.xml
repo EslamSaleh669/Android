@@ -63,8 +63,6 @@
                 android:src="@drawable/ic_touser" />
         </LinearLayout>
 
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -139,12 +137,49 @@
 
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/datelin"
+            android:layout_marginTop="12dp"
+            android:id="@+id/closed_date"
+            android:layoutDirection="locale"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:id="@+id/closeddatetxt"
+                android:text="Closed date : "
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:text="15-2-2022"
+                android:id="@+id/attchcloseddate"
+                />
+
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/instructionstxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/datelin"
+            android:layout_below="@+id/closed_date"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/myriadpro_simibold"
             android:gravity="start"

@@ -16,7 +16,7 @@ class LinkedCAdapter(
     private val LinkedC: ArrayList<LinkedCorDataItem>,
     val activity: Activity,
     private val onDeleteCLickListener: OnDeleteLinkedCClicked,
-    private val Node_Id: Int,
+    private val Node_Inherit: String,
     private val canDoAction :Boolean
 
 
@@ -33,9 +33,11 @@ class LinkedCAdapter(
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
 
 
-        if (Node_Id != 2 || !canDoAction){
+        if (Node_Inherit != "Inbox" || !canDoAction || LinkedC[position].allowDelete == false){
             holder.LinkedDelete.visibility = View.INVISIBLE
         }
+
+
         holder.LinkedRefNum.text = LinkedC[position].linkedDocumentReferenceNumber
         holder.LinkedDate.text = LinkedC[position].createdDate
 

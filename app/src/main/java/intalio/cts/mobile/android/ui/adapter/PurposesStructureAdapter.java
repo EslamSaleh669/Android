@@ -54,10 +54,10 @@ public class PurposesStructureAdapter extends ArrayAdapter {
 
         if (view == null) {
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.key_value_layout, parent, false);
+                    .inflate(R.layout.category_item_viewshape, parent, false);
         }
 
-        TextView strName = (TextView) view.findViewById(R.id.autoValue);
+        TextView strName = (TextView) view.findViewById(R.id.categoryValue);
         strName.setText(dataList.get(position).getText());
         return view;
     }

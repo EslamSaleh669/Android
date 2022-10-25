@@ -1,6 +1,5 @@
 package intalio.cts.mobile.android.ui.fragment.correspondencedetails
 
-import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -9,7 +8,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
@@ -22,11 +20,10 @@ import android.webkit.WebViewClient
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +35,6 @@ import intalio.cts.mobile.android.data.model.AttachmentModel
 import intalio.cts.mobile.android.data.model.viewer.ViewerAnnotationModel
 
 import intalio.cts.mobile.android.data.network.response.*
-import intalio.cts.mobile.android.ui.adapter.ViewerAdapter
 import intalio.cts.mobile.android.ui.fragment.attachments.AttachmentsFragment
 import intalio.cts.mobile.android.ui.fragment.linkedcorrespondence.LinkedCorrespondenceFragment
 import intalio.cts.mobile.android.ui.fragment.metadata.MetaDataFragment
@@ -73,7 +69,6 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 import intalio.cts.mobile.android.viewer.views.SignatureTemplateDialog
-import kotlinx.android.synthetic.main.fragment_correspondence.*
 
 
 class CorrespondenceDetailsFragment : Fragment() {
@@ -86,9 +81,10 @@ class CorrespondenceDetailsFragment : Fragment() {
     private var pdfWidth = 0
     private var pdfHeight: Int = 0
     private var viewMode = false
+    private var delegationId = 0
 
     lateinit var popupWindow: PopupWindow
-    private var Node_Id: Int = 0
+    private var Node_Inherit: String = ""
     private var fileId: String = ""
     private lateinit var correspondenceModel: CorrespondenceDataItem
     private lateinit var searchModel: AdvancedSearchResponseDataItem
@@ -152,6 +148,16 @@ class CorrespondenceDetailsFragment : Fragment() {
         translator = viewModel.readDictionary()!!.data!!
         init()
         initRecyclerView()
+
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
+
+                it.id!!
+
+            } else {
+                0
+            }
+        }
         popupWindow = PopupWindow(
             view, // Custom view to show in popup window
             LinearLayout.LayoutParams.MATCH_PARENT, // Width of popup window
@@ -171,47 +177,53 @@ class CorrespondenceDetailsFragment : Fragment() {
         arguments?.getString(Constants.PATH)?.let {
 
             viewModel.savePath(it)
+            Log.d("mypath",it)
 
             if (it == "node") {
-                Node_Id = viewModel.readNodeID()
+                Node_Inherit = viewModel.readCurrentNode()
 
                 correspondenceModel =
                     arguments?.getSerializable(Constants.Correspondence_Model) as CorrespondenceDataItem
                 title_new_viewer_activity.text = correspondenceModel.referenceNumber
 
-                if (Node_Id == 4) {
+                if (Node_Inherit == "MyRequests") {
                     viewMode = false
                     //my requests returns document id only
-                    getDocument(correspondenceModel.id!!)
+                    getDocument(correspondenceModel.id!!,delegationId)
                     getOriginalDocument(
                         correspondenceModel.id!!,
                         "null",
                         false,
-                        viewMode
+                        viewMode,
+                        delegationId
                     )
                 } else {
-                    viewMode = Node_Id == 2 &&
+                    Log.d("mypath",Node_Inherit)
+
+                    viewMode = Node_Inherit == "Inbox" &&
                             (correspondenceModel.messageLock == "lockedbyme" ||
                                     correspondenceModel.messageLock == "notlocked")
 
 //                    correspondenceModel.messageLock == "broadcastlockedbyme" ||
 //                            correspondenceModel.messageLock == "broadcastnotlocked"
-                    viewDocument(correspondenceModel.id!!)
-                    setPopUpWindow(correspondenceModel)
+                    viewDocument(correspondenceModel.id!!,delegationId)
+                    setPopUpWindow(correspondenceModel,delegationId)
                     getOriginalDocument(
                         correspondenceModel.documentId!!,
                         correspondenceModel.id!!.toString(),
                         false,
-                        viewMode
+                        viewMode,
+                        delegationId
                     )
 
                 }
 
 
-            } else if (it == "search") {
+            }
+            else if (it == "search") {
 
 
-                _menuLayout.visibility = View.INVISIBLE
+//                _menuLayout.visibility = View.INVISIBLE
 
                 viewMode = false
 
@@ -219,14 +231,16 @@ class CorrespondenceDetailsFragment : Fragment() {
                     arguments?.getSerializable(Constants.Correspondence_Model) as AdvancedSearchResponseDataItem
                 title_new_viewer_activity.text = searchModel.referenceNumber
 
-                setSearchPopUpWindow(searchModel)
+                setSearchPopUpWindow(searchModel,delegationId)
                 getOriginalDocument(
                     searchModel.id!!,
                     "null",
                     false,
-                    viewMode
+                    viewMode,
+                    delegationId
                 )
-            } else {
+            }
+            else {
 
 
                 requireArguments().getString(Constants.FILE_ID).let { id ->
@@ -234,11 +248,14 @@ class CorrespondenceDetailsFragment : Fragment() {
                     fileId = id!!
                 }
 
-                requireArguments().getInt(Constants.NODE_ID).let {
-                    Node_Id = it
+                requireArguments().getString(Constants.NODE_INHERIT).let {
+                    Node_Inherit = it!!
+                    Log.d("mypathnodeinherit",it)
+
                 }
 
-                if (Node_Id == 4) {
+
+                if (Node_Inherit == "MyRequests") {
 
                     requestedModel =
                         arguments?.getSerializable(Constants.Correspondence_Model) as MetaDataResponse
@@ -246,36 +263,41 @@ class CorrespondenceDetailsFragment : Fragment() {
 
                     viewMode = false
                     //my requests returns document id only
-                    getDocument(requestedModel.id!!)
+                    getDocument(requestedModel.id!!,delegationId)
                     getOriginalDocument(
                         requestedModel.id!!,
                         "null",
                         false,
-                        viewMode
+                        viewMode,
+                        delegationId
                     )
-                } else if (Node_Id == 2 || Node_Id == 3 || Node_Id == 6) {
+                }
+                else if (Node_Inherit == "Inbox" || Node_Inherit == "Completed" || Node_Inherit == "MyRequests") {
                     requireArguments().getBoolean(Constants.VIEWMODE).let { viewmode ->
 
                         viewMode = viewmode
                     }
+                    Log.d("mypathnodeinherit","I came from attachments path")
+
 
                     correspondenceModel =
                         arguments?.getSerializable(Constants.Correspondence_Model) as CorrespondenceDataItem
                     title_new_viewer_activity.text = correspondenceModel.referenceNumber
 
 
-                    viewDocument(correspondenceModel.id!!)
-                    setPopUpWindow(correspondenceModel)
+                    viewDocument(correspondenceModel.id!!,delegationId)
+                    setPopUpWindow(correspondenceModel, delegationId)
                     getOriginalDocument(
                         correspondenceModel.documentId!!,
                         correspondenceModel.id!!.toString(),
                         false,
-                        viewMode
+                        viewMode,
+                        delegationId
                     )
 
                 } else {
 
-                    _menuLayout.visibility = View.INVISIBLE
+//                    _menuLayout.visibility = View.INVISIBLE
 
                     viewMode = false
 
@@ -283,12 +305,13 @@ class CorrespondenceDetailsFragment : Fragment() {
                         arguments?.getSerializable(Constants.Correspondence_Model) as AdvancedSearchResponseDataItem
                     title_new_viewer_activity.text = searchModel.referenceNumber
 
-                    setSearchPopUpWindow(searchModel)
+                    setSearchPopUpWindow(searchModel, delegationId)
                     getOriginalDocument(
                         searchModel.id!!,
                         "null",
                         false,
-                        viewMode
+                        viewMode,
+                        delegationId
                     )
                 }
 
@@ -307,6 +330,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         tvNoAttachments = requireActivity().findViewById<TextView>(R.id.tvNoAttachments)
         _llSave = requireActivity().findViewById<LinearLayout>(R.id.llSave)
         _llSave.setOnClickListener(View.OnClickListener { v: View? ->
+
 
         })
     }
@@ -330,21 +354,21 @@ class CorrespondenceDetailsFragment : Fragment() {
         _rvMenu = requireActivity().findViewById<RecyclerView>(R.id.rvMenu)
         _rvMenu.setHasFixedSize(true)
         _rvMenu.layoutManager = layoutManager
-        _menuLayout = requireActivity().findViewById<LinearLayout>(R.id.viewerMenuLayout)
-        if (ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) ActivityCompat.requestPermissions(
-            requireActivity(), arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ), 1
-        )
+//        _menuLayout = requireActivity().findViewById<LinearLayout>(R.id.viewerMenuLayout)
+//        if (ContextCompat.checkSelfPermission(
+//                requireActivity(),
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            ) != PackageManager.PERMISSION_GRANTED ||
+//            ContextCompat.checkSelfPermission(
+//                requireActivity(),
+//                Manifest.permission.READ_EXTERNAL_STORAGE
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) ActivityCompat.requestPermissions(
+//            requireActivity(), arrayOf(
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                Manifest.permission.READ_EXTERNAL_STORAGE
+//            ), 1
+//        )
     }
 
 
@@ -448,8 +472,29 @@ class CorrespondenceDetailsFragment : Fragment() {
         ctsDocumentId: Int,
         ctsTransferID: String,
         isDraft: Boolean,
-        viewMode: Boolean
+        viewMode: Boolean,
+        delegationId:Int
     ) {
+
+        var noAttachments = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                noAttachments = "No Attachments"
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                noAttachments = "لا يوجد ملفات مرفقة"
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                noAttachments = "pas de pièces jointes"
+
+            }
+        }
+
         val sharedPref =
             activity?.getSharedPreferences(Constants.ORIGINAL_FILE_PREF, Context.MODE_PRIVATE)
 
@@ -475,7 +520,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                 )
             } else {
 
-                autoDispose.add(viewModel.getOriginalDocument(ctsDocumentId)
+                autoDispose.add(viewModel.getOriginalDocument(ctsDocumentId,delegationId)
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(
                         {
 
@@ -503,6 +548,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
                                 } else if (folder.id.equals("folder_originalMail") && folder.children == null) {
                                     webview.visibility = View.GONE
+                                    NoAttachments.text = noAttachments
                                     NoAttachments.visibility = View.VISIBLE
 
                                     _downloadProgress.visibility = View.GONE
@@ -566,7 +612,7 @@ class CorrespondenceDetailsFragment : Fragment() {
     }
 
 
-    private fun getDocument(documentId: Int) {
+    private fun getDocument(documentId: Int,delegationId: Int) {
 
         autoDispose.add(viewModel.getDocument(documentId)
             .observeOn(AndroidSchedulers.mainThread()).subscribe(
@@ -574,7 +620,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
                     dialog!!.dismiss()
 
-                    setRequestedPopUpWindow(it)
+                    setRequestedPopUpWindow(it,delegationId)
 
 
                 }, {
@@ -588,12 +634,12 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
-    private fun viewDocument(transferID: Int) {
+    private fun viewDocument(transferID: Int,delegationId : Int) {
         dialog!!.dismiss()
 
 
 
-        viewModel.viewTransfer(transferID).enqueue(object : Callback<ResponseBody?> {
+        viewModel.viewTransfer(transferID,delegationId).enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
 
                 if (response.code() != 200) {
@@ -656,16 +702,16 @@ class CorrespondenceDetailsFragment : Fragment() {
         val inflater = requireActivity().applicationContext
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.menu_layout, null, false)
-        view.findViewById<View>(R.id.link_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.link_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
+//        view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
 
     }
 
-    private fun setPopUpWindow(model: CorrespondenceDataItem) {
+    private fun setPopUpWindow(model: CorrespondenceDataItem, delegationId: Int) {
         val inflater = requireActivity().applicationContext
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.menu_layout, null, false)
@@ -675,7 +721,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         setPopUpLabels(view)
 
 
-        if (Node_Id == 2 && (model.messageLock == "lockedbyme" || model.messageLock == "notlocked")) {
+        if (Node_Inherit == "Inbox" && (model.messageLock == "lockedbyme" || model.messageLock == "notlocked")) {
 
             // Correspondence is not lock or locked by me
             canDoAction = true
@@ -694,8 +740,7 @@ class CorrespondenceDetailsFragment : Fragment() {
             }
 
 
-        }
-        else {
+        } else {
 
 
             canDoAction = false
@@ -708,10 +753,9 @@ class CorrespondenceDetailsFragment : Fragment() {
             view.findViewById<View>(R.id.actionview).visibility = View.GONE
 
 
+
             if (model.messageLock == "cced") {
                 view.findViewById<View>(R.id.dismis_copy_btn).visibility = View.VISIBLE
-                view.findViewById<View>(R.id.actionstring).visibility = View.VISIBLE
-                view.findViewById<View>(R.id.actionview).visibility = View.VISIBLE
                 view.findViewById<View>(R.id.actionstring).visibility = View.VISIBLE
                 view.findViewById<View>(R.id.actionview).visibility = View.VISIBLE
 
@@ -719,10 +763,17 @@ class CorrespondenceDetailsFragment : Fragment() {
                 if (model.messageLock == "broadcastlockedbyme") {
                     view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
                     view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
-                    if (model.isexternalbroadcast && model.sentToStructure == true) {
+
+                    if (model.isexternalbroadcast) {
                         view.findViewById<View>(R.id.transfer_btn).visibility = View.VISIBLE
+                        view.findViewById<View>(R.id.reply_user_btn).visibility = View.VISIBLE
+                        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.VISIBLE
+                        view.findViewById<View>(R.id.actionstring).visibility = View.VISIBLE
+                        view.findViewById<View>(R.id.actionview).visibility = View.VISIBLE
                     } else {
                         view.findViewById<View>(R.id.transfer_btn).visibility = View.GONE
+                        view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
+                        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
                     }
                     view.findViewById<View>(R.id.complete_btn).visibility = View.VISIBLE
                     view.findViewById<View>(R.id.unlock_btn).visibility = View.VISIBLE
@@ -731,18 +782,25 @@ class CorrespondenceDetailsFragment : Fragment() {
                     canDoAction = true
 
                 } else if (model.messageLock == "broadcastnotlocked") {
+                    view.findViewById<View>(R.id.unlock_btn).visibility = View.GONE
                     view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
                     view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
-                    if (model.isexternalbroadcast && model.sentToStructure == true) {
+                    view.findViewById<View>(R.id.transfer_btn).visibility = View.GONE
+                    view.findViewById<View>(R.id.complete_btn).visibility = View.VISIBLE
+                    canDoAction = false
+                    if (model.isexternalbroadcast ) {
                         view.findViewById<View>(R.id.transfer_btn).visibility = View.VISIBLE
+                        view.findViewById<View>(R.id.reply_user_btn).visibility = View.VISIBLE
+                        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.VISIBLE
+                        canDoAction = true
                     } else {
                         view.findViewById<View>(R.id.transfer_btn).visibility = View.GONE
+                        view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
+                        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
+                        canDoAction = false
                     }
-                    view.findViewById<View>(R.id.complete_btn).visibility = View.VISIBLE
-                    view.findViewById<View>(R.id.unlock_btn).visibility = View.GONE
-                    view.findViewById<View>(R.id.actionstring).visibility = View.VISIBLE
-                    view.findViewById<View>(R.id.actionview).visibility = View.VISIBLE
-                    canDoAction = true
+
+
                 } else {
                     canDoAction = false
                     view.findViewById<View>(R.id.unlock_btn).visibility = View.GONE
@@ -753,20 +811,20 @@ class CorrespondenceDetailsFragment : Fragment() {
                     view.findViewById<View>(R.id.actionstring).visibility = View.GONE
                     view.findViewById<View>(R.id.actionview).visibility = View.GONE
 
-
                 }
         }
 
         view.findViewById<View>(R.id.metadat_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     MetaDataFragment().apply {
+
                         arguments = bundleOf(
                             Pair(Constants.TRANSFER_ID, model.id)
                         )
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -775,11 +833,11 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.link_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(
+                add(
                     R.id.fragmentContainer,
                     LinkedCorrespondenceFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(Constants.DOCUMENT_ID, model.documentId),
                             Pair(Constants.TRANSFER_ID, model.id),
                             Pair(Constants.CANDOACTION, canDoAction)
@@ -787,7 +845,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }, "LinkedC"
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -795,17 +853,18 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.mytransfers_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     MyTransferFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.TRANSFER_ID, model.id),
                             Pair(Constants.LOCKED_BY, model.lockedBy),
+                            Pair(Constants.LOCKED_BY_Delegator, model.lockedByDelegatedUser),
                             Pair(Constants.LOCKED_DATE, model.lockedDate)
                         )
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -813,10 +872,10 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.notes_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     AllNotesFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(
                                 Constants.DOCUMENT_ID,
                                 model.documentId
@@ -833,7 +892,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -841,10 +900,12 @@ class CorrespondenceDetailsFragment : Fragment() {
         }
 
 
+
+
         view.findViewById<View>(R.id.reply_user_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     ReplyToUserFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -854,7 +915,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -862,7 +923,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.reply_structure_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     ReplyToStructureFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -872,7 +933,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -880,7 +941,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.transfer_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     AddTransferFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -890,7 +951,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -899,19 +960,19 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.unlock_btn).setOnClickListener {
             popupWindow.dismiss()
 
-            unlockTransfer(model.id!!)
+            unlockTransfer(model.id!!,delegationId)
 
         }
         view.findViewById<View>(R.id.dismis_copy_btn).setOnClickListener {
 
             popupWindow.dismiss()
             val transferId = arrayOf(model.id)
-            dismissTransferCopy(transferId)
+            dismissTransferCopy(transferId,delegationId)
         }
         view.findViewById<View>(R.id.complete_btn).setOnClickListener {
             popupWindow.dismiss()
             val transferId = arrayOf(model.id)
-            completeTransfer(transferId)
+            completeTransfer(transferId,delegationId)
 
 
         }
@@ -922,7 +983,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                 replace(R.id.fragmentContainer,
                     AttachmentsFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(
                                 Constants.Correspondence_Model, model
                             ),
@@ -943,10 +1004,10 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.nonarchive_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     NonArchAttachmentsFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(
                                 Constants.DOCUMENT_ID,
                                 model.documentId
@@ -962,7 +1023,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -970,7 +1031,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.transferhistory_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     TransferHistoryFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -983,7 +1044,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                             )
                         )
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -992,7 +1053,7 @@ class CorrespondenceDetailsFragment : Fragment() {
             popupWindow.dismiss()
             dialog = requireContext().launchLoadingDialog()
 
-            autoDispose.add(viewModel.getVisualTracking(model.documentId!!)
+            autoDispose.add(viewModel.getVisualTracking(model.documentId!!,delegationId)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
                         dialog!!.dismiss()
@@ -1003,11 +1064,9 @@ class CorrespondenceDetailsFragment : Fragment() {
                         modell.visualTrackingResponse = it
 
                         bundle.putSerializable(Constants.TRACKING_MODEL, modell)
-                        bundle.putSerializable(
-                            Constants.STRUCTURE_MODEL,
-                            viewModel.readAllStructureData()
-                        )
+                        bundle.putSerializable(Constants.STRUCTURE_MODEL, viewModel.readAllStructureData())
                         bundle.putString(Constants.CURRENT_LANG, viewModel.readLanguage())
+//                        bundle.putSerializable(Constants.TRANSLATION_MODEL, viewModel.readDictionary()!!.data!!)
                         intent.putExtras(bundle)
                         startActivity(intent)
 
@@ -1024,13 +1083,13 @@ class CorrespondenceDetailsFragment : Fragment() {
 
         }
 
-
         view.findViewById<View>(R.id.link_btn).visibility = View.GONE
         view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
-        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
         view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
         view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
+        view.findViewById<View>(R.id.reply_user_btn).visibility = View.GONE
+        view.findViewById<View>(R.id.reply_structure_btn).visibility = View.GONE
+
         val x = (resources.displayMetrics.widthPixels * 0.80).toInt()
         popupWindow = PopupWindow(view, x, LinearLayout.LayoutParams.WRAP_CONTENT, true)
     }
@@ -1162,7 +1221,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
-    private fun setSearchPopUpWindow(model: AdvancedSearchResponseDataItem) {
+    private fun setSearchPopUpWindow(model: AdvancedSearchResponseDataItem, delegationId: Int) {
         dialog!!.dismiss()
 
         val inflater = requireActivity().applicationContext
@@ -1171,14 +1230,13 @@ class CorrespondenceDetailsFragment : Fragment() {
 
         setSearchPopUpLabels(view)
 
-        view.findViewById<View>(R.id.actionstring).visibility = View.GONE
-        view.findViewById<View>(R.id.actionview).visibility = View.GONE
+
 
 
         view.findViewById<View>(R.id.metadat_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     MetaDataFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.TRANSFER_ID, model.id)
@@ -1186,7 +1244,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1196,17 +1254,17 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.link_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(
+                add(
                     R.id.fragmentContainer,
                     LinkedCorrespondenceFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(Constants.DOCUMENT_ID, model.id),
                         )
 
 
                     }, "LinkedC"
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1215,10 +1273,10 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.notes_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     AllNotesFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(
                                 Constants.DOCUMENT_ID,
                                 model.id
@@ -1227,7 +1285,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1237,14 +1295,14 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.show_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     AttachmentsFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(Constants.Correspondence_Model, model)
                         )
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1254,10 +1312,10 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.nonarchive_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     NonArchAttachmentsFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(
                                 Constants.DOCUMENT_ID,
                                 model.id
@@ -1266,7 +1324,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1275,7 +1333,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.transferhistory_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     TransferHistoryFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -1287,7 +1345,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1297,7 +1355,7 @@ class CorrespondenceDetailsFragment : Fragment() {
             popupWindow.dismiss()
             dialog = requireContext().launchLoadingDialog()
 
-            autoDispose.add(viewModel.getVisualTracking(model.id!!)
+            autoDispose.add(viewModel.getVisualTracking(model.id!!,delegationId)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
                         dialog!!.dismiss()
@@ -1312,6 +1370,8 @@ class CorrespondenceDetailsFragment : Fragment() {
                             Constants.STRUCTURE_MODEL,
                             viewModel.readAllStructureData()
                         )
+//                        bundle.putSerializable(Constants.TRANSLATION_MODEL, viewModel.readDictionary()!!.data!!)
+
                         bundle.putString(Constants.CURRENT_LANG, viewModel.readLanguage())
                         intent.putExtras(bundle)
                         startActivity(intent)
@@ -1332,6 +1392,8 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
         view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
         view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
+        view.findViewById<View>(R.id.actionstring).visibility = View.GONE
+        view.findViewById<View>(R.id.actionview).visibility = View.GONE
 
         //  hideActions()
 
@@ -1339,29 +1401,27 @@ class CorrespondenceDetailsFragment : Fragment() {
         popupWindow = PopupWindow(view, x, LinearLayout.LayoutParams.WRAP_CONTENT, true)
     }
 
-    private fun setRequestedPopUpWindow(model: MetaDataResponse) {
+    private fun setRequestedPopUpWindow(model: MetaDataResponse, delegationId: Int) {
         val inflater = requireActivity().applicationContext
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.searchmenu_layout, null, false)
         setSearchPopUpLabels(view)
 
-        view.findViewById<View>(R.id.actionstring).visibility = View.GONE
-        view.findViewById<View>(R.id.actionview).visibility = View.GONE
 
         view.findViewById<View>(R.id.metadat_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     MetaDataFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.TRANSFER_ID, model.id),
-                            Pair(Constants.NODE_ID, Node_Id)
+                            Pair(Constants.NODE_INHERIT, Node_Inherit)
 
                         )
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1371,17 +1431,17 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.link_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(
+                add(
                     R.id.fragmentContainer,
                     LinkedCorrespondenceFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(Constants.DOCUMENT_ID, model.id),
                         )
 
 
                     }, "LinkedC"
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1390,10 +1450,10 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.notes_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     AllNotesFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(
                                 Constants.DOCUMENT_ID,
                                 model.id
@@ -1402,7 +1462,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1412,14 +1472,14 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.show_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     AttachmentsFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(Constants.Correspondence_Model, model)
                         )
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1429,10 +1489,10 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.nonarchive_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     NonArchAttachmentsFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.NODE_ID, Node_Id),
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(
                                 Constants.DOCUMENT_ID,
                                 model.id
@@ -1441,7 +1501,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1450,7 +1510,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.transferhistory_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                replace(R.id.fragmentContainer,
+                add(R.id.fragmentContainer,
                     TransferHistoryFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -1462,7 +1522,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     }
-                )
+                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
 
             }
@@ -1472,7 +1532,7 @@ class CorrespondenceDetailsFragment : Fragment() {
             popupWindow.dismiss()
             dialog = requireContext().launchLoadingDialog()
 
-            autoDispose.add(viewModel.getVisualTracking(model.id!!)
+            autoDispose.add(viewModel.getVisualTracking(model.id!!,delegationId)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
                         dialog!!.dismiss()
@@ -1487,6 +1547,8 @@ class CorrespondenceDetailsFragment : Fragment() {
                             Constants.STRUCTURE_MODEL,
                             viewModel.readAllStructureData()
                         )
+//                        bundle.putSerializable(Constants.TRANSLATION_MODEL, viewModel.readDictionary()!!.data!!)
+
                         bundle.putString(Constants.CURRENT_LANG, viewModel.readLanguage())
                         intent.putExtras(bundle)
                         startActivity(intent)
@@ -1508,6 +1570,8 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.notes_btn).visibility = View.GONE
         view.findViewById<View>(R.id.nonarchive_attachs_btn).visibility = View.GONE
         view.findViewById<View>(R.id.visual_tracking_btn).visibility = View.GONE
+        view.findViewById<View>(R.id.actionstring).visibility = View.GONE
+        view.findViewById<View>(R.id.actionview).visibility = View.GONE
 
         // hideActions()
         val x = (resources.displayMetrics.widthPixels * 0.80).toInt()
@@ -1600,7 +1664,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
 
-    private fun unlockTransfer(transferID: Int) {
+    private fun unlockTransfer(transferID: Int, delegationId: Int) {
 
         var fileInUSe = ""
         var originalDocumentInUse = ""
@@ -1656,7 +1720,8 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
                     viewModel.unlockTransfer(
-                        transferID
+                        transferID,
+                        delegationId
 
                     ).enqueue(object : Callback<ResponseBody> {
 
@@ -1713,7 +1778,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
-    private fun completeTransfer(transferID: Array<Int?>) {
+    private fun completeTransfer(transferID: Array<Int?>,delegationId: Int) {
 
         var noOriginalMail = ""
         var lockedbyUser = ""
@@ -1767,7 +1832,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                     dialog = requireContext().launchLoadingDialog()
 
                     autoDispose.add(
-                        viewModel.completeTransfer(transferID)
+                        viewModel.completeTransfer(transferID,delegationId)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                 {
@@ -1813,7 +1878,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
-    private fun dismissTransferCopy(transferID: Array<Int?>) {
+    private fun dismissTransferCopy(transferID: Array<Int?>,delegationId: Int) {
 //DismissCarbonCopyOneTsfConfirmation
         var DismissCarbonCopyOneTsfConfirmation = ""
         var yes = ""
@@ -1851,7 +1916,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                     dialog = requireContext().launchLoadingDialog()
 
                     autoDispose.add(
-                        viewModel.transferDismissCopy(transferID)
+                        viewModel.transferDismissCopy(transferID,delegationId)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                 {
@@ -1919,6 +1984,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         isDraft: Boolean
     ) {
 
+        Log.d("fileid",documentId)
 
         var result = ""
         if (!viewMode) {
@@ -1931,6 +1997,8 @@ class CorrespondenceDetailsFragment : Fragment() {
                     "&ctsTransferId=${ctsTransferID}&delegationId=null&isDraft=${isDraft}&viewermode=${result}"
 
 
+        Log.d("urrrrrl",url)
+//        val url = "https://dmsp.intalio.com/VIEWER/templates/?documentId=210&language=en&token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjRBMUI0MkQ5OTdGNDEzNDdGNzhBNEQ0MDEwQTYzMTQyIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE2NjIzMDgxNTQsImV4cCI6MTY5Mzg2NTc1NCwiaXNzIjoiaHR0cHM6Ly9pYW1wLmludGFsaW8uY29tIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiY2xpZW50X2lkIjoiNWQyYzhmYTUtOWY1OC00MzBjLWJjZjItNWY0MzY2ZDQyNWRjIiwic3ViIjoiMzAwMDA2IiwiYXV0aF90aW1lIjoxNjYyMzA4MTU0LCJpZHAiOiJsb2NhbCIsIkRpc3BsYXlOYW1lIjoiRmFkZWwgU2FobWFyYW5pIiwiTG9naW5Qcm92aWRlclR5cGUiOjEsIkVtYWlsIjoiZmFkaS5hbW1vdXJ5QGludGFsaW8uY29tcyIsIklkIjozMDAwMDYsIkZpcnN0TmFtZSI6IkZhZGVsIiwiTGFzdE5hbWUiOiJTYWhtYXJhbmkiLCJNaWRkbGVOYW1lIjoiIiwiU3RydWN0dXJlSWQiOiI2NjY1IiwiTWFuYWdlcklkIjoiMzAwMDA4IiwiU3RydWN0dXJlSWRzIjoiNjY2NSIsIkdyb3VwSWRzIjoiIiwiU3RydWN0dXJlU2VuZGVyIjoidHJ1ZSIsIlN0cnVjdHVyZVJlY2VpdmVyIjoidHJ1ZSIsIlByaXZhY3kiOiIzIiwiRnVsbE5hbWUiOiJGYWRlbCBTYWhtYXJhbmkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDb250cmlidXRlIiwiQXBwbGljYXRpb25Sb2xlSWQiOiIzIiwiQ2xpZW50cyI6WyJ7XCJSb2xlSWRcIjozLFwiUm9sZVwiOlwiQ29udHJpYnV0ZVwiLFwiQ2xpZW50SWRcIjpcIjVkMmM4ZmE1LTlmNTgtNDMwYy1iY2YyLTVmNDM2NmQ0MjVkY1wifSIsIntcIlJvbGVJZFwiOjIsXCJSb2xlXCI6XCJGdWxsIENvbnRyb2xcIixcIkNsaWVudElkXCI6XCJiMDI3OTUxMS0wMzhhLTRkMzktYmUxNi0zYzFjMzljOWVkYWVcIn0iLCJ7XCJSb2xlSWRcIjoyLFwiUm9sZVwiOlwiRnVsbCBDb250cm9sXCIsXCJDbGllbnRJZFwiOlwiMjZkYjQwNjEtMzIxNi00NTFlLThkYmUtYWY1NjVhY2MwZGM2XCJ9Iiwie1wiUm9sZUlkXCI6MixcIlJvbGVcIjpcIkZ1bGwgQ29udHJvbFwiLFwiQ2xpZW50SWRcIjpcIjk1YzhkMjdlLTA1MWQtNDkwMy04MTM1LWUzOWQ0NjIzZGU5N1wifSIsIntcIlJvbGVJZFwiOjEsXCJSb2xlXCI6XCJBZG1pbmlzdHJhdG9yXCIsXCJDbGllbnRJZFwiOlwiYTM5ZDRlOTYtM2UwZi00ODVlLWI0YjMtMDVmMTVmMjMzYzQ5XCJ9Il0sImp0aSI6IkQ3QzY3NTM3MkM5MDk4QjU2MTA2REFFMDcyN0Q1MjEyIiwic2lkIjoiNDdBRERGRjc4MzhCQzczQzNDNTVCNDE4RTIyRDQyREUiLCJpYXQiOjE2NjIzMDgxNTQsInNjb3BlIjpbIm9wZW5pZCIsIklkZW50aXR5U2VydmVyQXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.SdbGSX-3XnLtODlDu_0s82PsCkH6pESW3TyxMZDf65Rxhk93h_s0DcYDgSxyEi522ShkkvkDloSf7_2iVTy2bD3a9-hNuCpl07ZUDzrmrhnQf69ODftlfPJQlbxX8rnAK7VlUu92HgVr8SQeDdFmHtN-hke9cLJzNSS95p29EhPK7FEbwa-iitFwEah5wpev4OdE6B7av6AfIMKjKIPrsDaUf-nqgL61RwCecK8ckgCM_a6Bls1_khQwrV2x3VqaG7yMVsFwnzvMp9YytWpT-8e9yJJBTgf3WWxw2Ti3d6EIKTH0Knn5B_KT9OZTQMhnYMZGfLlj0KsY_XzvEFKaOg&version=1&ctsDocumentId=521&ctsTransferId=409&delegationId=null&isDraft=false&viewermode=view"
 
         webView = requireActivity().findViewById(R.id.webview)
         webView.performContextClick()

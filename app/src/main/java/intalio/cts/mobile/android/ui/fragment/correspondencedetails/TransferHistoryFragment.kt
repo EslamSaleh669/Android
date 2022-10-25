@@ -25,6 +25,8 @@ import javax.inject.Named
 class TransferHistoryFragment : Fragment() {
     private var DocumentId:Int = 0
     private var TransferId:Int = 0
+    private var delegationId = 0
+
     private lateinit var translator:  ArrayList<DictionaryDataItem>
 
 
@@ -80,7 +82,15 @@ class TransferHistoryFragment : Fragment() {
             }
         }
 
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
 
+                it.id!!
+
+            } else {
+                0
+            }
+        }
         back_icon.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -91,14 +101,33 @@ class TransferHistoryFragment : Fragment() {
 
 
 
-        getTransfers(DocumentId)
+        getTransfers(DocumentId,delegationId)
 
 
 
     }
 
 
-    private fun getTransfers(DoctId: Int) {
+    private fun getTransfers(DoctId: Int, delegationId: Int) {
+        var noMoreData = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                noMoreData = "No more data"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                noMoreData = "لا يوجد المزيد"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                noMoreData = "Plus de données"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.fr!!
+            }
+        }
         transferhistory_recycler.adapter =
             TransferHistory_Adapter(arrayListOf(), requireActivity(),viewModel,translator)
         transferhistory_recycler.layoutManager =
@@ -110,7 +139,7 @@ class TransferHistoryFragment : Fragment() {
                 (transferhistory_recycler.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
              if (it!!.isEmpty() && viewModel.limit == 0) {
-                noDataFounded.visibility = View.VISIBLE
+                 noDataFounded.visibility = View.VISIBLE
                  transferhistory_recycler.visibility = View.GONE
 
             } else {
@@ -119,7 +148,7 @@ class TransferHistoryFragment : Fragment() {
                     (transferhistory_recycler.adapter as TransferHistory_Adapter).addTransfer(it)
 
                 } else if (lastPosition > 10) {
-                    requireContext().makeToast(getString(R.string.no_moredata))
+                    requireContext().makeToast(noMoreData)
                 }
             }
         },{
@@ -136,12 +165,12 @@ class TransferHistoryFragment : Fragment() {
 
                 val lastPosition: Int =
                     (transferhistory_recycler.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-                viewModel.checkForTransfersLoading(lastPosition, DoctId)
+                viewModel.checkForTransfersLoading(lastPosition, DoctId,delegationId)
 
             }
         }
 
-        viewModel.loadMoreTransfers(DoctId)
+        viewModel.loadMoreTransfers(DoctId,delegationId)
 
     }
 

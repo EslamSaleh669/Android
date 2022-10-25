@@ -1,11 +1,11 @@
 package intalio.cts.mobile.android.ui.fragment.main
 
-import android.view.textclassifier.TextLanguage
 import androidx.lifecycle.ViewModel
 import intalio.cts.mobile.android.data.network.response.*
 import intalio.cts.mobile.android.data.repo.AdminRepo
 import intalio.cts.mobile.android.data.repo.UserRepo
 import io.reactivex.Observable
+import retrofit2.Call
 
 class MainViewModel(private val userRepo: UserRepo, private val adminRepo: AdminRepo) : ViewModel() {
 
@@ -16,13 +16,14 @@ class MainViewModel(private val userRepo: UserRepo, private val adminRepo: Admin
     fun readLanguage (): String = userRepo.currentLang()
     fun readDictionary (): DictionaryResponse = userRepo.readDictionary()!!
 
-    fun nodesData(): Observable<List<NodeResponseItem>> = adminRepo.getNodesData()
+    fun nodesData(): Observable<ArrayList<NodeResponseItem>> = adminRepo.getNodesData()
 
    ////////
-    fun inboxCount(nodeId:Int): Observable<InboxCountResponse> = adminRepo.getInboxCount(nodeId)
-    fun sentCount(nodeId:Int): Observable<InboxCountResponse> = adminRepo.getSentCount(nodeId)
-    fun completedCount(nodeId:Int): Observable<InboxCountResponse> = adminRepo.getCompletedCount(nodeId)
-    fun requestedCount(nodeId:Int): Observable<InboxCountResponse> = adminRepo.getRequestedCount(nodeId)
+    fun inboxCount(nodeId:Int,delegationId:Int): Observable<InboxCountResponse> = adminRepo.getInboxCount(nodeId,delegationId)
+    fun sentCount(nodeId:Int,delegationId:Int): Observable<InboxCountResponse> = adminRepo.getSentCount(nodeId,delegationId)
+    fun completedCount(nodeId:Int,delegationId:Int): Observable<InboxCountResponse> = adminRepo.getCompletedCount(nodeId,delegationId)
+    fun closedCount(nodeId:Int,delegationId:Int): Observable<InboxCountResponse> = adminRepo.getClosedCount(nodeId,delegationId)
+    fun requestedCount(nodeId:Int,delegationId:Int): Observable<InboxCountResponse> = adminRepo.getRequestedCount(nodeId,delegationId)
 
 
     ///////
@@ -31,8 +32,6 @@ class MainViewModel(private val userRepo: UserRepo, private val adminRepo: Admin
     fun saveCategoriesData(categories: List<CategoryResponseItem>) {
         userRepo.saveCategoriesData(categories)
     }
-
-
 
     //////
 
@@ -61,6 +60,10 @@ class MainViewModel(private val userRepo: UserRepo, private val adminRepo: Admin
         userRepo.saveFullUserData(userFullData)
     }
 
+
+     fun saveNodes(statuses: ArrayList<NodeResponseItem>) {
+        userRepo.saveNodes(statuses)
+    }
 
     fun getStatuses():Observable<ArrayList<StatusesResponseItem>> = adminRepo.getStatuses()
     fun saveStatuses(statuses: ArrayList<StatusesResponseItem>) {
@@ -115,7 +118,13 @@ class MainViewModel(private val userRepo: UserRepo, private val adminRepo: Admin
 
 
 
+
     fun getUserBasicInfo () = userRepo.readUserBasicInfo()
 
+    fun delegationRequests(): Call<ArrayList<DelegationRequestsResponseItem>> = adminRepo.delegationRequests()
+    fun saveDelegatorData(delegator : DelegationRequestsResponseItem){
+        userRepo.saveDelegatorData(delegator)
+    }
+    fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
 
 }

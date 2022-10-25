@@ -28,6 +28,7 @@
             android:textColor="@color/black2"
             android:fontFamily="@font/myriadpro_regular"
             android:textSize="16sp"
+            android:id="@+id/note_label"
             android:layout_marginTop="30dp"
             android:text="@string/note"
             />
@@ -44,7 +45,7 @@
             android:inputType="text"
             android:padding="15dp"
             android:textColor="@color/black2"
-            android:textSize="17sp" />
+            android:textSize="15sp"            />
 
         <CheckBox
             android:id="@+id/privacycheckbox"
@@ -84,8 +85,7 @@
             android:paddingBottom="5dp"
             android:text="@string/cancel"
             android:textColor="@color/black2"
-            android:textSize="17sp"
-
+            android:textSize="15sp"
             />
 
         <TextView

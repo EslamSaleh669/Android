@@ -93,13 +93,13 @@ data class CorrespondenceDataItem(
 	val createdByStructureId: Int? = null,
 
 	@field:SerializedName("lockedBy")
-	val lockedBy: String? = null,
+    var lockedBy: String? = null,
 
 	@field:SerializedName("referenceNumber")
 	val referenceNumber: String? = null,
 
 	@field:SerializedName("lockedByDelegatedUser")
-	val lockedByDelegatedUser: String? = null,
+    var lockedByDelegatedUser: String? = null,
 
 	@field:SerializedName("isLocked")
 	val isLocked: Boolean? = null,
@@ -120,7 +120,7 @@ data class CorrespondenceDataItem(
 	val fromStructure: String? = null,
 
 	@field:SerializedName("lockedDate")
-	val lockedDate: String? = null,
+    var lockedDate: String? = null,
 
 	@field:SerializedName("viewMode")
 	val viewMode: Boolean? = null,

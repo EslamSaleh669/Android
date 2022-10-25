@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,6 @@ import intalio.cts.mobile.android.ui.adapter.*
 import intalio.cts.mobile.android.ui.fragment.correspondence.CorrespondenceFragment
 import intalio.cts.mobile.android.util.*
 
-import kotlinx.android.synthetic.main.fragment_addtransfer.*
 import kotlinx.android.synthetic.main.fragment_reply.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import okhttp3.ResponseBody
@@ -45,12 +45,15 @@ class ReplyToUserFragment : Fragment() {
     private var dateListener: OnDateSetListener? = null
     private var etDateFrom: EditText? = null
 
+    private lateinit var translator: java.util.ArrayList<DictionaryDataItem>
+
+
     private var selectedDate: String? = null
     private lateinit var userInfo: UserFullDataResponseItem
     private var fromDateSelectedInDays = 0
 
     private var addedCategoriesIds = ArrayList<Int>()
-
+    private var delegationId = 0
 
     private lateinit var model: CorrespondenceDataItem
 
@@ -95,8 +98,9 @@ class ReplyToUserFragment : Fragment() {
         }
 
 
+        translator = viewModel.readDictionary()!!.data!!
+        setLabels()
 
-        centered_txt.text = requireActivity().getText(R.string.reply_to_user)
         userInfo = viewModel.readUserinfo()
         val result = arguments?.getSerializable(Constants.Correspondence_Model)
         if (result.toString() != "null") {
@@ -108,14 +112,45 @@ class ReplyToUserFragment : Fragment() {
 
         initDates()
 
+        var requiredFields = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.ar!!
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.fr!!
+
+            }
+        }
+
+
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
+
+                it.id!!
+
+            } else {
+                0
+            }
+        }
+
         btnSendReply.setOnClickListener {
 
-            if (purposeSelectedId == 0 || etCommentReply.text.toString().trim() == "") {
-                requireActivity().makeToast(getString(R.string.requiredField))
+            if (purposeSelectedId == 0) {
+                requireActivity().makeToast(requiredFields)
+
 
             } else {
                 dialog = requireContext().launchLoadingDialog()
-                replyToUser()
+                replyToUser(delegationId)
             }
 
         }
@@ -123,7 +158,7 @@ class ReplyToUserFragment : Fragment() {
 
     }
 
-    private fun replyToUser() {
+    private fun replyToUser(delegationId: Int) {
 
         val recievers = ArrayList<Int>()
         if (model.receivingEntityId!!.size > 0) {
@@ -139,7 +174,8 @@ class ReplyToUserFragment : Fragment() {
             etDateFrom!!.text.toString().trim(),
             etCommentReply.text.toString().trim(),
             model.fromStructureId!!,
-            recievers.toTypedArray()
+            recievers.toTypedArray(),
+            delegationId
         ).enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 dialog!!.dismiss()
@@ -150,12 +186,12 @@ class ReplyToUserFragment : Fragment() {
                     activity!!.onBackPressed()
 
                 } else {
-                    requireActivity().makeToast(getString(R.string.done))
+
                     (activity as AppCompatActivity).supportFragmentManager.commit {
                         replace(R.id.fragmentContainer,
                             CorrespondenceFragment().apply {
                                 arguments = bundleOf(
-                                    Pair(Constants.NODE_ID, 2)
+                                    Pair(Constants.NODE_INHERIT, viewModel.readCurrentNode())
                                 )
 
 
@@ -181,7 +217,9 @@ class ReplyToUserFragment : Fragment() {
 
         replypurposeautocomplete.threshold = 0
         val purposesAutoCompleteArray = viewModel.readPurposesData()!!
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            purposesAutoCompleteArray.removeIf { it.cCed == true }
+        }
         val arrayAdapter =
             PurposesStructureAdapter(
                 requireContext(),
@@ -228,6 +266,33 @@ class ReplyToUserFragment : Fragment() {
     }
 
     private fun initDates() {
+
+
+        var cancel = ""
+        var ok = ""
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+
+                cancel = translator.find { it.keyword == "Cancel" }!!.en.toString()
+                ok = translator.find { it.keyword == "OK" }!!.en.toString()
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+
+                cancel = translator.find { it.keyword == "Cancel" }!!.ar.toString()
+                ok = translator.find { it.keyword == "OK" }!!.ar.toString()
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                cancel = translator.find { it.keyword == "Cancel" }!!.fr.toString()
+                ok = translator.find { it.keyword == "OK" }!!.fr.toString()
+
+            }
+        }
+
         val cal = Calendar.getInstance()
         val density = resources.displayMetrics.densityDpi.toFloat()
 
@@ -264,26 +329,33 @@ class ReplyToUserFragment : Fragment() {
                 cal[Calendar.YEAR], cal[Calendar.MONTH], cal[Calendar.DAY_OF_MONTH]
             )
         }
+//
+//        datePickerDialog!!.datePicker.minDate = cal.timeInMillis
+//        val dueDate = model.dueDate
+//
+//        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale(viewModel.readLanguage()))
+//
+//        if (model.dueDate != ""){
+//            val maxDate: Date = sdf.parse(dueDate)
+//            val maxCalendar = Calendar.getInstance()
+//            maxCalendar.time = maxDate
+//            datePickerDialog!!.datePicker.maxDate = maxCalendar.timeInMillis
+//
+//        }
 
-        datePickerDialog!!.datePicker.minDate = cal.timeInMillis
-        val dueDate = model.dueDate
-
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
-
-        if (model.dueDate != ""){
-            val maxDate: Date = sdf.parse(dueDate)
-            val maxCalendar = Calendar.getInstance()
-            maxCalendar.time = maxDate
-            datePickerDialog!!.datePicker.maxDate = maxCalendar.timeInMillis
-
-        }
-
-        datePickerDialog!!.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel),
+        datePickerDialog!!.setButton(DialogInterface.BUTTON_NEGATIVE, cancel,
             DialogInterface.OnClickListener { dialog, which ->
                 requireActivity().hideKeyboard(requireActivity())
                 etDateFrom!!.setText("")
 
             })
+
+//        datePickerDialog!!.setButton(DialogInterface.BUTTON_POSITIVE, ok,
+//            DialogInterface.OnClickListener { dialog, which ->
+//                requireActivity().hideKeyboard(requireActivity())
+//                etDateFrom!!.setText("")
+//
+//            })
 
 
         etDateFrom!!.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
@@ -299,16 +371,67 @@ class ReplyToUserFragment : Fragment() {
         }
     }
 
+ 
+
     @Throws(Exception::class)
     fun changeDateFormat(input: String?, output: String?, dateString: String?): String? {
-        val inputDate: DateFormat = SimpleDateFormat(input, Locale.US)
-        val outputDate: DateFormat = SimpleDateFormat(output, Locale.US)
+        val inputDate: DateFormat = SimpleDateFormat(input, Locale(viewModel.readLanguage()))
+        val outputDate: DateFormat = SimpleDateFormat(output, Locale(viewModel.readLanguage()))
         val date = inputDate.parse(dateString!!)
         return outputDate.format(date!!)
     }
 
+    private fun setLabels() {
 
+        when {
+            viewModel.readLanguage() == "en" -> {
 
+                replyto_label.text = translator.find { it.keyword == "ToUser" }!!.en
+                textViewPurpose_label.text = translator.find { it.keyword == "Purposes" }!!.en
+                replypurposeautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.en
+                textViewTransferDueDate_label.text =
+                    translator.find { it.keyword == "DueDate" }!!.en
+                etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.en
+                message_label.text = translator.find { it.keyword == "Instruction" }!!.en
+                btnSendReply.text = translator.find { it.keyword == "Reply" }!!.en
+                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.en
+                centered_txt.text = translator.find { it.keyword == "ReplyToUser" }!!.en
+
+                requiredpurpose_label.text = "(required)"
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                replyto_label.text = translator.find { it.keyword == "ToUser" }!!.ar
+                textViewPurpose_label.text = translator.find { it.keyword == "Purposes" }!!.ar
+                replypurposeautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.ar
+                textViewTransferDueDate_label.text =
+                    translator.find { it.keyword == "DueDate" }!!.ar
+                etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.ar
+                message_label.text = translator.find { it.keyword == "Instruction" }!!.ar
+                btnSendReply.text = translator.find { it.keyword == "Reply" }!!.ar
+                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.ar
+                centered_txt.text = translator.find { it.keyword == "ReplyToUser" }!!.ar
+
+                requiredpurpose_label.text = "(الزامي)"
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+                replyto_label.text = translator.find { it.keyword == "ToUser" }!!.fr
+                textViewPurpose_label.text = translator.find { it.keyword == "Purposes" }!!.fr
+                replypurposeautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.fr
+                textViewTransferDueDate_label.text =
+                    translator.find { it.keyword == "DueDate" }!!.fr
+                etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.fr
+                message_label.text = translator.find { it.keyword == "Instruction" }!!.fr
+                btnSendReply.text = translator.find { it.keyword == "Reply" }!!.fr
+                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.fr
+                centered_txt.text = translator.find { it.keyword == "ReplyToUser" }!!.fr
+
+                requiredpurpose_label.text = "(requis)"
+            }
+        }
+    }
 
 
 }

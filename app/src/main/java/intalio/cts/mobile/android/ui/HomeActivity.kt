@@ -101,7 +101,7 @@ class HomeActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.menudelegationtxt).text = translator.find { it.keyword == "Delegation" }!!.en
                 findViewById<TextView>(R.id.menudashboardtxt).text = translator.find { it.keyword == "Dashboard" }!!.en
                 findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.en
-                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "AdvanceSearch" }!!.en
+                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.en
                 findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.en
             }
             viewModel.readLanguage() == "ar" -> {
@@ -109,7 +109,7 @@ class HomeActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.menudelegationtxt).text = translator.find { it.keyword == "Delegation" }!!.ar
                 findViewById<TextView>(R.id.menudashboardtxt).text = translator.find { it.keyword == "Dashboard" }!!.ar
                 findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.ar
-                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "AdvanceSearch" }!!.ar
+                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.ar
                 findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.ar
 
             }
@@ -118,7 +118,7 @@ class HomeActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.menudelegationtxt).text = translator.find { it.keyword == "Delegation" }!!.fr
                 findViewById<TextView>(R.id.menudashboardtxt).text = translator.find { it.keyword == "Dashboard" }!!.fr
                 findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.fr
-                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "AdvanceSearch" }!!.fr
+                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.fr
                 findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.fr
 
             }
@@ -147,7 +147,6 @@ class HomeActivity : AppCompatActivity() {
                             Pair(Constants.SEARCH_TYPE, 1)
                         )
 
-
                     }
                 )
                 addToBackStack("")
@@ -168,6 +167,24 @@ class HomeActivity : AppCompatActivity() {
             viewModel.logout()
 
             launchActivityFinishCurrent(SplashActivity::class.java)
+            getSharedPreferences(Constants.SHARED_NAME, Context.MODE_PRIVATE)?.edit {
+                putString(Constants.LANG_KEY, lan)
+            }
+            Lingver.getInstance().setLocale(this, Locale(lan))
+
+
+            drawer_layout.closeDrawer(GravityCompat.START)
+        }
+
+        findViewById<View>(R.id.menubarcode).setOnClickListener {
+            val lan = viewModel.readLanguage()
+            viewModel.logout()
+
+            launchActivityFinishCurrent(SplashActivity::class.java)
+            val sharedPref =
+                getSharedPreferences(Constants.SCANNER_PREF, Context.MODE_PRIVATE)
+            sharedPref.edit().clear().apply()
+
             getSharedPreferences(Constants.SHARED_NAME, Context.MODE_PRIVATE)?.edit {
                 putString(Constants.LANG_KEY, lan)
             }
@@ -241,7 +258,7 @@ class HomeActivity : AppCompatActivity() {
                     replace(R.id.fragmentContainer,
                         CorrespondenceFragment().apply {
                             arguments = bundleOf(
-                                Pair(Constants.NODE_ID,viewModel.readNodeID())
+                                Pair(Constants.NODE_INHERIT,viewModel.readCurrentNode())
                             )
                         }
                     )

@@ -2,6 +2,7 @@ package intalio.cts.mobile.android.ui.fragment.visualtracking
 
 import android.util.Log
 import intalio.cts.mobile.android.data.network.response.AllStructuresResponse
+import intalio.cts.mobile.android.data.network.response.DictionaryResponse
 import intalio.cts.mobile.android.data.network.response.VisualTrackingResponse
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Graph
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Node
@@ -35,6 +36,12 @@ class BuchheimWalkerActivity : GraphActivity() {
         return structureList
     }
 
+//    override fun getDictionary(): DictionaryResponse {
+//        val translator =
+//            intent.getSerializableExtra(Constants.TRANSLATION_MODEL) as DictionaryResponse
+//        return translator
+//    }
+
     override fun readLanguage(): String {
         val language =
             intent.getStringExtra(Constants.CURRENT_LANG)
@@ -56,10 +63,7 @@ class BuchheimWalkerActivity : GraphActivity() {
                 }
             }
 
-
         }
-
-
 
         return graph
     }

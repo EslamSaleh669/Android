@@ -27,7 +27,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/myriadpro_simibold"
-                android:text="@string/actions"
+                android:text="@string/attributes"
                 android:id="@+id/attrutestring"
                 android:textColor="@color/black2"
                 android:textSize="18sp" />

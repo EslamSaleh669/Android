@@ -34,13 +34,13 @@
             android:src="@drawable/ic_viewer_edit_file" />
 
         <ImageView
+            android:id="@+id/deletedelegation"
             android:layout_width="20dp"
             android:layout_height="25dp"
-            android:id="@+id/deletedelegation"
-            android:src="@drawable/delete"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"/>
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/delete" />
 
     </RelativeLayout>
 

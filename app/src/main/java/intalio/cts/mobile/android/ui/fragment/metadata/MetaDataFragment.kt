@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -35,6 +36,7 @@ class MetaDataFragment : Fragment() {
     private var TransferId: Int = 0
     private lateinit var translator: ArrayList<DictionaryDataItem>
 
+    private var delegationId = 0
 
     @Inject
     @field:Named("metadata")
@@ -82,23 +84,30 @@ class MetaDataFragment : Fragment() {
         }
 
 
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
 
+                it.id!!
+
+            } else {
+                0
+            }
+        }
         requireArguments().getInt(Constants.TRANSFER_ID).let {
             TransferId = it
 
-            if (viewModel.readPath() == "node" ||  viewModel.readPath() == "attachment") {
-                requireArguments().getInt(Constants.NODE_ID).let { nodeID ->
-                    if (nodeID == 4) {
+            if (viewModel.readPath() == "node" || viewModel.readPath() == "attachment") {
+                requireArguments().getString(Constants.NODE_INHERIT).let { nodeID ->
+                    if (nodeID == "MyRequests") {
                         getRequestedDocumentInfo(TransferId)
                     } else {
-                        getMetaData(TransferId)
+                        getMetaData(TransferId,delegationId)
 
                     }
                 }
 
-
             } else {
-                getSearchDocumentInfo(TransferId)
+                getSearchDocumentInfo(TransferId,delegationId)
             }
         }
 
@@ -107,12 +116,12 @@ class MetaDataFragment : Fragment() {
 
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun getMetaData(TransferId: Int) {
+    private fun getMetaData(TransferId: Int,delegationId:Int) {
         val statuses = viewModel.readStatuses()
         val priorities = viewModel.readPriorities()
         val privacies = viewModel.readprivacies()
 
-        autoDispose.add(viewModel.getMetaDataInfo(TransferId)
+        autoDispose.add(viewModel.getMetaDataInfo(TransferId,delegationId)
             .observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
                     dialog!!.dismiss()
@@ -121,18 +130,18 @@ class MetaDataFragment : Fragment() {
 
                         sending_entity.text = it.sendingEntity!!.text
 
-                        if (it.receivingEntities!!.size > 1){
+                        if (it.receivingEntities!!.size > 1) {
                             var fulltxt = ""
-                            for (item in it.receivingEntities){
-                                if (fulltxt.isNotEmpty()){
+                            for (item in it.receivingEntities) {
+                                if (fulltxt.isNotEmpty()) {
                                     fulltxt = "$fulltxt / ${item!!.text}"
 
-                                }else{
+                                } else {
                                     fulltxt = item!!.text.toString()
                                 }
                             }
                             receiving_entity.text = fulltxt
-                        }else{
+                        } else {
                             receiving_entity.text = it.receivingEntities[0]!!.text
                         }
 
@@ -183,12 +192,12 @@ class MetaDataFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun getSearchDocumentInfo(transferId: Int) {
+    private fun getSearchDocumentInfo(transferId: Int,delegationId:Int) {
         val statuses = viewModel.readStatuses()
         val priorities = viewModel.readPriorities()
         val privacies = viewModel.readprivacies()
 
-        autoDispose.add(viewModel.getSearchDocumentInfo(transferId)
+        autoDispose.add(viewModel.getSearchDocumentInfo(transferId,delegationId)
             .observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
                     dialog!!.dismiss()
@@ -254,13 +263,13 @@ class MetaDataFragment : Fragment() {
                     dialog!!.dismiss()
                     if (it.toString().isNotEmpty()) {
                         sending_entity.text = it.sendingEntity!!.text
-                        if (it.receivingEntities!!.size > 1){
+                        if (it.receivingEntities!!.size > 1) {
                             var fulltxt = ""
-                            for (item in it.receivingEntities){
+                            for (item in it.receivingEntities) {
                                 fulltxt = "$fulltxt - ${item!!.text}"
                             }
                             receiving_entity.text = fulltxt
-                        }else{
+                        } else {
                             receiving_entity.text = it.receivingEntities[0]!!.text
                         }
 
@@ -370,6 +379,7 @@ class MetaDataFragment : Fragment() {
                     valueTxt.typeface = valueFont
                     valueTxt.layoutParams = valueParam
 
+
                     val view = View(requireActivity())
                     view.setBackgroundColor(requireActivity().resources.getColor(R.color.viewcolor))
                     view.layoutParams = viewParam
@@ -378,7 +388,12 @@ class MetaDataFragment : Fragment() {
                     if (jsonObject.getString(key).toCharArray().isNotEmpty()) {
 
                         val valueText = jsonObject.getString(key)
-                        if (valueText.startsWith("{")) {
+                        val itemType = getItemType(customAttributesArray,key)
+                        Log.d("valuekeeyvalue", itemType)
+
+                        // address condition
+                        if (itemType == "address") {
+
                             var finaStringResult = ""
                             val valueJsonObject = JSONObject(valueText)
                             val valueIterator = valueJsonObject.keys()
@@ -388,7 +403,9 @@ class MetaDataFragment : Fragment() {
 
                                 val valueKey = valueIterator.next()
 
+
                                 if (valueKey == "place_id") {
+
 
                                     val addressJsonObject =
                                         JSONObject(valueJsonObject.getString("address"))
@@ -397,7 +414,7 @@ class MetaDataFragment : Fragment() {
 
 
                                     while (addressIterator.hasNext()) {
-                                         val addressKey = addressIterator.next()
+                                        val addressKey = addressIterator.next()
 
                                         if (addressJsonObject.get(addressKey).toString()
                                                 .isNotEmpty()
@@ -408,17 +425,15 @@ class MetaDataFragment : Fragment() {
                                         }
 
 
-
-
                                     }
 
                                     break
 
 
                                 } else {
+
                                     finaStringResult += "$valueKey : "
                                     finaStringResult += "${valueJsonObject.get(valueKey)} \n"
-
 
                                 }
 
@@ -429,7 +444,97 @@ class MetaDataFragment : Fragment() {
                             metadatalin.addView(valueTxt)
                             metadatalin.addView(view)
 
-                        } else {
+                        }
+
+
+                        // radio group conditions
+                        else if (itemType == "selectboxes") {
+
+                            Log.d("conditons", "I am in checkboxes")
+                            val valueJsonObject = JSONObject(valueText)
+                            val valueIterator = valueJsonObject.keys()
+                            var finaStringResult = ""
+                            keyTxt.text = formattedKey
+                            metadatalin.addView(keyTxt)
+
+                            while (valueIterator.hasNext()) {
+                                val valueKey = valueIterator.next()
+                                if (valueJsonObject.get(valueKey).toString().isNotEmpty()) {
+
+                                    finaStringResult += "$valueKey is ${valueJsonObject.get(valueKey)},\n "
+                                    Log.d("finaStringResult", finaStringResult)
+
+                                    val newBox = CheckBox(activity)
+                                    newBox.text = valueKey
+                                    newBox.isChecked =
+                                        valueJsonObject.get(valueKey).toString().toBoolean()
+
+                                    newBox.isClickable = false
+                                    metadatalin.addView(newBox)
+                                }
+
+                            }
+
+
+                            metadatalin.addView(view)
+
+                        }
+
+                        // multi selection conditions
+                        else if (itemType == "select" && valueText.startsWith("[")) {
+
+                            Log.d("conditons", "I am in select")
+                            val jsonArray = JSONArray(valueText)
+                             var finaStringResult = ""
+                            keyTxt.text = formattedKey
+
+
+                            for (i in 0 until jsonArray.length()) {
+                                finaStringResult += "${jsonArray.getString(i)}\n"
+                             }
+
+
+                            valueTxt.text = finaStringResult
+
+
+                            metadatalin.addView(keyTxt)
+                            metadatalin.addView(valueTxt)
+                            metadatalin.addView(view)
+
+                        }
+
+                        // checkbox conditions
+                        else if (itemType == "checkbox") {
+
+                            val newBox = CheckBox(activity)
+                            newBox.text = ""
+                            newBox.isChecked =
+                                valueText.toBoolean()
+                            newBox.isClickable = false
+
+                            keyTxt.text = formattedKey
+                            valueTxt.text = valueText
+                            metadatalin.addView(keyTxt)
+                            metadatalin.addView(newBox)
+                            metadatalin.addView(view)
+                        }
+
+                        // Radio conditions
+                        else if (itemType == "radio") {
+
+                            val newBox = CheckBox(activity)
+                            newBox.text = ""
+                            newBox.isChecked = true
+                            newBox.isClickable = false
+
+                            keyTxt.text = valueText.toString()
+                            metadatalin.addView(keyTxt)
+                            metadatalin.addView(newBox)
+                            metadatalin.addView(view)
+                        }
+                        else {
+                            Log.d("conditons", "I am in else")
+
                             keyTxt.text = formattedKey
                             valueTxt.text = valueText
                             metadatalin.addView(keyTxt)
@@ -499,7 +604,28 @@ class MetaDataFragment : Fragment() {
     }
 
 
-    private fun setLabels(){
+    private fun getItemType(
+        customAttributesArray: JSONArray,
+        key: String
+     ): String {
+        (0 until customAttributesArray.length()).forEach {
+            val component = customAttributesArray.getJSONObject(it)
+
+            if (key == component.get("key")) {
+                val myLabel = component.get("type").toString()
+
+                return myLabel
+
+
+            }
+
+        }
+
+        return ""
+    }
+
+
+    private fun setLabels() {
 
 
         when {
@@ -530,17 +656,15 @@ class MetaDataFragment : Fragment() {
 
             }
             viewModel.readLanguage() == "fr" -> {
-                subjecttxt.text = translator.find { it.keyword == "Subject" }!!.ar
-                refnumtxt.text = translator.find { it.keyword == "ReferenceNumber" }!!.ar
-                sendingentity_txt.text = translator.find { it.keyword == "SendingEntity" }!!.ar
-                receivingentity_txt.text = translator.find { it.keyword == "ReceivingEntity" }!!.ar
-                duetdate_txt.text = translator.find { it.keyword == "DueDate" }!!.ar
-                statustxt.text = translator.find { it.keyword == "Status" }!!.ar
-                privacytxt.text = translator.find { it.keyword == "Privacy" }!!.ar
-                prioritytxt.text = translator.find { it.keyword == "Priority" }!!.ar
-                centered_txt.text = translator.find { it.keyword == "Attributes" }!!.ar
-
-
+                subjecttxt.text = translator.find { it.keyword == "Subject" }!!.fr
+                refnumtxt.text = translator.find { it.keyword == "ReferenceNumber" }!!.fr
+                sendingentity_txt.text = translator.find { it.keyword == "SendingEntity" }!!.fr
+                receivingentity_txt.text = translator.find { it.keyword == "ReceivingEntity" }!!.fr
+                duetdate_txt.text = translator.find { it.keyword == "DueDate" }!!.fr
+                statustxt.text = translator.find { it.keyword == "Status" }!!.fr
+                privacytxt.text = translator.find { it.keyword == "Privacy" }!!.fr
+                prioritytxt.text = translator.find { it.keyword == "Priority" }!!.fr
+                centered_txt.text = translator.find { it.keyword == "Attributes" }!!.fr
             }
         }
     }

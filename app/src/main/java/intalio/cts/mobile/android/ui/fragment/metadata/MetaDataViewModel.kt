@@ -4,12 +4,7 @@ import androidx.lifecycle.ViewModel
 import intalio.cts.mobile.android.data.network.response.*
 import intalio.cts.mobile.android.data.repo.AdminRepo
 import intalio.cts.mobile.android.data.repo.UserRepo
-import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.ReplaySubject
-import okhttp3.ResponseBody
-import retrofit2.Response
 
 class MetaDataViewModel (private val userRepo: UserRepo, private val adminRepo: AdminRepo) : ViewModel() {
 
@@ -22,9 +17,9 @@ class MetaDataViewModel (private val userRepo: UserRepo, private val adminRepo: 
 
 
 
-    fun getMetaDataInfo(transferId:Int): Observable<MetaDataResponse> = adminRepo.getMetaDataInfo(transferId)
+    fun getMetaDataInfo(transferId: Int, delegationId: Int): Observable<MetaDataResponse> = adminRepo.getMetaDataInfo(transferId,delegationId)
 
-    fun getSearchDocumentInfo(documentId:Int): Observable<MetaDataResponse> = adminRepo.getSearchDocument(documentId)
+    fun getSearchDocumentInfo(documentId:Int,delegationId:Int): Observable<MetaDataResponse> = adminRepo.getSearchDocument(documentId,delegationId)
 
 
     fun getDocument(documentId: Int): Observable<MetaDataResponse> = adminRepo.getDocument(documentId)
@@ -34,6 +29,7 @@ class MetaDataViewModel (private val userRepo: UserRepo, private val adminRepo: 
     fun readLanguage (): String = userRepo.currentLang()
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
 
+    fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
 
 
 }

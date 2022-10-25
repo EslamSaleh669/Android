@@ -8,7 +8,7 @@
 
 
     <string name="sign_in_using">Connectez-vous en utilisant</string>
-    <string name="or">Ou alors</string>
+    <string name="or">Ou</string>
     <string name="type_your_search_here">Tapez votre recherche ici</string>
     <string name="hellooo">Bonjouroo!</string>
     <string name="view_inbox">View Inbox</string>
@@ -552,5 +552,6 @@
     <string name="users_donthave_privacy">Les destinataires suivants n\'ont pas le degré de confidentialité sélectionné: </string>
     <string name="continue_confirm">Es-tu sur de vouloir continuer?</string>
     <string name="lessthan_duedate">selected date must be less than transfer due date</string>
+    <string name="scan_barcode">Scanner le code-barres</string>
 
 </resources>

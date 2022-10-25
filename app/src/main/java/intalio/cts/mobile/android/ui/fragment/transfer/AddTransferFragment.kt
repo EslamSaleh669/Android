@@ -16,21 +16,15 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.*
 import intalio.cts.mobile.android.ui.adapter.*
-import intalio.cts.mobile.android.ui.fragment.correspondence.CorrespondenceFragment
-import intalio.cts.mobile.android.ui.fragment.correspondencedetails.CorrespondenceDetailsFragment
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 import kotlinx.android.synthetic.main.fragment_addtransfer.*
-import kotlinx.android.synthetic.main.fragment_mytransfers.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import okhttp3.ResponseBody
-import okhttp3.internal.notifyAll
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,6 +37,7 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.collections.ArrayList
+import org.json.JSONArray
 
 
 class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
@@ -56,10 +51,12 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
     private var userSelectedId = 0
     private var userSelectedName = 0
 
+
     private var itemType = ""
     private var userPrivacyLevel = 0
 
     private lateinit var translator: java.util.ArrayList<DictionaryDataItem>
+    private lateinit var settings: java.util.ArrayList<ParamSettingsResponseItem>
 
     private var datePickerDialog: DatePickerDialog? = null
     private var dateListener: OnDateSetListener? = null
@@ -111,8 +108,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         }
 
         translator = viewModel.readDictionary()!!.data!!
+        settings = viewModel.readSettings()
 
-         setLabels()
+        setLabels()
 
         val result = arguments?.getSerializable(Constants.Correspondence_Model)
         if (result.toString() != "null") {
@@ -122,15 +120,51 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         initDates()
         initPurposeComplete()
-        initStructuresAutoComplete()
+
+        val enableSendingRules = settings.find { it.keyword == "EnableSendingRules" }!!.content
+
+        val structureSender =
+            viewModel.readUserinfo().attributes!!.find { it!!.text == "StructureSender" }!!.value
+
+        if (structureSender == "false") {
+            val structureIds = ArrayList<Int>()
+
+            structureIds.add(viewModel.readUserinfo().defaultStructureId!!)
+            getAvailableStructures(structureIds)
+
+        } else {
+        if (enableSendingRules == "true") {
+            geStructureSendingRules(model.fromStructureId!!)
+
+        } else {
+
+            initStructuresAutoComplete()
+
+        }
+        }
 
 
+        var requiredFields = ""
 
+        when {
+            viewModel.readLanguage() == "en" -> {
 
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.fr!!
+
+            }
+        }
         btnsaveTransfer.setOnClickListener {
             initStructuresAutoComplete()
             if (purposeSelectedId == 0 || structureSelectedId == 0) {
-              requireActivity().makeToast(context?.getString(R.string.requiredField)!!)
+                requireActivity().makeToast(requiredFields)
 
             } else {
 
@@ -151,11 +185,28 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             }
         }
 
+        var emptyTransfers = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                emptyTransfers = "please save at least one transfer"
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                emptyTransfers = "الرجاء حفظ إحالة واحدة علي الأقل"
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                emptyTransfers = "veuillez enregistrer au moins un transfert"
+
+            }
+        }
 
         btnTransferTransfer.setOnClickListener {
 
             if (Transfers.size == 0) {
-                requireActivity().makeToast(getString(R.string.please_save_transfer))
+                requireActivity().makeToast(emptyTransfers)
             } else {
                 //showTransfersDialog()
 
@@ -166,7 +217,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     replace(R.id.fragmentContainer,
                         TransferListFragment().apply {
                             arguments = bundleOf(
-                                Pair(Constants.TRANSFER_MODEL,Transfers)
+                                Pair(Constants.TRANSFER_MODEL, Transfers)
                             )
 
 
@@ -182,21 +233,16 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
     }
 
 
+    private fun setLabels() {
 
-    private fun setLabels(){
-
-
-        actvTransferautocomplete
-        actvPurposesautocomplete
-        etTransferDueDate
-        etInstructions
         when {
             viewModel.readLanguage() == "en" -> {
 
                 textViewTransfer.text = translator.find { it.keyword == "To" }!!.en
                 textViewPurpose.text = translator.find { it.keyword == "Purposes" }!!.en
                 textViewTransferDueDate.text = translator.find { it.keyword == "DueDate" }!!.en
-                textViewInstructionsToReceiver.text = translator.find { it.keyword == "Instruction" }!!.en
+                textViewInstructionsToReceiver.text =
+                    translator.find { it.keyword == "Instruction" }!!.en
                 toreq.text = "(required)"
                 purposereq.text = "(required)"
                 btnsaveTransfer.text = translator.find { it.keyword == "Save" }!!.en
@@ -216,9 +262,10 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 textViewTransfer.text = translator.find { it.keyword == "To" }!!.ar
                 textViewPurpose.text = translator.find { it.keyword == "Purposes" }!!.ar
                 textViewTransferDueDate.text = translator.find { it.keyword == "DueDate" }!!.ar
-                textViewInstructionsToReceiver.text = translator.find { it.keyword == "Instruction" }!!.ar
-                toreq.text = "(مطلوب)"
-                purposereq.text = "(مطلوب)"
+                textViewInstructionsToReceiver.text =
+                    translator.find { it.keyword == "Instruction" }!!.ar
+                toreq.text = "(الزامي)"
+                purposereq.text = "(الزامي)"
                 btnsaveTransfer.text = translator.find { it.keyword == "Save" }!!.ar
                 btnTransferTransfer.text = translator.find { it.keyword == "Transfer" }!!.ar
 
@@ -234,7 +281,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 textViewTransfer.text = translator.find { it.keyword == "To" }!!.fr
                 textViewPurpose.text = translator.find { it.keyword == "Purposes" }!!.fr
                 textViewTransferDueDate.text = translator.find { it.keyword == "DueDate" }!!.fr
-                textViewInstructionsToReceiver.text = translator.find { it.keyword == "Instruction" }!!.fr
+                textViewInstructionsToReceiver.text =
+                    translator.find { it.keyword == "Instruction" }!!.fr
                 toreq.text = "(requis)"
                 purposereq.text = "(requis)"
                 btnsaveTransfer.text = translator.find { it.keyword == "Save" }!!.fr
@@ -250,7 +298,6 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             }
         }
     }
-
 
 
     private fun initPurposeComplete() {
@@ -302,47 +349,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
     }
 
-    private fun manageResponse(
-        allStructuresResponse: AllStructuresResponse,
-        structuresArray: ArrayList<AllStructuresItem>?
-    ) {
-        val allUsersAndStructures = ArrayList<AllStructuresItem>()
-        if (allStructuresResponse.structures != null) {
-            allUsersAndStructures.addAll(allStructuresResponse.structures)
-        }
-
-        if (allStructuresResponse.users!!.size > 0) {
-
-            for (item in allStructuresResponse.users) {
-
-                val structureItem = AllStructuresItem()
-                structureItem.id = item!!.id
-                structureItem.name =
-                    "${structuresArray!!.find { it.id == item.structureIds!![0]!! }!!.name} / ${item.fullName}"
-                structureItem.attributes = item.attributes
-                structureItem.structureIds = item.structureIds
-                structureItem.itemType = "user"
-
-
-                allUsersAndStructures.add(structureItem)
-            }
-
-        }
-
-
-        val arrayAdapter =
-            StructuresAdapter(
-                requireContext(),
-                R.layout.support_simple_spinner_dropdown_item,
-                allUsersAndStructures
-            )
-        actvTransferautocomplete.setAdapter(arrayAdapter)
-
-
-    }
-
     private fun initStructuresAutoComplete() {
-
 
 
         actvTransferautocomplete.threshold = 0
@@ -352,19 +359,30 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         val fullStructures = viewModel.readFullStructures()
 
 
-        for (item in userArray!!) {
+        val transferToUser = settings.find { it.keyword == "EnableTransferToUsers" }!!.content
 
-             if (item!!.id != viewModel.readUserinfo().id) {
-                val structureItem = AllStructuresItem()
-                structureItem.id = item.id
-                structureItem.name =
-                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
-                structureItem.attributes = item.attributes
-                structureItem.structureIds = item.structureIds
-                structureItem.itemType = "user"
+        if (transferToUser == "true") {
+            for (item in userArray!!) {
+
+                if (item.id != viewModel.readUserinfo().id) {
+                    val structureItem = AllStructuresItem()
+                    structureItem.id = item.id
+
+                    fullStructures.find { it.id == item.structureIds?.get(0) }?.name.let {
+                        if (it != null) {
+                            structureItem.name =
+                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                        }
+                    }
+
+                    structureItem.attributes = item.attributes
+                    structureItem.structureIds = item.structureIds
+                    structureItem.itemType = "user"
 
 
-                structuresArray!!.add(structureItem)
+                    structuresArray!!.add(structureItem)
+                }
+
             }
 
         }
@@ -381,10 +399,10 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         actvTransferautocomplete.setOnClickListener {
 
-            if (actvTransferautocomplete.text.toString().isNotEmpty()){
+            if (actvTransferautocomplete.text.toString().isNotEmpty()) {
                 actvTransferautocomplete.showDropDown()
 
-            }else{
+            } else {
                 val arrayAdapterr =
                     StructuresAdapter(
                         requireContext(),
@@ -398,65 +416,6 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         }
 
-        actvTransferautocomplete.doOnTextChanged { text, start, before, count ->
-
-            if (count >= 2) {
-                autoDispose.add(
-                    viewModel.getAllStructures(text.toString())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            {
-
-                                Log.d("userresponse", it.toString())
-
-                                //manageResponse(it,structuresArray)
-
-                                val allUsersAndStructures = ArrayList<AllStructuresItem>()
-                                if (it.structures != null) {
-                                    allUsersAndStructures.addAll(it.structures)
-                                }
-
-                                if (it.users!!.size > 0) {
-
-                                    for (item in it.users) {
-                                        if (item!!.id != viewModel.readUserinfo().id) {
-                                            val structureItem = AllStructuresItem()
-                                            structureItem.id = item.id
-                                            structureItem.name =
-                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
-
-                                            structureItem.attributes = item.attributes
-                                            structureItem.structureIds = item.structureIds
-                                            structureItem.itemType = "user"
-
-
-                                            allUsersAndStructures.add(structureItem)
-                                        }
-
-                                    }
-                                }
-
-
-                                arrayAdapter =
-                                    StructuresAdapter(
-                                        requireContext(),
-                                        R.layout.support_simple_spinner_dropdown_item,
-                                        allUsersAndStructures
-                                    )
-                                actvTransferautocomplete.setAdapter(arrayAdapter)
-                                actvTransferautocomplete.showDropDown()
-
-
-                            }, {
-
-                                Timber.e(it)
-
-                            })
-                )
-            }
-
-
-        }
 
 
         actvTransferautocomplete.setOnFocusChangeListener { v, hasFocus ->
@@ -504,6 +463,348 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
 
             }
+
+        actvTransferautocomplete.doOnTextChanged { text, start, before, count ->
+
+            autoDispose.add(
+                viewModel.getAllStructures(text.toString())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+
+
+                            //manageResponse(it,structuresArray)
+
+                            val allUsersAndStructures = ArrayList<AllStructuresItem>()
+                            if (it.structures != null) {
+                                allUsersAndStructures.addAll(it.structures)
+                            }
+
+                            val enableTransferToUser =
+                                settings.find { it.keyword == "EnableTransferToUsers" }!!.content
+
+                            if (enableTransferToUser == "true") {
+                                if (it.users!!.size > 0) {
+
+                                    for (item in it.users) {
+                                        if (item!!.id != viewModel.readUserinfo().id) {
+                                            val structureItem = AllStructuresItem()
+                                            structureItem.id = item.id
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                            structureItem.attributes = item.attributes
+                                            structureItem.structureIds = item.structureIds
+                                            structureItem.itemType = "user"
+
+
+                                            allUsersAndStructures.add(structureItem)
+                                        }
+
+                                    }
+                                }
+                            }
+
+
+
+                            arrayAdapter =
+                                StructuresAdapter(
+                                    requireContext(),
+                                    R.layout.support_simple_spinner_dropdown_item,
+                                    allUsersAndStructures
+                                )
+                            actvTransferautocomplete.setAdapter(arrayAdapter)
+                            if (actvTransferautocomplete.hasFocus()) {
+                                actvTransferautocomplete.showDropDown()
+
+                            } else {
+                                actvTransferautocomplete.dismissDropDown()
+
+                            }
+
+
+                        }, {
+
+                            Timber.e(it)
+
+                        })
+            )
+
+            actvTransferautocomplete.setOnFocusChangeListener { v, hasFocus ->
+
+                if (hasFocus) {
+                    requireActivity().hideKeyboard(requireActivity())
+                    actvTransferautocomplete.showDropDown()
+
+                } else {
+                    actvTransferautocomplete.setText("")
+                }
+
+            }
+
+
+
+            actvTransferautocomplete.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, view, position, id ->
+                    requireActivity().hideKeyboard(requireActivity())
+                    actvTransferautocomplete.clearFocus()
+                    actvTransferautocomplete.dismissDropDown()
+                    val selectedObject = parent!!.getItemAtPosition(position) as AllStructuresItem
+                    actvTransferautocomplete.setText(selectedObject.name)
+                    if (selectedObject.itemType == "user") {
+                        itemType = selectedObject.itemType!!
+                        val privacy =
+                            selectedObject.attributes!!.find { it!!.text == "Privacy" }!!.value
+                        if (privacy != null) {
+                            userPrivacyLevel =
+                                viewModel.readprivacies()
+                                    .find { it.id == privacy.toInt() }!!.level!!
+                        }
+                        userSelectedId = selectedObject.id!!
+
+
+                        structureSelectedId = selectedObject.structureIds!![0]
+
+                        structureSelectedName = selectedObject.name!!
+
+                    } else {
+
+                        structureSelectedId = selectedObject.id!!
+                        structureSelectedName = selectedObject.name!!
+
+                    }
+
+
+                }
+
+        }
+
+    }
+
+    private fun initAvailableStructuresAutoComplete(
+        allStructuresResponse: AllStructuresResponse,
+        structureIds: ArrayList<Int>
+    ) {
+
+
+        actvTransferautocomplete.threshold = 0
+        val structuresArray = allStructuresResponse.structures
+        val userArray = allStructuresResponse.users
+
+        val fullStructures = viewModel.readFullStructures()
+
+
+        val transferToUser = settings.find { it.keyword == "EnableTransferToUsers" }!!.content
+
+        if (transferToUser == "true") {
+            for (item in userArray!!) {
+
+                if (item.id != viewModel.readUserinfo().id) {
+                    val structureItem = AllStructuresItem()
+                    structureItem.id = item.id
+                    structureItem.name =
+                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                    structureItem.attributes = item.attributes
+                    structureItem.structureIds = item.structureIds
+                    structureItem.itemType = "user"
+
+
+                    structuresArray!!.add(structureItem)
+                }
+
+            }
+
+        }
+
+
+        var arrayAdapter =
+            StructuresAdapter(
+                requireContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                structuresArray
+            )
+
+        actvTransferautocomplete.setAdapter(arrayAdapter)
+
+        actvTransferautocomplete.setOnClickListener {
+
+            if (actvTransferautocomplete.text.toString().isNotEmpty()) {
+                actvTransferautocomplete.showDropDown()
+
+            } else {
+                val arrayAdapterr =
+                    StructuresAdapter(
+                        requireContext(),
+                        R.layout.support_simple_spinner_dropdown_item,
+                        structuresArray
+                    )
+                actvTransferautocomplete.setAdapter(arrayAdapterr)
+                actvTransferautocomplete.showDropDown()
+
+            }
+
+        }
+
+        actvTransferautocomplete.setOnFocusChangeListener { v, hasFocus ->
+
+            if (hasFocus) {
+                requireActivity().hideKeyboard(requireActivity())
+                actvTransferautocomplete.showDropDown()
+
+            } else {
+                actvTransferautocomplete.setText("")
+            }
+
+        }
+
+
+
+        actvTransferautocomplete.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, view, position, id ->
+                requireActivity().hideKeyboard(requireActivity())
+                actvTransferautocomplete.clearFocus()
+                actvTransferautocomplete.dismissDropDown()
+                val selectedObject = parent!!.getItemAtPosition(position) as AllStructuresItem
+                actvTransferautocomplete.setText(selectedObject.name)
+                if (selectedObject.itemType == "user") {
+                    itemType = selectedObject.itemType!!
+                    val privacy =
+                        selectedObject.attributes!!.find { it!!.text == "Privacy" }!!.value
+                    if (privacy != null) {
+                        userPrivacyLevel =
+                            viewModel.readprivacies().find { it.id == privacy.toInt() }!!.level!!
+                    }
+                    userSelectedId = selectedObject.id!!
+
+
+                    structureSelectedId = selectedObject.structureIds!![0]
+
+                    structureSelectedName = selectedObject.name!!
+
+                } else {
+
+                    structureSelectedId = selectedObject.id!!
+                    structureSelectedName = selectedObject.name!!
+
+                }
+
+
+            }
+
+
+        actvTransferautocomplete.doOnTextChanged { text, start, before, count ->
+
+
+            autoDispose.add(
+                viewModel.getAvailableStructures(text.toString(), structureIds)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+
+
+                            //manageResponse(it,structuresArray)
+
+                            val allUsersAndStructures = ArrayList<AllStructuresItem>()
+                            if (it.structures != null) {
+                                allUsersAndStructures.addAll(it.structures)
+                            }
+
+
+                            val enableTransferToUser =
+                                settings.find { it.keyword == "EnableTransferToUsers" }!!.content
+
+                            if (enableTransferToUser == "true") {
+                                if (it.users!!.size > 0) {
+
+                                    for (item in it.users) {
+                                        if (item.id != viewModel.readUserinfo().id) {
+                                            val structureItem = AllStructuresItem()
+                                            structureItem.id = item.id
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                            structureItem.attributes = item.attributes
+                                            structureItem.structureIds = item.structureIds
+                                            structureItem.itemType = "user"
+
+
+                                            allUsersAndStructures.add(structureItem)
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            arrayAdapter =
+                                StructuresAdapter(
+                                    requireContext(),
+                                    R.layout.support_simple_spinner_dropdown_item,
+                                    allUsersAndStructures
+                                )
+                            actvTransferautocomplete.setAdapter(arrayAdapter)
+                            if (actvTransferautocomplete.hasFocus()) {
+                                actvTransferautocomplete.showDropDown()
+                            } else {
+                                actvTransferautocomplete.dismissDropDown()
+                            }
+
+
+                        }, {
+
+                            Timber.e(it)
+
+                        })
+            )
+
+            actvTransferautocomplete.setOnFocusChangeListener { v, hasFocus ->
+
+                if (hasFocus) {
+                    requireActivity().hideKeyboard(requireActivity())
+                    actvTransferautocomplete.showDropDown()
+
+                } else {
+                    actvTransferautocomplete.setText("")
+                }
+
+            }
+
+
+
+            actvTransferautocomplete.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, view, position, id ->
+                    requireActivity().hideKeyboard(requireActivity())
+                    actvTransferautocomplete.clearFocus()
+                    actvTransferautocomplete.dismissDropDown()
+                    val selectedObject = parent!!.getItemAtPosition(position) as AllStructuresItem
+                    actvTransferautocomplete.setText(selectedObject.name)
+                    if (selectedObject.itemType == "user") {
+                        itemType = selectedObject.itemType!!
+                        val privacy =
+                            selectedObject.attributes!!.find { it!!.text == "Privacy" }!!.value
+                        if (privacy != null) {
+                            userPrivacyLevel =
+                                viewModel.readprivacies()
+                                    .find { it.id == privacy.toInt() }!!.level!!
+                        }
+                        userSelectedId = selectedObject.id!!
+
+
+                        structureSelectedId = selectedObject.structureIds!![0]
+
+                        structureSelectedName = selectedObject.name!!
+
+                    } else {
+
+                        structureSelectedId = selectedObject.id!!
+                        structureSelectedName = selectedObject.name!!
+
+                    }
+
+
+                }
+
+        }
+
     }
 
 
@@ -516,13 +817,11 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 .subscribe(
                     {
 
-                        Log.d("stresponse", it.toString())
 
                         structureName = it.name!!
 
 
                     }, {
-                        Log.d("stresponse", it.toString())
 
                         Timber.e(it)
 
@@ -532,6 +831,83 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         return structureName
     }
+
+
+    private fun geStructureSendingRules(fromStructureId: Int) {
+        val structureIds = ArrayList<Int>()
+
+
+        viewModel.geStructureSendingRules(
+            fromStructureId
+
+        ).enqueue(object : Callback<ResponseBody> {
+
+
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                try {
+                    var responseRecieved: Any? = null
+                    responseRecieved = response.body()!!.string()
+
+                    val jsonArray = JSONArray(responseRecieved)
+                    val strArr = arrayOfNulls<String>(jsonArray.length())
+
+                    for (i in 0 until jsonArray.length()) {
+                        strArr[i] = jsonArray.getString(i)
+                        structureIds.add(strArr[i]!!.toInt())
+                    }
+
+
+
+                    getAvailableStructures(structureIds)
+
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                requireActivity().makeToast(requireActivity().getString(R.string.network_error))
+            }
+
+        }
+
+        )
+
+
+    }
+
+    private fun getAvailableStructures(structureIds: ArrayList<Int>) {
+
+        autoDispose.add(
+            viewModel.getAvailableStructures("", structureIds)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+
+                        Log.d("aaaaaaccsss", it.toString())
+
+
+                        initAvailableStructuresAutoComplete(it, structureIds)
+
+                    }, {
+
+                        Timber.e(it)
+
+
+                    })
+        )
+
+
+    }
+
 
     private fun initDates() {
         val cal = Calendar.getInstance()
@@ -570,7 +946,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                         val cmp = firstDate.compareTo(secondDate)
                         when {
                             cmp > 0 -> {
-                                requireActivity().makeToast(getString(R.string.done))
+
                                 etDateFrom!!.setText(drString)
                                 etDateFrom!!.clearFocus()
 
@@ -581,7 +957,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 requireActivity().makeToast(getString(R.string.lessthan_duedate))
                             }
                             else -> {
-                                requireActivity().makeToast(getString(R.string.done))
+
                                 etDateFrom!!.setText(drString)
                                 etDateFrom!!.clearFocus()
                             }
@@ -929,71 +1305,6 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         }
 
     }
-
-//    private fun showTransfersDialog() {
-//        val customDialog = Dialog(requireContext(), R.style.FullScreenDialog)
-//        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-//        customDialog.setCancelable(false)
-//        customDialog.setContentView(R.layout.transferlist_dialog)
-//
-//        customDialog.findViewById<TextView>(R.id.centered_txt).setText(R.string.my_transfers)
-//        customDialog.findViewById<ImageView>(R.id.back_icon).setOnClickListener {
-//            customDialog.dismiss()
-//        }
-//
-//        val transferRecycler = customDialog.findViewById(R.id.transfers_recycler) as RecyclerView
-//        val transferButton = customDialog.findViewById(R.id.send_transfers) as Button
-//
-//        transferRecycler.adapter =
-//            TransferList_Adapter(Transfers, requireActivity(),)
-//        transferRecycler.layoutManager =
-//            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-//
-//        transferButton.setOnClickListener {
-//
-//
-//            dialog = requireActivity().launchLoadingDialog()
-//
-//            autoDispose.add(
-//                viewModel.transferTransfer(Transfers).observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(
-//                        {
-//
-//                            Log.d("transfererresponse", it.toString())
-//                            Log.d("transfererresponse", it[0].message.toString())
-//                            if (it[0].updated == true) {
-//                                Transfers.clear()
-//                                customDialog.dismiss()
-//                                requireActivity().makeToast(getString(R.string.done))
-//                                (activity as AppCompatActivity).supportFragmentManager.commit {
-//                                    replace(R.id.fragmentContainer,
-//                                        CorrespondenceFragment().apply {
-//                                            arguments = bundleOf(
-//                                                Pair(Constants.NODE_ID, 2)
-//                                            )
-//                                        }
-//                                    )
-//                                }
-//                            } else if (it[0].updated == false && it[0].message == "OriginalFileInUse") {
-//                                requireActivity().makeToast(getString(R.string.original_doc_checkedout))
-//
-//                            } else if (it[0].updated == false && it[0].message == "FileInUse") {
-//                                requireActivity().makeToast(getString(R.string.there_is_file_checkedout))
-//                            }
-//
-//                            dialog!!.dismiss()
-//                        }, {
-//                            dialog!!.dismiss()
-//
-//                            Timber.e(it)
-//
-//                        })
-//            )
-//        }
-//
-//        customDialog.show()
-//
-//    }
 
 
 }

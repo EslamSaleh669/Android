@@ -4,7 +4,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:minWidth="250dp"
+    android:textDirection="locale"
+    android:layoutDirection="locale"
     android:background="@drawable/tracking_view"
+    android:id="@+id/nodeItem"
     android:orientation="vertical">
 
     <View
@@ -21,6 +24,10 @@
         android:textSize="16sp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
+        android:singleLine="true"
+        android:maxLength="30"
+        android:ellipsize="end"
+
         android:fontFamily="@font/myriadpro_regular"
         tools:text="Node text here" />
 
@@ -33,6 +40,9 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:layout_marginTop="5dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:maxLength="30"
         android:fontFamily="@font/myriadpro_regular"
         tools:text="Node text here" />
 
@@ -61,7 +71,9 @@
             android:textColor="@color/grey_font"
             android:textSize="15sp"
             android:layout_weight="2"
-
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxLength="15"
             android:fontFamily="@font/myriadpro_regular"
             tools:text="Node" />
     </LinearLayout>
@@ -93,6 +105,9 @@
             android:textColor="@color/grey_font"
             android:textSize="15sp"
             android:layout_weight="1.8"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxLength="20"
             android:fontFamily="@font/myriadpro_regular"
             tools:text="Node" />
     </LinearLayout>

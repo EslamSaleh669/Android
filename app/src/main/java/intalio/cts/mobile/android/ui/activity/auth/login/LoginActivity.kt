@@ -50,12 +50,12 @@ class LoginActivity : AppCompatActivity() {
         val scannedModel = Gson().fromJson(sharedPref.
         getString(Constants.SCANNER_MODEL, ""), ScanResponse::class.java)
 
-        val jsonFileString = getJsonDataFromAsset(applicationContext, "dictionary.json")
-
-        val gson = Gson()
-        val keywordsList = object : TypeToken<DictionaryResponse>() {}.type
-        val Keywords: DictionaryResponse = gson.fromJson(jsonFileString, keywordsList)
-        viewModel.saveDictionary(Keywords)
+//        val jsonFileString = getJsonDataFromAsset(applicationContext, "dictionary.json")
+//
+//        val gson = Gson()
+//        val keywordsList = object : TypeToken<DictionaryResponse>() {}.type
+//        val Keywords: DictionaryResponse = gson.fromJson(jsonFileString, keywordsList)
+//        viewModel.saveDictionary(Keywords)
 
         login.setOnClickListener {
             Constants.BASE_URL =  scannedModel.serviceUrl!!
@@ -139,22 +139,22 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun getDictionary(token: String, baseUrl : String){
-//        autoDispose.add(viewModel.getDictionary(token,baseUrl).observeOn(Schedulers.io()).subscribe({
-//            viewModel.saveDictionary(it)
-//            dialog!!.dismiss()
-//
-//            launchActivityFinishCurrent(HomeActivity::class.java)
-//        }, {
-//            Timber.e(it)
-//            makeToast(it.toString())
-//
-//
-//        }))
+        autoDispose.add(viewModel.getDictionary(token,baseUrl).observeOn(Schedulers.io()).subscribe({
+            viewModel.saveDictionary(it)
+            dialog!!.dismiss()
 
-        dialog!!.dismiss()
+            launchActivityFinishCurrent(HomeActivity::class.java)
+        }, {
+            Timber.e(it)
+            makeToast(it.toString())
 
-        launchActivityFinishCurrent(HomeActivity::class.java)
 
+        }))
+
+//        dialog!!.dismiss()
+//
+//        launchActivityFinishCurrent(HomeActivity::class.java)
+//
 
      }
 

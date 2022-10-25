@@ -37,6 +37,14 @@ import kotlin.collections.ArrayList
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
+import kotlinx.android.synthetic.main.fragment_addnote.*
+import kotlinx.android.synthetic.main.fragment_addnote.btnCancelnote
+import kotlinx.android.synthetic.main.fragment_addnote.btnaddnote
+import kotlinx.android.synthetic.main.fragment_addnote.note_label
+import kotlinx.android.synthetic.main.fragment_addnote.privacycheckbox
+import kotlinx.android.synthetic.main.fragment_addtransfer.*
+import kotlinx.android.synthetic.main.toolbar_layout.centered_txt
 
 
 class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked {
@@ -57,6 +65,8 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
     private var fromEditedDateSelectedInDays = 0
     private var toEditedDateSelectedInDays = 0
     private var addedCategoriesIds = ArrayList<Int>()
+    private lateinit var translator: java.util.ArrayList<DictionaryDataItem>
+
 
 
 
@@ -95,6 +105,10 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        translator = viewModel.readDictionary()!!.data!!
+        setLabels()
+
         back_icon.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -107,7 +121,6 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         val result = arguments?.getSerializable(Constants.Delegation_Model)
         if (result.toString() == "null"){
 
-            centered_txt.text = requireActivity().getText(R.string.delegation)
 
             initDates()
             initUserAutoComplete("add")
@@ -123,18 +136,32 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
 
 
+        var requiredFields = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.ar!!
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.fr!!
+
+            }
+        }
 
 
         btnSaveDelegate.setOnClickListener {
 
-
-
-
-
             if (userSelectedId == 0 || etDateFrom!!.text.toString() == ""
                 || etDateTo!!.text.toString() == "" || addedCategoriesIds.size == 0){
 
-                requireActivity().makeToast(getString(R.string.requiredField))
+                requireActivity().makeToast(requiredFields)
 
             }else{
                 dialog = requireContext().launchLoadingDialog()
@@ -287,6 +314,27 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
     }
 
     private fun initDates() {
+
+        var wrongDateLess = ""
+        var wrongDateGreater= ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                wrongDateLess = "Cannot select start date less than today"
+                wrongDateGreater = "Cannot select start date greater than end date"
+            }
+            viewModel.readLanguage() == "ar" -> {
+                wrongDateLess = "لا يمكن إختيار تاريخ أصغر من تاريخ اليوم"
+                wrongDateGreater = "لا يمكن إختيار تاريخ أكبر من تاريخ الإنتهاء"
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                wrongDateLess = "Impossible de sélectionner une date de début antérieure à aujourd'hui"
+                wrongDateGreater = "Impossible de sélectionner une date de début supérieure à la date de fin"
+            }
+        }
+
         val cal = Calendar.getInstance()
         val density = resources.displayMetrics.densityDpi.toFloat()
 
@@ -306,11 +354,9 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                             (monthOfYear + 1) * 31 + dayOfMonth + year * 12 * 31
                         if (fromDateSelectedInDays < getToday()) {
 
-                            Log.d("dateeeef",fromDateSelectedInDays.toString())
-                            Log.d("dateeeet",getToday().toString())
                             etDateFrom!!.setText("")
                             requireActivity().hideKeyboard(requireActivity())
-                            requireActivity().makeToast(getString(R.string.wrong_date_less))
+                            requireActivity().makeToast(wrongDateLess)
                         } else {
                             val toField = etDateTo!!.text.toString()
                             if (toField != "" && fromDateSelectedInDays <= toDateSelectedInDays || toField == "") {
@@ -319,7 +365,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                             } else {
                                 etDateFrom!!.setText("")
                                 requireActivity().hideKeyboard(requireActivity())
-                                requireActivity().makeToast(getString(R.string.wrong_date_greater))
+                                requireActivity().makeToast(wrongDateGreater)
                             }
                         }
                     } else {
@@ -330,16 +376,18 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                                 etDateTo!!.setText("")
                                // Utility.dateForDialog = fromfield
                                 requireActivity().hideKeyboard(requireActivity())
-                                requireActivity().makeToast(getString(R.string.wrong_date_less))
+                                requireActivity().makeToast(wrongDateLess)
 
                             } else {
+
                                 etDateTo!!.setText(drString)
+
                                 etDateTo!!.clearFocus()
                             }
                         } else if (toDateSelectedInDays < getToday()) {
                             etDateTo!!.setText("")
                             requireActivity().hideKeyboard(requireActivity())
-                            requireActivity().makeToast(getString(R.string.wrong_date_less))
+                            requireActivity().makeToast(wrongDateLess)
 
                         } else {
                             if (fromfield != "" && fromDateSelectedInDays <= toDateSelectedInDays || fromfield == "") {
@@ -348,7 +396,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                             } else {
                                 etDateTo!!.setText("")
                                 requireActivity().hideKeyboard(requireActivity())
-                                requireActivity().makeToast(getString(R.string.wrong_date_less))
+                                requireActivity().makeToast(wrongDateLess)
 
                             }
                         }
@@ -386,12 +434,34 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                 }
             })
 
+        datePickerDialog!!.datePicker.minDate = cal.timeInMillis
+
+
+        datePickerDialog!!.setButton(DialogInterface.BUTTON_NEGATIVE,
+            getString(R.string.cancel),
+            DialogInterface.OnClickListener { dialog, which ->
+                requireActivity().hideKeyboard(requireActivity())
+                etDateFrom!!.setText("")
+
+            })
+
+
+
 
         etDateFrom!!.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             requireActivity().hideKeyboard(requireActivity())
             if (hasFocus) {
                 isAboveDateClicked = true
                 datePickerDialog!!.show()
+
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
+                val minDate: Date = sdf.parse(etDateFrom!!.text.toString())
+                val minCalendar = Calendar.getInstance()
+                minCalendar.time = minDate
+                datePickerDialog!!.datePicker.minDate = minCalendar.timeInMillis
+
+
             }
         }
 
@@ -400,6 +470,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
             isAboveDateClicked = true
             datePickerDialog!!.show()
         }
+
 
         etDateTo!!.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             requireActivity().hideKeyboard(requireActivity())
@@ -419,6 +490,27 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initEditedDates() {
+
+
+        var wrongCashedDateLess = ""
+        var wrongCashedDateGreater= ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                wrongCashedDateLess = "Cannot select end date less than the old selected one"
+                wrongCashedDateGreater = "Cannot select start date greater than end date"
+            }
+            viewModel.readLanguage() == "ar" -> {
+                wrongCashedDateLess = "لا يمكن إختيار تاريخ أصغر من تاريخ اليوم"
+                wrongCashedDateGreater = "لا يمكن تحديد تاريخ انتهاء أقل من تاريخ البدء"
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                wrongCashedDateLess = "Impossible de sélectionner une date de début antérieure à l'ancienne sélectionnée"
+                wrongCashedDateGreater = "Impossible de sélectionner une date de début supérieure à la date de fin"
+            }
+        }
         val cal = Calendar.getInstance()
         val density = resources.displayMetrics.densityDpi.toFloat()
 
@@ -430,13 +522,6 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
         val cashedFromString:String =
             changeDateFormat("mm/dd/yyyy", "dd/mm/yyyy", etDateFrom!!.text.toString())!!
-//        val cashedFromDate = SimpleDateFormat("dd/mm/yyyy").parse(cashedFromString)
-//        val cashedcalenar = Calendar.getInstance()
-//        cashedcalenar.time = cashedFromDate
-//
-//
-//        datePickerDialog!!.datePicker.minDate = cashedcalenar.timeInMillis
-//
 
 
 
@@ -448,38 +533,54 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                     val drString: String =
                         changeDateFormat("mm/dd/yyyy", "dd/mm/yyyy", selectedDate)!!
 
-
                     if (isAboveDateClicked) {
                         fromDateSelectedInDays =
                             (monthOfYear + 1) * 31 + dayOfMonth + year * 12 * 31
+                        if (fromDateSelectedInDays < getToday()) {
 
-                        if (!isDateValid(selectedDate!!,cashedFromString)) {
+                            etDateFrom!!.setText("")
                             requireActivity().hideKeyboard(requireActivity())
-                            requireActivity().makeToast(getString(R.string.wrong_cashed_date_less))
+                            requireActivity().makeToast(wrongCashedDateLess)
                         } else {
+                            val toField = etDateTo!!.text.toString()
+                            if (toField != "" && fromDateSelectedInDays <= toDateSelectedInDays || toField == "") {
                                 etDateFrom!!.setText(drString)
                                 etDateFrom!!.clearFocus()
+                            } else {
+                                etDateFrom!!.setText("")
+                                requireActivity().hideKeyboard(requireActivity())
+                                requireActivity().makeToast(wrongCashedDateGreater)
+                            }
                         }
                     } else {
                         toDateSelectedInDays = (monthOfYear + 1) * 31 + dayOfMonth + year * 12 * 31
                         val fromfield = etDateFrom!!.text.toString()
                         if (fromfield != "") {
                             if (toDateSelectedInDays < fromDateSelectedInDays) {
+                                etDateTo!!.setText("")
+                                // Utility.dateForDialog = fromfield
                                 requireActivity().hideKeyboard(requireActivity())
-                                requireActivity().makeToast(getString(R.string.wrong_cashed_date_less))
+                                requireActivity().makeToast(wrongCashedDateLess)
 
                             } else {
+
                                 etDateTo!!.setText(drString)
+
                                 etDateTo!!.clearFocus()
                             }
+                        } else if (toDateSelectedInDays < getToday()) {
+                            etDateTo!!.setText("")
+                            requireActivity().hideKeyboard(requireActivity())
+                            requireActivity().makeToast(wrongCashedDateLess)
 
                         } else {
-                            if (fromfield != "" && fromDateSelectedInDays <= toDateSelectedInDays ) {
+                            if (fromfield != "" && fromDateSelectedInDays <= toDateSelectedInDays || fromfield == "") {
                                 etDateTo!!.setText(drString)
                                 etDateTo!!.clearFocus()
                             } else {
+                                etDateTo!!.setText("")
                                 requireActivity().hideKeyboard(requireActivity())
-                                requireActivity().makeToast(getString(R.string.wrong_cashed_date_less))
+                                requireActivity().makeToast(wrongCashedDateLess)
 
                             }
                         }
@@ -504,6 +605,8 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
             )
         }
 
+
+
         datePickerDialog!!.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel),
             DialogInterface.OnClickListener { dialog, which ->
                 requireActivity().hideKeyboard(requireActivity())
@@ -515,20 +618,46 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                 }
             })
 
+      //  datePickerDialog!!.datePicker.minDate = cal.timeInMillis
+
+
+        datePickerDialog!!.setButton(DialogInterface.BUTTON_NEGATIVE,
+            getString(R.string.cancel),
+            DialogInterface.OnClickListener { dialog, which ->
+                requireActivity().hideKeyboard(requireActivity())
+                etDateFrom!!.setText("")
+
+            })
+
+
+
 
         etDateFrom!!.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             requireActivity().hideKeyboard(requireActivity())
             if (hasFocus) {
+
+
                 isAboveDateClicked = true
                 datePickerDialog!!.show()
+
+
             }
         }
 
         etDateFrom!!.setOnClickListener { v ->
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
+            val minDate: Date = sdf.parse(editedModel.fromDate.toString())
+            val minCalendar = Calendar.getInstance()
+            minCalendar.time = minDate
+            datePickerDialog!!.datePicker.minDate = minCalendar.timeInMillis
+
             requireActivity().hideKeyboard(requireActivity())
             isAboveDateClicked = true
+
             datePickerDialog!!.show()
         }
+
 
         etDateTo!!.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             requireActivity().hideKeyboard(requireActivity())
@@ -539,6 +668,13 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         }
 
         etDateTo!!.setOnClickListener { v ->
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
+            val minDate: Date = sdf.parse(editedModel.toDate.toString())
+            val minCalendar = Calendar.getInstance()
+            minCalendar.time = minDate
+            datePickerDialog!!.datePicker.minDate = minCalendar.timeInMillis
+
             requireActivity().hideKeyboard(requireActivity())
             isAboveDateClicked = false
             datePickerDialog!!.show()
@@ -572,8 +708,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                 {
 
 
-                    if (it.message.toString().equals("null")){
-                        requireActivity().makeToast(getString(R.string.done))
+                    if (it.message.toString() == "null"){
                         activity?.onBackPressed()
 
                     }else{
@@ -598,7 +733,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
 
                     if (it.message.toString().equals("null")){
-                        requireActivity().makeToast(getString(R.string.done))
+
                         activity?.onBackPressed()
 
                     }else{
@@ -616,7 +751,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         }
     }
 
-    fun isDateValid(selectedDate: String , cashedDate: String) : Boolean {
+    private fun isDateValid(selectedDate: String, cashedDate: String) : Boolean {
         try {
             val selectDate = SimpleDateFormat("dd/mm/yyyy").parse(selectedDate)
             val cashDate = SimpleDateFormat("dd/mm/yyyy").parse(cashedDate)
@@ -632,5 +767,87 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         addedCategoriesIds.remove(catid)
 
 
+    }
+
+
+    private fun setLabels() {
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                fullname_label.text = translator.find { it.keyword == "FullName" }!!.en
+                delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.en
+                delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.en
+                categories_label.text = translator.find { it.keyword == "Categories" }!!.en
+
+                requiredfullname_label.text = "(required)"
+                requredfromdate_label.text = "(required)"
+                requiredtodate_label.text = "(required)"
+                requiredcategories_label.text = "(required)"
+
+                btnSaveDelegate.text = translator.find { it.keyword == "Save" }!!.en
+                btnCancelDelegate.text = translator.find { it.keyword == "Cancel" }!!.en
+
+                userautocomopletetextview.hint = translator.find { it.keyword == "FullName" }!!.en
+                delegateFrom.hint = translator.find { it.keyword == "FromDate" }!!.en
+                delegateTo.hint = translator.find { it.keyword == "ToDate" }!!.en
+                autoCompletecategories.hint = translator.find { it.keyword == "Categories" }!!.en
+
+
+                centered_txt.text = translator.find { it.keyword == "Delegation" }!!.en
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                fullname_label.text = translator.find { it.keyword == "FullName" }!!.ar
+                delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.ar
+                delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.ar
+                categories_label.text = translator.find { it.keyword == "Categories" }!!.ar
+
+                requiredfullname_label.text = "(الزامي)"
+                requredfromdate_label.text = "(الزامي)"
+                requiredtodate_label.text = "(الزامي)"
+                requiredcategories_label.text = "(الزامي)"
+
+                btnSaveDelegate.text = translator.find { it.keyword == "Save" }!!.ar
+                btnCancelDelegate.text = translator.find { it.keyword == "Cancel" }!!.ar
+
+                userautocomopletetextview.hint = translator.find { it.keyword == "FullName" }!!.ar
+                delegateFrom.hint = translator.find { it.keyword == "FromDate" }!!.ar
+                delegateTo.hint = translator.find { it.keyword == "ToDate" }!!.ar
+                autoCompletecategories.hint = translator.find { it.keyword == "Categories" }!!.ar
+
+
+                centered_txt.text = translator.find { it.keyword == "Delegation" }!!.ar
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                fullname_label.text = translator.find { it.keyword == "FullName" }!!.fr
+                delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.fr
+                delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.fr
+                categories_label.text = translator.find { it.keyword == "Categories" }!!.fr
+
+                requiredfullname_label.text = "(requis)"
+                requredfromdate_label.text = "(requis)"
+                requiredtodate_label.text = "(requis)"
+                requiredcategories_label.text = "(requis)"
+
+                btnSaveDelegate.text = translator.find { it.keyword == "Save" }!!.fr
+                btnCancelDelegate.text = translator.find { it.keyword == "Cancel" }!!.fr
+
+                userautocomopletetextview.hint = translator.find { it.keyword == "FullName" }!!.fr
+                delegateFrom.hint = translator.find { it.keyword == "FromDate" }!!.fr
+                delegateTo.hint = translator.find { it.keyword == "ToDate" }!!.fr
+                autoCompletecategories.hint = translator.find { it.keyword == "Categories" }!!.fr
+
+
+                centered_txt.text = translator.find { it.keyword == "Delegation" }!!.fr
+
+
+
+            }
+        }
     }
 }

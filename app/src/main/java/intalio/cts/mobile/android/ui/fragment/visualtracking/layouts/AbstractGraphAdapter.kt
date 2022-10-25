@@ -2,6 +2,7 @@ package intalio.cts.mobile.android.ui.fragment.visualtracking.layouts
 
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
+import intalio.cts.mobile.android.data.network.response.VisualTrackingResponseItem
 
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Graph
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Node
@@ -53,6 +54,7 @@ abstract class AbstractGraphAdapter<VH : RecyclerView.ViewHolder> : RecyclerView
         }
 
 
+    open fun getSelectedNode(position: Int): VisualTrackingResponseItem = graph?.getNodeAtPosition(position)!!.data
 
     /**
      * Submits a new graph to be displayed.

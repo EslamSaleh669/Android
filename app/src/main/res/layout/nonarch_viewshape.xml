@@ -31,13 +31,14 @@
                 android:textSize="16sp"
                 android:maxLength="40"
                 />
+
             <ImageView
                 android:id="@+id/editnonarch"
                 android:layout_width="20dp"
                 android:layout_height="25dp"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="20dp"
                 android:layout_toStartOf="@id/deletenonarch"
-                android:layout_centerVertical="true"
                 android:src="@drawable/ic_viewer_edit_file" />
 
             <ImageView

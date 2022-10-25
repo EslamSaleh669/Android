@@ -27,6 +27,8 @@
             android:text="@string/non_arch_attachments"
             android:layout_centerVertical="true"
             android:textColor="@color/black2"
+            android:id="@+id/nonarch_label"
+            android:maxLength="30"
             android:textSize="18sp" />
 
 
@@ -41,10 +43,11 @@
             android:paddingStart="17dp"
             android:paddingTop="7dp"
             android:paddingEnd="20dp"
+            android:maxLength="30"
             android:paddingBottom="7dp"
             android:text="@string/add"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             app:drawableStartCompat="@drawable/ic_addnew" />
 
         <View

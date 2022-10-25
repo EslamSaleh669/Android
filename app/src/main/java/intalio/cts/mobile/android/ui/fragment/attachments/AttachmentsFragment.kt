@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.cts.mobile.android.R
@@ -58,13 +59,14 @@ class AttachmentsFragment : Fragment() {
 
     private lateinit var translator:  ArrayList<DictionaryDataItem>
 
-    private var Node_Id: Int = 0
+    private var Node_Inherit :String = ""
     private var canDoAction: Boolean = false
 
     private var Selected_Folder: String = "-1"
     private var originalHasChild = false
 
     var lastChecked: LinearLayout? = null
+    private var delegationId = 0
 
 
     private var adapter: TreeViewAdapter? = null
@@ -108,7 +110,15 @@ class AttachmentsFragment : Fragment() {
 
 
         translator = viewModel.readDictionary()!!.data!!
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
 
+                it.id!!
+
+            } else {
+                0
+            }
+        }
         when {
             viewModel.readLanguage() == "en" -> {
                 centered_txt.text = translator.find { it.keyword == "Attachments" }!!.en
@@ -126,8 +136,8 @@ class AttachmentsFragment : Fragment() {
         back_icon.setOnClickListener {
             activity?.onBackPressed()
         }
-        requireArguments().getInt(Constants.NODE_ID).let {
-            Node_Id = it
+        requireArguments().getString(Constants.NODE_INHERIT).let {
+            Node_Inherit = it!!
         }
         requireArguments().getBoolean(Constants.CANDOACTION).let {
             canDoAction = it
@@ -137,9 +147,6 @@ class AttachmentsFragment : Fragment() {
             viewMode = it
         }
 
-//        if (Node_Id == 2 && canDoAction) {
-//            attchrel.visibility = View.VISIBLE
-//        }
 
 
         arguments?.getSerializable(Constants.Correspondence_Model).let {
@@ -148,7 +155,7 @@ class AttachmentsFragment : Fragment() {
                 searchModel = it as AdvancedSearchResponseDataItem
                 attachmentsData(searchModel.id!!)
             } else {
-                if (Node_Id == 4) {
+                if (Node_Inherit == "MyRequests") {
                     requestedModel = it as MetaDataResponse
                     attachmentsData(requestedModel.id!!)
 
@@ -198,7 +205,7 @@ class AttachmentsFragment : Fragment() {
 
 
         autoDispose.add(
-            viewModel.attachmentsData(DoctId).observeOn(AndroidSchedulers.mainThread()).subscribe(
+            viewModel.attachmentsData(DoctId,delegationId).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
 
                     dialog!!.dismiss()
@@ -359,10 +366,10 @@ class AttachmentsFragment : Fragment() {
 
                     if (viewModel.readPath() == "search") {
                         (activity as AppCompatActivity).supportFragmentManager.commit {
-                            replace(R.id.fragmentContainer,
+                            add(R.id.fragmentContainer,
                                 CorrespondenceDetailsFragment().apply {
                                     arguments = bundleOf(
-                                        Pair(Constants.NODE_ID, Node_Id),
+                                        Pair(Constants.NODE_INHERIT, Node_Inherit),
 
                                         Pair(Constants.Correspondence_Model, searchModel),
                                         Pair(Constants.FILE_ID, fileId.substringAfter("_")),
@@ -373,16 +380,16 @@ class AttachmentsFragment : Fragment() {
                                         )
 
                                 }
-                            )
+                            ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
                         }
                     } else if (viewModel.readPath() == "node" || viewModel.readPath() == "attachment"){
-                        if (Node_Id == 4) {
+                        if (Node_Inherit == "MyRequests") {
                             (activity as AppCompatActivity).supportFragmentManager.commit {
-                                replace(R.id.fragmentContainer,
+                                add(R.id.fragmentContainer,
                                     CorrespondenceDetailsFragment().apply {
                                         arguments = bundleOf(
-                                            Pair(Constants.NODE_ID, Node_Id),
+                                            Pair(Constants.NODE_INHERIT, Node_Inherit),
 
                                             Pair(Constants.Correspondence_Model, requestedModel),
                                             Pair(Constants.FILE_ID, fileId.substringAfter("_")),
@@ -392,15 +399,15 @@ class AttachmentsFragment : Fragment() {
                                         )
 
                                     }
-                                )
+                                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
                             }
                         } else {
                             (activity as AppCompatActivity).supportFragmentManager.commit {
-                                replace(R.id.fragmentContainer,
+                                add(R.id.fragmentContainer,
                                     CorrespondenceDetailsFragment().apply {
                                         arguments = bundleOf(
-                                            Pair(Constants.NODE_ID, Node_Id),
+                                            Pair(Constants.NODE_INHERIT, Node_Inherit),
 
                                             Pair(Constants.Correspondence_Model, model),
                                             Pair(Constants.FILE_ID, fileId.substringAfter("_")),
@@ -410,7 +417,7 @@ class AttachmentsFragment : Fragment() {
                                         )
 
                                     }
-                                )
+                                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
                             }
 

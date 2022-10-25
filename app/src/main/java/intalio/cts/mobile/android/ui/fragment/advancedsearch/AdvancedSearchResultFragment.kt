@@ -3,6 +3,7 @@ package intalio.cts.mobile.android.ui.fragment.advancedsearch
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,9 @@ import intalio.cts.mobile.android.ui.adapter.AdvancedSearchResultAdapter
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.ReplaySubject
+import kotlinx.android.synthetic.main.fragment_advancedsearch.*
 import kotlinx.android.synthetic.main.fragment_searchresult.*
+import kotlinx.android.synthetic.main.node.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import kotlinx.android.synthetic.main.viewer_layout.back_icon
 import timber.log.Timber
@@ -65,8 +68,8 @@ class AdvancedSearchResultFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        translator = viewModel.readDictionary()!!.data!!
 
-        centered_txt.text = getString(R.string.search)
         back_icon.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -107,10 +110,33 @@ class AdvancedSearchResultFragment : Fragment() {
     }
 
     private fun getResult(searchObject: JSONObject) {
-        viewModel.Items = ReplaySubject.create()
 
+        var noMoreData = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                noMoreData = "No more data"
+                resultnoDataFound.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.en!!
+                centered_txt.text = translator.find { it.keyword == "Search" }!!.en!!
+            }
+            viewModel.readLanguage() == "ar" -> {
+                noMoreData = "لا يوجد المزيد"
+                resultnoDataFound.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.ar!!
+                centered_txt.text = translator.find { it.keyword == "Search" }!!.ar!!
+            }
+            viewModel.readLanguage() == "fr" -> {
+                noMoreData = "Plus de données"
+                resultnoDataFound.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.fr!!
+                centered_txt.text = translator.find { it.keyword == "Search" }!!.fr!!
+            }
+        }
+
+
+        viewModel.Items = ReplaySubject.create()
+        val categories = viewModel.readCategoriesData()
         result_ecyclerview.adapter =
-            AdvancedSearchResultAdapter(arrayListOf(), requireActivity())
+            AdvancedSearchResultAdapter(arrayListOf(), requireActivity(),categories)
         result_ecyclerview.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
@@ -123,20 +149,29 @@ class AdvancedSearchResultFragment : Fragment() {
             if (it!!.isEmpty() && viewModel.limit == 0) {
                 resultnoDataFound.visibility = View.VISIBLE
                 result_ecyclerview.visibility = View.GONE
-
-            } else {
+            }
+            else {
                 if (it.isNotEmpty()) {
                     Timber.d("Data Loaded")
                    (result_ecyclerview.adapter as AdvancedSearchResultAdapter).addMessages(it)
 
                 } else if (lastPosition > 10) {
-                    requireContext().makeToast(getString(R.string.no_moredata))
+                    requireContext().makeToast(noMoreData)
                 }
             }
         },{
             dialog!!.dismiss()
             resultnoDataFound.visibility = View.VISIBLE
             result_ecyclerview.visibility = View.GONE
+
+            if (it.message!!.contains("BEGIN_ARRAY")){
+              requireContext().makeToast("Crawling service not configured")
+
+            }else{
+                requireContext().makeToast(it.message!!)
+
+            }
+
             Timber.e(it)
 
         }))
@@ -157,13 +192,33 @@ class AdvancedSearchResultFragment : Fragment() {
     }
 
 
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.disposable?.dispose()
         viewModel.start = 0
         viewModel.limit = 0
+
+
+        searchModel.referenceNumber = ""
+        searchModel.category = ""
+        searchModel.subject = ""
+        searchModel.status = ""
+        searchModel.fromDate = ""
+        searchModel.toDate = ""
+        searchModel.priority = ""
+        searchModel.documentSender = ""
+        searchModel.documentReceiver = ""
+        searchModel.fromUser = ""
+        searchModel.toUser = ""
+        searchModel.fromStructure = ""
+        searchModel.toStructure = ""
+        searchModel.fromTransferDate = ""
+        searchModel.toTransferDate = ""
+        searchModel.keyword = ""
+        searchModel.isOverdue = false
+
+
+
 
     }
 

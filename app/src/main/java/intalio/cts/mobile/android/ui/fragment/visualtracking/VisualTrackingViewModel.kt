@@ -13,8 +13,8 @@ class VisualTrackingViewModel (private val userRepo: UserRepo, private val admin
 
 
 
-    fun getVisualTracking(documentId:Int) : Observable<ArrayList<VisualTrackingResponseItem>> =
-        adminRepo.getVisualTracking(documentId)
+//    fun getVisualTracking(documentId:Int) : Observable<ArrayList<VisualTrackingResponseItem>> =
+//        adminRepo.getVisualTracking(documentId)
 
 
  }

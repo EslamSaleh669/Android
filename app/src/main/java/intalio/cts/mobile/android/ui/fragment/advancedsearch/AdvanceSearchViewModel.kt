@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import intalio.cts.mobile.android.data.network.response.*
 import intalio.cts.mobile.android.data.repo.AdminRepo
 import intalio.cts.mobile.android.data.repo.UserRepo
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.ReplaySubject
 import org.json.JSONObject
@@ -44,10 +45,15 @@ class AdvanceSearchViewModel (private val userRepo: UserRepo, private val adminR
 
     fun readAllStructureData (): AllStructuresResponse = userRepo.readAllStructureData()!!
     fun readPurposesData (): ArrayList<PurposesResponseItem>? = userRepo.readPurposes()
+    fun readPrioritiesData (): ArrayList<PrioritiesResponseItem>? = userRepo.readPriorities()
+    fun readStatuses (): ArrayList<StatusesResponseItem> = userRepo.readStatuses()!!
+
     fun readCategoriesData():ArrayList<CategoryResponseItem> = userRepo.readCategoriesData()!!
 
     fun readLanguage() : String = userRepo.currentLang()
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
 
+
+    fun getAllStructures(text: String): Observable<AllStructuresResponse> = adminRepo.getAllStructures(text)
 
 }

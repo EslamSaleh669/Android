@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,6 @@ import intalio.cts.mobile.android.ui.adapter.*
 import intalio.cts.mobile.android.ui.fragment.correspondence.CorrespondenceFragment
 import intalio.cts.mobile.android.util.*
 
-import kotlinx.android.synthetic.main.fragment_addtransfer.*
 import kotlinx.android.synthetic.main.fragment_reply.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import okhttp3.ResponseBody
@@ -44,12 +44,14 @@ class ReplyToStructureFragment : Fragment(){
     private var datePickerDialog: DatePickerDialog? = null
     private var dateListener: OnDateSetListener? = null
     private var etDateFrom: EditText? = null
+    private var delegationId = 0
 
     private var selectedDate: String? = null
     private lateinit var userInfo: UserFullDataResponseItem
     private var fromDateSelectedInDays = 0
 
     private var addedCategoriesIds = ArrayList<Int>()
+    private lateinit var translator: java.util.ArrayList<DictionaryDataItem>
 
 
     private lateinit var model: CorrespondenceDataItem
@@ -95,9 +97,9 @@ class ReplyToStructureFragment : Fragment(){
         }
 
 
+        translator = viewModel.readDictionary()!!.data!!
+        setLabels()
 
-        centered_txt.text = requireActivity().getText(R.string.reply_to_structure)
-        replyto.text = requireActivity().getText(R.string.to_structure)
         userInfo = viewModel.readUserinfo()
         val result = arguments?.getSerializable(Constants.Correspondence_Model)
         if (result.toString() != "null") {
@@ -109,14 +111,43 @@ class ReplyToStructureFragment : Fragment(){
         initDates()
         initPurposeComplete()
 
+        var requiredFields = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.ar!!
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.fr!!
+
+            }
+        }
+
+
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
+
+                it.id!!
+
+            } else {
+                0
+            }
+        }
         btnSendReply.setOnClickListener {
 
-            if (purposeSelectedId == 0 || etCommentReply.text.toString().trim() == "") {
-                requireActivity().makeToast(getString(R.string.requiredField))
+            if (purposeSelectedId == 0 ) {
+                requireActivity().makeToast(requiredFields)
 
             } else {
                 dialog = requireContext().launchLoadingDialog()
-                replyToStructure()
+                replyToStructure(delegationId)
             }
 
         }
@@ -124,7 +155,7 @@ class ReplyToStructureFragment : Fragment(){
 
     }
 
-    private fun replyToStructure() {
+    private fun replyToStructure(delegationId: Int) {
 
          val recievers = ArrayList<Int>()
          if (model.receivingEntityId!!.size > 0){
@@ -141,7 +172,8 @@ class ReplyToStructureFragment : Fragment(){
             etDateFrom!!.text.toString().trim(),
             etCommentReply.text.toString().trim(),
             model.fromStructureId!!,
-            recievers.toTypedArray()
+            recievers.toTypedArray(),
+            delegationId
             ).enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 dialog!!.dismiss()
@@ -152,12 +184,12 @@ class ReplyToStructureFragment : Fragment(){
                     activity!!.onBackPressed()
 
                 } else {
-                    requireActivity().makeToast(getString(R.string.done))
-                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                     (activity as AppCompatActivity).supportFragmentManager.commit {
                         replace(R.id.fragmentContainer,
                             CorrespondenceFragment().apply {
                                 arguments = bundleOf(
-                                    Pair(Constants.NODE_ID, 2)
+                                    Pair(Constants.NODE_INHERIT,viewModel.readCurrentNode())
+
                                 )
 
 
@@ -182,7 +214,9 @@ class ReplyToStructureFragment : Fragment(){
     private fun initPurposeComplete() {
         replypurposeautocomplete.threshold = 0
         val purposesAutoCompleteArray = viewModel.readPurposesData()!!
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            purposesAutoCompleteArray.removeIf { it.cCed == true }
+        }
         val arrayAdapter =
             PurposesStructureAdapter(
                 requireContext(),
@@ -307,7 +341,51 @@ class ReplyToStructureFragment : Fragment(){
     }
 
 
+    private fun setLabels() {
 
+        btnSendReply
+        btnCancelreply
+        when {
+            viewModel.readLanguage() == "en" -> {
 
+                replyto_label.text = translator.find { it.keyword == "ToStructure" }!!.en
+                textViewPurpose_label.text = translator.find { it.keyword == "Purposes" }!!.en
+                replypurposeautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.en
+                textViewTransferDueDate_label.text = translator.find { it.keyword == "DueDate" }!!.en
+                etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.en
+                message_label.text = translator.find { it.keyword == "Instruction" }!!.en
+                btnSendReply.text = translator.find { it.keyword == "Reply" }!!.en
+                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.en
+                centered_txt.text = translator.find { it.keyword == "ReplyToStructure" }!!.en
+                requiredpurpose_label.text = "(required)"
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                replyto_label.text = translator.find { it.keyword == "ToStructure" }!!.ar
+                textViewPurpose_label.text = translator.find { it.keyword == "Purposes" }!!.ar
+                replypurposeautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.ar
+                textViewTransferDueDate_label.text = translator.find { it.keyword == "DueDate" }!!.ar
+                etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.ar
+                message_label.text = translator.find { it.keyword == "Instruction" }!!.ar
+                btnSendReply.text = translator.find { it.keyword == "Reply" }!!.ar
+                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.ar
+                centered_txt.text = translator.find { it.keyword == "ReplyToStructure" }!!.ar
+                requiredpurpose_label.text = "(الزامي)"
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+                replyto_label.text = translator.find { it.keyword == "ToStructure" }!!.fr
+                textViewPurpose_label.text = translator.find { it.keyword == "Purposes" }!!.fr
+                replypurposeautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.fr
+                textViewTransferDueDate_label.text = translator.find { it.keyword == "DueDate" }!!.fr
+                etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.fr
+                message_label.text = translator.find { it.keyword == "Instruction" }!!.fr
+                btnSendReply.text = translator.find { it.keyword == "Reply" }!!.fr
+                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.fr
+                centered_txt.text = translator.find { it.keyword == "ReplyToStructure" }!!.fr
+                requiredpurpose_label.text = "(requis)"
+            }
+        }
+    }
 
 }

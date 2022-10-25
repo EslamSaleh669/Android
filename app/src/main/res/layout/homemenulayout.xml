@@ -284,7 +284,7 @@
                 android:layout_marginTop="20dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/menulangugetxt"
@@ -314,6 +314,33 @@
 
             </RelativeLayout>
 
+            <LinearLayout
+                android:id="@+id/menubarcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:visibility="gone"
+                android:paddingBottom="5dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/barcode" />
+
+                <TextView
+                    android:id="@+id/menubarcodetxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/myriadpro_regular"
+                    android:text="@string/scan_barcode"
+                    android:textColor="@color/black2"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/menusignout"
                 android:layout_width="match_parent"

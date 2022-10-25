@@ -1,8 +1,6 @@
 package intalio.cts.mobile.android.ui.adapter
 
 import android.app.Activity
-import android.opengl.Visibility
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +8,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.NodeResponseItem
@@ -20,7 +17,6 @@ import intalio.cts.mobile.android.ui.fragment.main.MainViewModel
 import intalio.cts.mobile.android.util.AutoDispose
 import intalio.cts.mobile.android.util.Constants
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.fragment_main.*
 import timber.log.Timber
 
 
@@ -28,7 +24,8 @@ class NodesAdapter(
     private val Nodes: List<NodeResponseItem>,
     val activity: Activity,
     val viewModel: MainViewModel,
-    val autoDispose: AutoDispose
+    val autoDispose: AutoDispose,
+    val delegationId: Int
 ) : RecyclerView.Adapter<NodesAdapter.AllNewsVHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllNewsVHolder =
@@ -41,61 +38,104 @@ class NodesAdapter(
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
 
 
-        when (Nodes[position].id) {
-            2 -> {
+        when (Nodes[position].inherit) {
+            "Inbox" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_inboxicon)
 
-
                 autoDispose.add(
-                    viewModel.inboxCount(Nodes[position].id!!)
+                    viewModel.inboxCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                        holder.nodeCounter.text = it.total.toString()
-                        holder.nodeCounter.visibility = View.VISIBLE
-                        holder.countProgress.visibility = View.GONE
-                    }, { Timber.e(it) })
+                            holder.nodeCounter.text = it.total.toString()
+                            holder.totalNodeCounter.text = it.total.toString()
+
+                            holder.nodeCounter.visibility = View.VISIBLE
+                            holder.totalNodeCounter.visibility = View.VISIBLE
+
+
+                            holder.countProgress.visibility = View.GONE
+                            holder.totalCountProgress.visibility = View.GONE
+                        }, { Timber.e(it) })
                 )
 
             }
-            6 -> {
+            "Sent" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_senticon)
                 autoDispose.add(
-                    viewModel.sentCount(Nodes[position].id!!)
+                    viewModel.sentCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                        holder.nodeCounter.text = it.total.toString()
-                        holder.nodeCounter.visibility = View.VISIBLE
-                        holder.countProgress.visibility = View.GONE
-                    }, { Timber.e(it) })
+                            holder.nodeCounter.text = it.total.toString()
+                            holder.totalNodeCounter.text = it.total.toString()
+
+                            holder.nodeCounter.visibility = View.VISIBLE
+                            holder.totalNodeCounter.visibility = View.VISIBLE
+
+
+                            holder.countProgress.visibility = View.GONE
+                            holder.totalCountProgress.visibility = View.GONE
+                        }, { Timber.e(it) })
                 )
             }
-            7 -> {
+            "Completed" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_completedicon)
                 autoDispose.add(
-                    viewModel.completedCount(Nodes[position].id!!)
+                    viewModel.completedCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                        holder.nodeCounter.text = it.total.toString()
-                        holder.nodeCounter.visibility = View.VISIBLE
-                        holder.countProgress.visibility = View.GONE
-                    }, { Timber.e(it) })
+                            holder.nodeCounter.text = it.total.toString()
+                            holder.totalNodeCounter.text = it.total.toString()
+
+                            holder.nodeCounter.visibility = View.VISIBLE
+                            holder.totalNodeCounter.visibility = View.VISIBLE
+
+
+                            holder.countProgress.visibility = View.GONE
+                            holder.totalCountProgress.visibility = View.GONE
+                        }, { Timber.e(it) })
                 )
             }
-            4 -> {
+
+            "Closed" -> {
+                holder.nodeImage.setImageResource(R.drawable.ic_completedicon)
+                autoDispose.add(
+                    viewModel.closedCount(Nodes[position].id!!,delegationId)
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe({
+                            holder.nodeCounter.text = it.total.toString()
+                            holder.totalNodeCounter.text = it.total.toString()
+
+                            holder.nodeCounter.visibility = View.VISIBLE
+                            holder.totalNodeCounter.visibility = View.VISIBLE
+
+
+                            holder.countProgress.visibility = View.GONE
+                            holder.totalCountProgress.visibility = View.GONE
+                        }, { Timber.e(it) })
+                )
+            }
+            "MyRequests" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_requestsicon)
                 autoDispose.add(
-                    viewModel.requestedCount(Nodes[position].id!!)
+                    viewModel.requestedCount(Nodes[position].id!!,delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                        holder.nodeCounter.text = it.total.toString()
-                        holder.nodeCounter.visibility = View.VISIBLE
-                        holder.countProgress.visibility = View.GONE
-                    }, { Timber.e(it) })
+                            holder.nodeCounter.text = it.total.toString()
+                            holder.totalNodeCounter.text = it.total.toString()
+
+                            holder.nodeCounter.visibility = View.VISIBLE
+                            holder.totalNodeCounter.visibility = View.VISIBLE
+
+
+                            holder.countProgress.visibility = View.GONE
+                            holder.totalCountProgress.visibility = View.GONE
+                        }, { Timber.e(it) })
                 )
             }
-            96 -> {
+            "BAM" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_bamicon)
                 holder.counterFrame.visibility = View.INVISIBLE
+                holder.totalCounterFrame.visibility = View.INVISIBLE
             }
-            97 -> {
+            "Search" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_advancedsearch)
                 holder.counterFrame.visibility = View.INVISIBLE
+                holder.totalCounterFrame.visibility = View.INVISIBLE
             }
         }
 
@@ -108,7 +148,7 @@ class NodesAdapter(
                     replace(R.id.fragmentContainer,
                         CorrespondenceFragment().apply {
                             arguments = bundleOf(
-                                Pair(Constants.NODE_ID, Nodes[position].id)
+                                Pair(Constants.NODE_INHERIT, Nodes[position].inherit),
                             )
                         }
                     )
@@ -125,7 +165,6 @@ class NodesAdapter(
                                 Pair(Constants.SEARCH_TYPE, 1)
                             )
 
-
                         }
                     )
                     addToBackStack("")
@@ -134,8 +173,6 @@ class NodesAdapter(
 
             }
         }
-
-
     }
 
     override fun getItemCount() = Nodes.size
@@ -147,6 +184,11 @@ class NodesAdapter(
         val nodeImage: ImageView = itemView.findViewById(R.id.nodeImage)
         val countProgress: ProgressBar = itemView.findViewById(R.id.countProgress)
         val counterFrame: FrameLayout = itemView.findViewById(R.id.counterFrame)
+
+
+        val totalNodeCounter: TextView = itemView.findViewById(R.id.nodetotalCount)
+        val totalCountProgress: ProgressBar = itemView.findViewById(R.id.totalcountProgress)
+        val totalCounterFrame: FrameLayout = itemView.findViewById(R.id.totalcounterFrame)
 
     }
 

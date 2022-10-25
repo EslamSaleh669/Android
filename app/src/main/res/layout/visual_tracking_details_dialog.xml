@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/myriadpro_bold"
+            android:text="@string/transfer"
+            android:id="@+id/vt_title"
+            android:gravity="start"
+            android:layoutDirection="locale"
+            android:textDirection="locale"
+            android:textColor="@color/black2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:textSize="17sp" />
+
+        <View
+            android:id="@+id/vt_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/vt_title"
+            android:layout_marginBottom="5dp"
+            android:background="@color/appcolor" />
+
+        <LinearLayout
+            android:id="@+id/createdby_lin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="locale"
+            android:layout_marginTop="8dp"
+            android:layout_below="@+id/vt_view"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/created_by"
+                android:id="@+id/vt_createdby_label"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/vt_createdby_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/duedate_lin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="locale"
+            android:layout_marginTop="8dp"
+            android:layout_below="@+id/createdby_lin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/due_date"
+                android:id="@+id/vt_duedate_label"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/vt_duedate_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/duedate_lin"
+            android:layout_marginTop="12dp"
+            android:id="@+id/opendatelin"
+            android:layoutDirection="locale"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/opened_date"
+                android:id="@+id/vt_opendate_label"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:id="@+id/vt_opendate_value"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/opendatelin"
+            android:layout_marginTop="8dp"
+            android:id="@+id/createddatelin"
+            android:layoutDirection="locale"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:id="@+id/vt_createddate_label"
+                android:text="@string/created_date"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:id="@+id/vt_createddate_value"
+                />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/vt_instructions_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/createddatelin"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/myriadpro_simibold"
+            android:gravity="start"
+            android:layoutDirection="locale"
+            android:text="@string/instructionss"
+            android:textColor="@color/black2"
+            android:textDirection="locale"
+            android:textSize="16sp" />
+
+        <com.borjabravo.readmoretextview.ReadMoreTextView
+            android:id="@+id/vt_instructions_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vt_instructions_label"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/myriadpro_regular"
+            android:lineSpacingExtra="5dp"
+            android:textColor="@color/ApplicationDarkColor"
+            android:textSize="16sp"
+            android:gravity="start"
+            android:layoutDirection="locale"
+            android:textDirection="locale"
+            app:colorClickableText="@color/appcolor"
+            app:trimCollapsedText="@string/read_more"
+            app:trimExpandedText="@string/read_less"
+            app:trimLength="100"
+            app:trimMode="trimModeLength" />
+
+
+
+    </RelativeLayout>
+
+
+
+
+</androidx.cardview.widget.CardView>

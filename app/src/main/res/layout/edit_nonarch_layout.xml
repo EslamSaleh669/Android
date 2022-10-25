@@ -5,9 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/grey"
+    android:layoutDirection="locale"
+    android:textDirection="locale"
     android:layout_height="match_parent">
 
+
     <include layout="@layout/toolbar_layout"
+        android:id="@+id/tlayout"
         />
     <ScrollView
         android:layout_width="match_parent"
@@ -30,6 +34,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
                 android:orientation="horizontal">
 
                 <TextView
@@ -39,14 +45,16 @@
                     android:fontFamily="@font/myriadpro_regular"
                     android:text="@string/type"
                     android:textColor="@color/black2"
+                    android:id="@+id/type_label"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="(required)"
+                    android:text="@string/required"
                     android:textColor="@color/dark_gray"
                     android:textSize="13sp"
+                    android:id="@+id/requiredtype_label"
                     android:textStyle="italic" />
             </LinearLayout>
 
@@ -73,6 +81,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
                 android:orientation="horizontal">
 
                 <TextView
@@ -81,15 +91,17 @@
                     android:layout_marginEnd="3dp"
                     android:fontFamily="@font/myriadpro_regular"
                     android:text="@string/quantity"
+                    android:id="@+id/quantity_label"
                     android:textColor="@color/black2"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="(required)"
+                    android:text="@string/required"
                     android:textColor="@color/dark_gray"
                     android:textSize="13sp"
+                    android:id="@+id/requiredquantity_label"
                     android:textStyle="italic" />
 
             </LinearLayout>
@@ -101,7 +113,6 @@
                 android:layout_height="47dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/edittext_background"
-                android:drawableEnd="@drawable/ic_arrow_down"
                 android:fontFamily="@font/myriadpro_regular"
                 android:hint="@string/quantity"
                 android:imeOptions="actionDone"
@@ -112,6 +123,7 @@
                 android:textSize="15sp" />
 
             <TextView
+                android:id="@+id/description_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -127,7 +139,6 @@
                 android:layout_marginTop="6dp"
                 android:background="@drawable/edittext_background"
                 android:fontFamily="@font/myriadpro_regular"
-                android:hint="@string/description"
                 android:inputType="text"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
@@ -140,19 +151,19 @@
 
     </ScrollView>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/edittext_background"
         android:padding="30dp"
+        android:orientation="horizontal"
         >
 
 
         <TextView
             android:id="@+id/btnCancelattch"
-            android:layout_width="144dp"
+            android:layout_width="0dp"
             android:layout_height="44dp"
-            android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:background="@drawable/reset_background"
             android:fontFamily="@font/myriadpro_simibold"
@@ -160,19 +171,23 @@
             android:paddingStart="30dp"
             android:paddingTop="5dp"
             android:paddingEnd="30dp"
+            android:layout_weight="1"
             android:paddingBottom="5dp"
             android:text="@string/cancel"
             android:textColor="@color/black2"
-            android:textSize="17sp"
-            />
+            android:textSize="17sp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xx"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/btnSaveattch"
-            android:layout_width="144dp"
+            android:layout_width="0dp"
             android:layout_height="44dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+
             android:layout_marginEnd="10dp"
             android:background="@drawable/green_background"
             android:fontFamily="@font/myriadpro_simibold"
@@ -181,6 +196,7 @@
             android:paddingTop="5dp"
             android:paddingEnd="30dp"
             android:paddingBottom="5dp"
+            android:layout_weight="1"
             android:text="@string/save"
             android:textColor="@color/white"
             android:textSize="17sp"
@@ -188,6 +204,6 @@
             />
 
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

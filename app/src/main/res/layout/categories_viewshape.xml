@@ -31,22 +31,24 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/nodeImage"
             android:fontFamily="@font/myriadpro_regular"
+            android:maxLength="20"
             android:text="Inbox"
             android:textColor="@color/black2"
-            android:textSize="17sp" />
+            android:textSize="16sp" />
 
 
         <FrameLayout
+            android:id="@+id/counterFrame"
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:layout_centerVertical="true"
             android:layout_marginEnd="15dp"
-            android:layout_toStartOf="@+id/nodeNext"
+            android:layout_toStartOf="@+id/totalcounterFrame"
+            android:layout_alignParentEnd="true"
             android:background="@drawable/counter_background"
             android:gravity="center"
             android:minWidth="28dp"
             android:paddingStart="5dp"
-            android:id="@+id/counterFrame"
             android:paddingEnd="5dp">
 
             <TextView
@@ -57,7 +59,7 @@
                 android:fontFamily="@font/myriadpro_bold"
                 android:text="0"
                 android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:visibility="gone" />
 
             <ProgressBar
@@ -70,14 +72,49 @@
 
         </FrameLayout>
 
-
-        <ImageView
-            android:id="@+id/nodeNext"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_height="26dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_arrow" />
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/total_counter_background"
+            android:gravity="center"
+            android:minWidth="28dp"
+            android:paddingStart="5dp"
+            android:id="@+id/totalcounterFrame"
+            android:visibility="gone"
+            android:paddingEnd="5dp">
+
+            <TextView
+                android:id="@+id/nodetotalCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/myriadpro_bold"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/totalcountProgress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible" />
+
+        </FrameLayout>
+
+
+                <ImageView
+                    android:id="@+id/nodeNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_arrow" />
 
     </RelativeLayout>
 

@@ -45,7 +45,7 @@ class LoginViewModel(private val userRepo: UserRepo) : ViewModel() {
     }
 
 
-    fun readNodeID():Int = userRepo.readNodeID()!!
+    fun readCurrentNode():String = userRepo.readCurrentNode()!!
 
     fun readLanguage() : String = userRepo.currentLang()
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()

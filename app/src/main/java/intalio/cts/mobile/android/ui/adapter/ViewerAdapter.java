@@ -115,8 +115,7 @@ public class ViewerAdapter extends RecyclerView.Adapter<ViewerPageHolder> implem
             this.images.add(url);
 
          }
-
-        notifyDataSetChanged();
+         notifyDataSetChanged();
     }
 
 

@@ -22,26 +22,31 @@ import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.CorrespondenceDataItem
-import intalio.cts.mobile.android.ui.fragment.correspondence.CorrespondenceFragment
+import intalio.cts.mobile.android.data.network.response.DelegationRequestsResponseItem
 import intalio.cts.mobile.android.ui.fragment.correspondence.CorrespondenceViewModel
 import intalio.cts.mobile.android.ui.fragment.correspondencedetails.CorrespondenceDetailsFragment
 import intalio.cts.mobile.android.util.AutoDispose
 import intalio.cts.mobile.android.util.Constants
 import intalio.cts.mobile.android.util.makeToast
 import intalio.cts.mobile.android.viewer.Utility
+import kotlinx.android.synthetic.main.fragment_main.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CorrespondenceAdapter(
     private val Messages: ArrayList<CorrespondenceDataItem>,
     val activity: Activity,
-    val NodeId: Int,
+    val NodeInherit: String,
     private val interfacePositionCard: InterfacePositionCard,
     val viewModel: CorrespondenceViewModel,
-    val autoDispose: AutoDispose
+    val autoDispose: AutoDispose,
+    val delegationId: Int
 
 ) : RecyclerView.Adapter<CorrespondenceAdapter.AllNewsVHolder>() {
 
@@ -72,7 +77,7 @@ class CorrespondenceAdapter(
 
                 holder.messageDot.setImageResource(R.drawable.ic_dot_normal)
 
-           }
+            }
             2 -> {
                 holder.messageDot.setImageResource(R.drawable.ic_dot_meduim)
 
@@ -83,8 +88,11 @@ class CorrespondenceAdapter(
 
             }
         }
-        if (NodeId == 2) {
+        if (NodeInherit == "Inbox") {
 
+            Log.d("locking", Messages[position].isLocked.toString())
+            Log.d("locking", Messages[position].lockedBy.toString())
+            Log.d("locking", Messages[position].lockedByDelegatedUser.toString())
 
             if (Messages[position].fromUser.isNullOrEmpty()) {
                 holder.messageSentFrom.text = Messages[position].fromStructure
@@ -121,70 +129,218 @@ class CorrespondenceAdapter(
             }
 
 
+            viewModel.readSavedDelegator().let {
+                if (it != null) {
 
+                    if (it.fromUserId == 0) {
 
-            if (checkBroadCast(Messages[position].categoryId!!)) {
+                        if (checkBroadCast(Messages[position].categoryId!!)) {
 //                holder.messageLock.visibility = View.INVISIBLE
-                holder.messageCced.visibility = View.INVISIBLE
-                holder.messageBroadcast.visibility = View.VISIBLE
+                            holder.messageCced.visibility = View.INVISIBLE
+                            holder.messageBroadcast.visibility = View.VISIBLE
 
-                if (Messages[position].sentToStructure == false) {
-                    holder.messageLock.visibility = View.INVISIBLE
-                    holder.messageSentTo.setImageResource(R.drawable.ic_touser)
+                            if (Messages[position].sentToStructure == false) {
+                                holder.messageLock.visibility = View.INVISIBLE
+                                holder.messageSentTo.setImageResource(R.drawable.ic_touser)
 
-                } else {
-                    holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
-                    if (Messages[position].isLocked == false) {
-                        holder.messageLock.visibility = View.INVISIBLE
-
-                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
-                        holder.messageLock.setImageResource(R.drawable.ic_unlocked_icon)
-                        holder.messageLock.visibility = View.VISIBLE
+                            } else {
 
 
-                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
-                        holder.messageLock.setImageResource(R.drawable.ic_lock)
-                        holder.messageLock.visibility = View.VISIBLE
+                                holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+                                if (Messages[position].isLocked == false) {
+                                    holder.messageLock.visibility = View.INVISIBLE
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
+                                    holder.messageLock.setImageResource(R.drawable.ic_unlocked_icon)
+                                    holder.messageLock.visibility = View.VISIBLE
 
 
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
+                                    holder.messageLock.setImageResource(R.drawable.ic_lock)
+                                    holder.messageLock.visibility = View.VISIBLE
+
+
+                                }
+                            }
+
+                        } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                            holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+
+                            holder.messageLock.visibility = View.INVISIBLE
+                            holder.messageBroadcast.visibility = View.INVISIBLE
+                            holder.messageCced.visibility = View.VISIBLE
+
+
+                        } else {
+                            Log.d("whereareyou", "IAm at else")
+
+                            holder.messageCced.visibility = View.INVISIBLE
+                            holder.messageBroadcast.visibility = View.INVISIBLE
+
+                            if (Messages[position].sentToStructure == false) {
+                                holder.messageLock.visibility = View.INVISIBLE
+                                holder.messageSentTo.setImageResource(R.drawable.ic_touser)
+
+                            } else {
+                                holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+                                if (Messages[position].isLocked == false) {
+                                    holder.messageLock.visibility = View.INVISIBLE
+
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
+                                    holder.messageLock.setImageResource(R.drawable.ic_unlocked_icon)
+                                    holder.messageLock.visibility = View.VISIBLE
+
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
+                                    holder.messageLock.setImageResource(R.drawable.ic_lock)
+                                    holder.messageLock.visibility = View.VISIBLE
+
+
+                                }
+                            }
+                        }
+                    } else {
+                        if (checkBroadCast(Messages[position].categoryId!!)) {
+//                holder.messageLock.visibility = View.INVISIBLE
+                            holder.messageCced.visibility = View.INVISIBLE
+                            holder.messageBroadcast.visibility = View.VISIBLE
+
+                            if (Messages[position].sentToStructure == false) {
+                                holder.messageLock.visibility = View.INVISIBLE
+                                holder.messageSentTo.setImageResource(R.drawable.ic_touser)
+
+                            } else {
+
+
+                                holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+                                if (Messages[position].isLocked == false) {
+                                    holder.messageLock.visibility = View.INVISIBLE
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy == it.fromUser) {
+                                    holder.messageLock.setImageResource(R.drawable.ic_unlocked_icon)
+                                    holder.messageLock.visibility = View.VISIBLE
+
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy != it.fromUser) {
+                                    holder.messageLock.setImageResource(R.drawable.ic_lock)
+                                    holder.messageLock.visibility = View.VISIBLE
+
+
+                                }
+                            }
+
+                        } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                            holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+
+                            holder.messageLock.visibility = View.INVISIBLE
+                            holder.messageBroadcast.visibility = View.INVISIBLE
+                            holder.messageCced.visibility = View.VISIBLE
+
+
+                        } else {
+                            Log.d("whereareyou", "IAm at else")
+
+                            holder.messageCced.visibility = View.INVISIBLE
+                            holder.messageBroadcast.visibility = View.INVISIBLE
+
+                            if (Messages[position].sentToStructure == false) {
+                                holder.messageLock.visibility = View.INVISIBLE
+                                holder.messageSentTo.setImageResource(R.drawable.ic_touser)
+
+                            } else {
+                                holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+                                if (Messages[position].isLocked == false) {
+                                    holder.messageLock.visibility = View.INVISIBLE
+
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy == it.fromUser) {
+                                    holder.messageLock.setImageResource(R.drawable.ic_unlocked_icon)
+                                    holder.messageLock.visibility = View.VISIBLE
+
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy != it.fromUser) {
+                                    holder.messageLock.setImageResource(R.drawable.ic_lock)
+                                    holder.messageLock.visibility = View.VISIBLE
+
+
+                                }
+                            }
+                        }
                     }
-                }
-
-            } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
-                holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
-
-                holder.messageLock.visibility = View.INVISIBLE
-                holder.messageBroadcast.visibility = View.INVISIBLE
-                holder.messageCced.visibility = View.VISIBLE
-
-
-            } else {
-                holder.messageCced.visibility = View.INVISIBLE
-                holder.messageBroadcast.visibility = View.INVISIBLE
-
-                if (Messages[position].sentToStructure == false) {
-                    holder.messageLock.visibility = View.INVISIBLE
-                    holder.messageSentTo.setImageResource(R.drawable.ic_touser)
 
                 } else {
-                    holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
-                    if (Messages[position].isLocked == false) {
+
+                    if (checkBroadCast(Messages[position].categoryId!!)) {
+//                holder.messageLock.visibility = View.INVISIBLE
+                        holder.messageCced.visibility = View.INVISIBLE
+                        holder.messageBroadcast.visibility = View.VISIBLE
+
+                        if (Messages[position].sentToStructure == false) {
+                            holder.messageLock.visibility = View.INVISIBLE
+                            holder.messageSentTo.setImageResource(R.drawable.ic_touser)
+
+                        } else {
+
+
+                            holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+                            if (Messages[position].isLocked == false) {
+                                holder.messageLock.visibility = View.INVISIBLE
+
+                            } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
+                                holder.messageLock.setImageResource(R.drawable.ic_unlocked_icon)
+                                holder.messageLock.visibility = View.VISIBLE
+
+
+                            } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
+                                holder.messageLock.setImageResource(R.drawable.ic_lock)
+                                holder.messageLock.visibility = View.VISIBLE
+
+
+                            }
+                        }
+
+                    } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                        holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+
                         holder.messageLock.visibility = View.INVISIBLE
+                        holder.messageBroadcast.visibility = View.INVISIBLE
+                        holder.messageCced.visibility = View.VISIBLE
 
 
-                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
-                        holder.messageLock.setImageResource(R.drawable.ic_unlocked_icon)
-                        holder.messageLock.visibility = View.VISIBLE
+                    } else {
+                        Log.d("whereareyou", "IAm at else")
+
+                        holder.messageCced.visibility = View.INVISIBLE
+                        holder.messageBroadcast.visibility = View.INVISIBLE
+
+                        if (Messages[position].sentToStructure == false) {
+                            holder.messageLock.visibility = View.INVISIBLE
+                            holder.messageSentTo.setImageResource(R.drawable.ic_touser)
+
+                        } else {
+                            holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
+                            if (Messages[position].isLocked == false) {
+                                holder.messageLock.visibility = View.INVISIBLE
 
 
-                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
-                        holder.messageLock.setImageResource(R.drawable.ic_lock)
-                        holder.messageLock.visibility = View.VISIBLE
+                            } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
+                                holder.messageLock.setImageResource(R.drawable.ic_unlocked_icon)
+                                holder.messageLock.visibility = View.VISIBLE
 
 
+                            } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
+                                holder.messageLock.setImageResource(R.drawable.ic_lock)
+                                holder.messageLock.visibility = View.VISIBLE
+
+
+                            }
+                        }
                     }
                 }
             }
+
+
 
 
             if (Messages[position].isOverDue!!) {
@@ -222,7 +378,7 @@ class CorrespondenceAdapter(
             }
 
 
-        } else if (NodeId == 4) {
+        } else if (NodeInherit == "MyRequests") {
             holder.messageSentTo.visibility = View.INVISIBLE
 
             holder.messageImportance.visibility = View.INVISIBLE
@@ -246,7 +402,31 @@ class CorrespondenceAdapter(
             holder.messageTime.text = Messages[position].createdDate
 
 
-        } else if (NodeId == 6) {
+        } else if (NodeInherit == "Closed") {
+            holder.messageSentTo.visibility = View.INVISIBLE
+
+            holder.messageImportance.visibility = View.INVISIBLE
+            holder.messageLock.visibility = View.INVISIBLE
+
+            holder.messageSentFrom.visibility = View.GONE
+
+            if (Messages[position].isOverDue!!) {
+                holder.messageOverdue.visibility = View.VISIBLE
+            } else {
+                holder.messageOverdue.visibility = View.INVISIBLE
+
+            }
+            if (Messages[position].subject!!.length > 20) {
+                holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
+            } else {
+                holder.messageSub.text = Messages[position].subject
+
+            }
+            holder.messageRefNumber.text = Messages[position].referenceNumber
+            holder.messageTime.text = Messages[position].createdDate
+
+
+        } else if (NodeInherit == "Sent") {
 
             holder.messageSentTo.visibility = View.INVISIBLE
             holder.messageImportance.visibility = View.INVISIBLE
@@ -287,7 +467,7 @@ class CorrespondenceAdapter(
 
 
             holder.messageRecall.setOnClickListener {
-                recallTransfer(Messages[position].id!!, NodeId, holder.messageRecall)
+                recallTransfer(Messages[position].id!!, holder.messageRecall)
             }
 
 
@@ -359,168 +539,610 @@ class CorrespondenceAdapter(
 //                )
 //                interfacePositionCard.getPosition(position, 0, Messages[position])
 //            } else {
-            if (NodeId == 2) {
+            if (NodeInherit == "Inbox") {
 
-                if (Messages[position].cced == false && checkBroadCast(Messages[position].categoryId!!)) {
+                viewModel.readSavedDelegator().let {
+                    if (it != null) {
 
-                    if (Messages[position].sentToStructure == false) {
-                        Messages[position].isexternalbroadcast =
-                            checkExternalBroadCast(Messages[position].categoryId!!)
-                        val bundle = Bundle()
-                        bundle.putSerializable(Constants.Correspondence_Model, Messages[position])
+                        if (it.fromUserId == 0) {
+                            if (Messages[position].cced == false && checkBroadCast(Messages[position].categoryId!!)) {
 
-                        Messages[position].messageLock = "broadcastnotlocked"
-                        (activity as AppCompatActivity).supportFragmentManager.commit {
-                            replace(R.id.fragmentContainer,
-                                CorrespondenceDetailsFragment().apply {
-                                    arguments = bundleOf(
-                                        Pair(Constants.PATH, "node"),
-                                        Pair(Constants.Correspondence_Model, Messages[position])
+                                if (Messages[position].sentToStructure == false) {
+                                    Messages[position].isexternalbroadcast =
+                                        checkExternalBroadCast(Messages[position].categoryId!!)
+                                    val bundle = Bundle()
+                                    bundle.putSerializable(
+                                        Constants.Correspondence_Model,
+                                        Messages[position]
                                     )
 
+                                    Messages[position].messageLock = "broadcastnotlocked"
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(
+                                                        Constants.Correspondence_Model,
+                                                        Messages[position]
+                                                    )
+                                                )
 
+
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+                                } else {
+                                    if (Messages[position].isLocked == false) {
+                                        Messages[position].isexternalbroadcast =
+                                            checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                        lockTransfer(Messages[position], "broadcast", NodeInherit)
+
+
+                                    } else if
+                                                   (Messages[position].isLocked == true && Messages[position].lockedBy == it.fromUser) {
+                                        Messages[position].isexternalbroadcast =
+                                            checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                        //// locked by me
+                                        val bundle = Bundle()
+                                        Messages[position].messageLock = "broadcastlockedbyme"
+                                        bundle.putSerializable(
+                                            Constants.Correspondence_Model,
+                                            Messages[position]
+                                        )
+                                        (activity as AppCompatActivity).supportFragmentManager.commit {
+                                            replace(R.id.fragmentContainer,
+                                                CorrespondenceDetailsFragment().apply {
+                                                    arguments = bundleOf(
+                                                        Pair(Constants.PATH, "node"),
+                                                        Pair(
+                                                            Constants.Correspondence_Model,
+                                                            Messages[position]
+                                                        )
+                                                    )
+
+
+                                                }
+                                            )
+                                            addToBackStack("")
+
+                                        }
+
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != it.fromUser) {
+                                        Messages[position].isexternalbroadcast =
+                                            checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                        //// locked by another one (viewonly)
+                                        val bundle = Bundle()
+                                        Messages[position].messageLock = "broadcastlockedbyanother"
+
+                                        bundle.putSerializable(
+                                            Constants.Correspondence_Model,
+                                            Messages[position]
+                                        )
+                                        (activity as AppCompatActivity).supportFragmentManager.commit {
+                                            replace(R.id.fragmentContainer,
+                                                CorrespondenceDetailsFragment().apply {
+                                                    arguments = bundleOf(
+                                                        Pair(Constants.PATH, "node"),
+                                                        Pair(
+                                                            Constants.Correspondence_Model,
+                                                            Messages[position]
+                                                        )
+                                                    )
+
+
+                                                }
+                                            )
+                                            addToBackStack("")
+
+                                        }
+                                    }
                                 }
-                            )
-                            addToBackStack("")
-
-                        }
-                    } else {
-                        if (Messages[position].isLocked == false) {
-                            Messages[position].isexternalbroadcast =
-                                checkExternalBroadCast(Messages[position].categoryId!!)
-
-                            lockTransfer(Messages[position], "broadcast")
-
-
-                        } else if
-                                       (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
-                            Messages[position].isexternalbroadcast =
-                                checkExternalBroadCast(Messages[position].categoryId!!)
-
-                            //// locked by me
-                            val bundle = Bundle()
-                            Messages[position].messageLock = "broadcastlockedbyme"
-                            bundle.putSerializable(
-                                Constants.Correspondence_Model,
-                                Messages[position]
-                            )
-                            (activity as AppCompatActivity).supportFragmentManager.commit {
-                                replace(R.id.fragmentContainer,
-                                    CorrespondenceDetailsFragment().apply {
-                                        arguments = bundleOf(
-                                            Pair(Constants.PATH, "node"),
-                                            Pair(Constants.Correspondence_Model, Messages[position])
-                                        )
-
-
-                                    }
-                                )
-                                addToBackStack("")
-
-                            }
-
-                        } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
-                            Messages[position].isexternalbroadcast =
-                                checkExternalBroadCast(Messages[position].categoryId!!)
-
-                            //// locked by another one (viewonly)
-                            val bundle = Bundle()
-                            Messages[position].messageLock = "broadcastlockedbyanother"
-
-                            bundle.putSerializable(
-                                Constants.Correspondence_Model,
-                                Messages[position]
-                            )
-                            (activity as AppCompatActivity).supportFragmentManager.commit {
-                                replace(R.id.fragmentContainer,
-                                    CorrespondenceDetailsFragment().apply {
-                                        arguments = bundleOf(
-                                            Pair(Constants.PATH, "node"),
-                                            Pair(Constants.Correspondence_Model, Messages[position])
-                                        )
-
-
-                                    }
-                                )
-                                addToBackStack("")
-
-                            }
-                        }
-                    }
-
-
-                }
-
-                //original broadcast
-                else if (Messages[position].cced == true && checkBroadCast(Messages[position].categoryId!!)) {
-                    Messages[position].isexternalbroadcast =
-                        checkExternalBroadCast(Messages[position].categoryId!!)
-
-                    val bundle = Bundle()
-                    Messages[position].messageLock = "broadcastnotlocked"
-                    bundle.putSerializable(
-                        Constants.Correspondence_Model,
-                        Messages[position]
-                    )
-                    (activity as AppCompatActivity).supportFragmentManager.commit {
-                        replace(R.id.fragmentContainer,
-                            CorrespondenceDetailsFragment().apply {
-                                arguments = bundleOf(
-                                    Pair(Constants.PATH, "node"),
-                                    Pair(Constants.Correspondence_Model, Messages[position])
-                                )
 
 
                             }
-                        )
-                        addToBackStack("")
+                            //original broadcast
+                            else if (Messages[position].cced == true && checkBroadCast(Messages[position].categoryId!!)) {
+                                Messages[position].isexternalbroadcast =
+                                    checkExternalBroadCast(Messages[position].categoryId!!)
 
-                    }
-
-                } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
-                    val bundle = Bundle()
-                    Messages[position].messageLock = "cced"
-                    bundle.putSerializable(Constants.Correspondence_Model, Messages[position])
-                    (activity as AppCompatActivity).supportFragmentManager.commit {
-                        replace(R.id.fragmentContainer,
-                            CorrespondenceDetailsFragment().apply {
-                                arguments = bundleOf(
-                                    Pair(Constants.PATH, "node"),
-                                    Pair(Constants.Correspondence_Model, Messages[position])
+                                val bundle = Bundle()
+                                Messages[position].messageLock = "broadcastnotlocked"
+                                bundle.putSerializable(
+                                    Constants.Correspondence_Model,
+                                    Messages[position]
                                 )
+                                (activity as AppCompatActivity).supportFragmentManager.commit {
+                                    replace(R.id.fragmentContainer,
+                                        CorrespondenceDetailsFragment().apply {
+                                            arguments = bundleOf(
+                                                Pair(Constants.PATH, "node"),
+                                                Pair(
+                                                    Constants.Correspondence_Model,
+                                                    Messages[position]
+                                                )
+                                            )
 
 
-                            }
-                        )
-                        addToBackStack("")
-
-                    }
-                } else {
-                    if (Messages[position].sentToStructure == false) {
-                        val bundle = Bundle()
-                        Messages[position].messageLock = "notlocked"
-                        bundle.putSerializable(Constants.Correspondence_Model, Messages[position])
-                        (activity as AppCompatActivity).supportFragmentManager.commit {
-                            replace(R.id.fragmentContainer,
-                                CorrespondenceDetailsFragment().apply {
-                                    arguments = bundleOf(
-                                        Pair(Constants.PATH, "node"),
-                                        Pair(Constants.Correspondence_Model, Messages[position])
+                                        }
                                     )
+                                    addToBackStack("")
+
                                 }
-                            )
-                            addToBackStack("")
+
+                            } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                                val bundle = Bundle()
+                                Messages[position].messageLock = "cced"
+                                bundle.putSerializable(
+                                    Constants.Correspondence_Model,
+                                    Messages[position]
+                                )
+                                (activity as AppCompatActivity).supportFragmentManager.commit {
+                                    replace(R.id.fragmentContainer,
+                                        CorrespondenceDetailsFragment().apply {
+                                            arguments = bundleOf(
+                                                Pair(Constants.PATH, "node"),
+                                                Pair(
+                                                    Constants.Correspondence_Model,
+                                                    Messages[position]
+                                                )
+                                            )
+
+
+                                        }
+                                    )
+                                    addToBackStack("")
+
+                                }
+                            } else {
+                                if (Messages[position].sentToStructure == false) {
+                                    val bundle = Bundle()
+                                    Messages[position].messageLock = "notlocked"
+                                    bundle.putSerializable(
+                                        Constants.Correspondence_Model,
+                                        Messages[position]
+                                    )
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(
+                                                        Constants.Correspondence_Model,
+                                                        Messages[position]
+                                                    )
+                                                )
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+                                } else {
+                                    if (Messages[position].isLocked == false) {
+                                        lockTransfer(
+                                            Messages[position],
+                                            "notbroadcast",
+                                            NodeInherit
+                                        )
+
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy == it.fromUser) {
+
+                                        //// locked by me
+                                        val bundle = Bundle()
+                                        Messages[position].messageLock = "lockedbyme"
+                                        bundle.putSerializable(
+                                            Constants.Correspondence_Model,
+                                            Messages[position]
+                                        )
+                                        (activity as AppCompatActivity).supportFragmentManager.commit {
+                                            replace(R.id.fragmentContainer,
+                                                CorrespondenceDetailsFragment().apply {
+                                                    arguments = bundleOf(
+                                                        Pair(Constants.PATH, "node"),
+                                                        Pair(
+                                                            Constants.Correspondence_Model,
+                                                            Messages[position]
+                                                        )
+                                                    )
+
+
+                                                }
+                                            )
+                                            addToBackStack("")
+
+                                        }
+
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != it.fromUser) {
+
+                                        //// locked by another one (viewonly)
+                                        val bundle = Bundle()
+                                        Messages[position].messageLock = "lockedbyanother"
+
+                                        bundle.putSerializable(
+                                            Constants.Correspondence_Model,
+                                            Messages[position]
+                                        )
+                                        (activity as AppCompatActivity).supportFragmentManager.commit {
+                                            replace(R.id.fragmentContainer,
+                                                CorrespondenceDetailsFragment().apply {
+                                                    arguments = bundleOf(
+                                                        Pair(Constants.PATH, "node"),
+                                                        Pair(
+                                                            Constants.Correspondence_Model,
+                                                            Messages[position]
+                                                        )
+                                                    )
+
+
+                                                }
+                                            )
+                                            addToBackStack("")
+
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            if (Messages[position].cced == false && checkBroadCast(Messages[position].categoryId!!)) {
+
+                                if (Messages[position].sentToStructure == false) {
+                                    Messages[position].isexternalbroadcast =
+                                        checkExternalBroadCast(Messages[position].categoryId!!)
+                                    val bundle = Bundle()
+                                    bundle.putSerializable(
+                                        Constants.Correspondence_Model,
+                                        Messages[position]
+                                    )
+
+                                    Messages[position].messageLock = "broadcastnotlocked"
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(
+                                                        Constants.Correspondence_Model,
+                                                        Messages[position]
+                                                    )
+                                                )
+
+
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+                                } else {
+                                    if (Messages[position].isLocked == false) {
+                                        Messages[position].isexternalbroadcast =
+                                            checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                        lockTransfer(Messages[position], "broadcast", NodeInherit)
+
+
+                                    } else if (Messages[position].isLocked == true &&
+                                        Messages[position].lockedBy == it.fromUser) {
+                                        Messages[position].isexternalbroadcast =
+                                            checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                        //// locked by me
+                                        val bundle = Bundle()
+                                        Messages[position].messageLock = "broadcastlockedbyme"
+                                        bundle.putSerializable(
+                                            Constants.Correspondence_Model,
+                                            Messages[position]
+                                        )
+                                        (activity as AppCompatActivity).supportFragmentManager.commit {
+                                            replace(R.id.fragmentContainer,
+                                                CorrespondenceDetailsFragment().apply {
+                                                    arguments = bundleOf(
+                                                        Pair(Constants.PATH, "node"),
+                                                        Pair(
+                                                            Constants.Correspondence_Model,
+                                                            Messages[position]
+                                                        )
+                                                    )
+
+
+                                                }
+                                            )
+                                            addToBackStack("")
+
+                                        }
+
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != it.fromUser) {
+                                        Messages[position].isexternalbroadcast =
+                                            checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                        //// locked by another one (viewonly)
+                                        val bundle = Bundle()
+                                        Messages[position].messageLock = "broadcastlockedbyanother"
+
+                                        bundle.putSerializable(
+                                            Constants.Correspondence_Model,
+                                            Messages[position]
+                                        )
+                                        (activity as AppCompatActivity).supportFragmentManager.commit {
+                                            replace(R.id.fragmentContainer,
+                                                CorrespondenceDetailsFragment().apply {
+                                                    arguments = bundleOf(
+                                                        Pair(Constants.PATH, "node"),
+                                                        Pair(
+                                                            Constants.Correspondence_Model,
+                                                            Messages[position]
+                                                        )
+                                                    )
+
+
+                                                }
+                                            )
+                                            addToBackStack("")
+
+                                        }
+                                    }
+                                }
+
+
+                            }
+                            //original broadcast
+                            else if (Messages[position].cced == true && checkBroadCast(Messages[position].categoryId!!)) {
+                                Messages[position].isexternalbroadcast =
+                                    checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                val bundle = Bundle()
+                                Messages[position].messageLock = "broadcastnotlocked"
+                                bundle.putSerializable(
+                                    Constants.Correspondence_Model,
+                                    Messages[position]
+                                )
+                                (activity as AppCompatActivity).supportFragmentManager.commit {
+                                    replace(R.id.fragmentContainer,
+                                        CorrespondenceDetailsFragment().apply {
+                                            arguments = bundleOf(
+                                                Pair(Constants.PATH, "node"),
+                                                Pair(
+                                                    Constants.Correspondence_Model,
+                                                    Messages[position]
+                                                )
+                                            )
+
+
+                                        }
+                                    )
+                                    addToBackStack("")
+
+                                }
+
+                            } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                                val bundle = Bundle()
+                                Messages[position].messageLock = "cced"
+                                bundle.putSerializable(
+                                    Constants.Correspondence_Model,
+                                    Messages[position]
+                                )
+                                (activity as AppCompatActivity).supportFragmentManager.commit {
+                                    replace(R.id.fragmentContainer,
+                                        CorrespondenceDetailsFragment().apply {
+                                            arguments = bundleOf(
+                                                Pair(Constants.PATH, "node"),
+                                                Pair(
+                                                    Constants.Correspondence_Model,
+                                                    Messages[position]
+                                                )
+                                            )
+
+
+                                        }
+                                    )
+                                    addToBackStack("")
+
+                                }
+                            } else {
+                                if (Messages[position].sentToStructure == false) {
+                                    val bundle = Bundle()
+                                    Messages[position].messageLock = "notlocked"
+                                    bundle.putSerializable(
+                                        Constants.Correspondence_Model,
+                                        Messages[position]
+                                    )
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(
+                                                        Constants.Correspondence_Model,
+                                                        Messages[position]
+                                                    )
+                                                )
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+                                } else {
+                                    if (Messages[position].isLocked == false) {
+                                        lockTransfer(
+                                            Messages[position],
+                                            "notbroadcast",
+                                            NodeInherit
+                                        )
+
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy == it.fromUser) {
+
+                                        //// locked by me
+                                        val bundle = Bundle()
+                                        Messages[position].messageLock = "lockedbyme"
+                                        bundle.putSerializable(
+                                            Constants.Correspondence_Model,
+                                            Messages[position]
+                                        )
+                                        (activity as AppCompatActivity).supportFragmentManager.commit {
+                                            replace(R.id.fragmentContainer,
+                                                CorrespondenceDetailsFragment().apply {
+                                                    arguments = bundleOf(
+                                                        Pair(Constants.PATH, "node"),
+                                                        Pair(
+                                                            Constants.Correspondence_Model,
+                                                            Messages[position]
+                                                        )
+                                                    )
+
+
+                                                }
+                                            )
+                                            addToBackStack("")
+
+                                        }
+
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != it.fromUser) {
+
+                                        //// locked by another one (viewonly)
+                                        val bundle = Bundle()
+                                        Messages[position].messageLock = "lockedbyanother"
+
+                                        bundle.putSerializable(
+                                            Constants.Correspondence_Model,
+                                            Messages[position]
+                                        )
+                                        (activity as AppCompatActivity).supportFragmentManager.commit {
+                                            replace(R.id.fragmentContainer,
+                                                CorrespondenceDetailsFragment().apply {
+                                                    arguments = bundleOf(
+                                                        Pair(Constants.PATH, "node"),
+                                                        Pair(
+                                                            Constants.Correspondence_Model,
+                                                            Messages[position]
+                                                        )
+                                                    )
+
+
+                                                }
+                                            )
+                                            addToBackStack("")
+
+                                        }
+                                    }
+                                }
+                            }
+
+                            ////////////////////////////////
+                        }
+
+                    } else {
+                        if (Messages[position].cced == false && checkBroadCast(Messages[position].categoryId!!)) {
+
+                            if (Messages[position].sentToStructure == false) {
+                                Messages[position].isexternalbroadcast =
+                                    checkExternalBroadCast(Messages[position].categoryId!!)
+                                val bundle = Bundle()
+                                bundle.putSerializable(
+                                    Constants.Correspondence_Model,
+                                    Messages[position]
+                                )
+
+                                Messages[position].messageLock = "broadcastnotlocked"
+                                (activity as AppCompatActivity).supportFragmentManager.commit {
+                                    replace(R.id.fragmentContainer,
+                                        CorrespondenceDetailsFragment().apply {
+                                            arguments = bundleOf(
+                                                Pair(Constants.PATH, "node"),
+                                                Pair(
+                                                    Constants.Correspondence_Model,
+                                                    Messages[position]
+                                                )
+                                            )
+
+
+                                        }
+                                    )
+                                    addToBackStack("")
+
+                                }
+                            } else {
+                                if (Messages[position].isLocked == false) {
+                                    Messages[position].isexternalbroadcast =
+                                        checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                    lockTransfer(Messages[position], "broadcast", NodeInherit)
+
+
+                                } else if
+                                               (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
+                                    Messages[position].isexternalbroadcast =
+                                        checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                    //// locked by me
+                                    val bundle = Bundle()
+                                    Messages[position].messageLock = "broadcastlockedbyme"
+                                    bundle.putSerializable(
+                                        Constants.Correspondence_Model,
+                                        Messages[position]
+                                    )
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(
+                                                        Constants.Correspondence_Model,
+                                                        Messages[position]
+                                                    )
+                                                )
+
+
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
+                                    Messages[position].isexternalbroadcast =
+                                        checkExternalBroadCast(Messages[position].categoryId!!)
+
+                                    //// locked by another one (viewonly)
+                                    val bundle = Bundle()
+                                    Messages[position].messageLock = "broadcastlockedbyanother"
+
+                                    bundle.putSerializable(
+                                        Constants.Correspondence_Model,
+                                        Messages[position]
+                                    )
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(
+                                                        Constants.Correspondence_Model,
+                                                        Messages[position]
+                                                    )
+                                                )
+
+
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+                                }
+                            }
+
 
                         }
-                    } else {
-                        if (Messages[position].isLocked == false) {
-                            lockTransfer(Messages[position], "notbroadcast")
+                        //original broadcast
+                        else if (Messages[position].cced == true && checkBroadCast(Messages[position].categoryId!!)) {
+                            Messages[position].isexternalbroadcast =
+                                checkExternalBroadCast(Messages[position].categoryId!!)
 
-                        } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
-
-                            //// locked by me
                             val bundle = Bundle()
-                            Messages[position].messageLock = "lockedbyme"
+                            Messages[position].messageLock = "broadcastnotlocked"
                             bundle.putSerializable(
                                 Constants.Correspondence_Model,
                                 Messages[position]
@@ -540,12 +1162,9 @@ class CorrespondenceAdapter(
 
                             }
 
-                        } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
-
-                            //// locked by another one (viewonly)
+                        } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
                             val bundle = Bundle()
-                            Messages[position].messageLock = "lockedbyanother"
-
+                            Messages[position].messageLock = "cced"
                             bundle.putSerializable(
                                 Constants.Correspondence_Model,
                                 Messages[position]
@@ -563,10 +1182,94 @@ class CorrespondenceAdapter(
                                 )
                                 addToBackStack("")
 
+                            }
+                        } else {
+                            if (Messages[position].sentToStructure == false) {
+                                val bundle = Bundle()
+                                Messages[position].messageLock = "notlocked"
+                                bundle.putSerializable(
+                                    Constants.Correspondence_Model,
+                                    Messages[position]
+                                )
+                                (activity as AppCompatActivity).supportFragmentManager.commit {
+                                    replace(R.id.fragmentContainer,
+                                        CorrespondenceDetailsFragment().apply {
+                                            arguments = bundleOf(
+                                                Pair(Constants.PATH, "node"),
+                                                Pair(
+                                                    Constants.Correspondence_Model,
+                                                    Messages[position]
+                                                )
+                                            )
+                                        }
+                                    )
+                                    addToBackStack("")
+
+                                }
+                            } else {
+                                if (Messages[position].isLocked == false) {
+                                    lockTransfer(Messages[position], "notbroadcast", NodeInherit)
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
+
+                                    //// locked by me
+                                    val bundle = Bundle()
+                                    Messages[position].messageLock = "lockedbyme"
+                                    bundle.putSerializable(
+                                        Constants.Correspondence_Model,
+                                        Messages[position]
+                                    )
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(
+                                                        Constants.Correspondence_Model,
+                                                        Messages[position]
+                                                    )
+                                                )
+
+
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+
+                                } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
+
+                                    //// locked by another one (viewonly)
+                                    val bundle = Bundle()
+                                    Messages[position].messageLock = "lockedbyanother"
+
+                                    bundle.putSerializable(
+                                        Constants.Correspondence_Model,
+                                        Messages[position]
+                                    )
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(
+                                                        Constants.Correspondence_Model,
+                                                        Messages[position]
+                                                    )
+                                                )
+
+
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
 
             } else {
                 val bundle = Bundle()
@@ -592,40 +1295,56 @@ class CorrespondenceAdapter(
     }
 
 
-    private fun lockTransfer(model: CorrespondenceDataItem, status: String) {
+    private fun lockTransfer(model: CorrespondenceDataItem, status: String, NodeInherit: String) {
 
         var confirmlock = ""
         var yes = ""
         var no = ""
+        var error = ""
+        var alreadyLockedBy = ""
 
         when {
             viewModel.readLanguage() == "en" -> {
 
-                confirmlock = viewModel.readDictionary()!!.data!!.find { it.keyword == "LockConfirmation" }!!.en!!
+                confirmlock =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "LockConfirmation" }!!.en!!
                 yes = viewModel.readDictionary()!!.data!!.find { it.keyword == "Yes" }!!.en!!
                 no = viewModel.readDictionary()!!.data!!.find { it.keyword == "No" }!!.en!!
+                error =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "ErrorOccured" }!!.en!!
+                alreadyLockedBy =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "AlreadyLockedBy" }!!.en!!
 
 
             }
             viewModel.readLanguage() == "ar" -> {
 
-                confirmlock = viewModel.readDictionary()!!.data!!.find { it.keyword == "LockConfirmation" }!!.ar!!
+                confirmlock =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "LockConfirmation" }!!.ar!!
                 yes = viewModel.readDictionary()!!.data!!.find { it.keyword == "Yes" }!!.ar!!
                 no = viewModel.readDictionary()!!.data!!.find { it.keyword == "No" }!!.ar!!
+                error =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "ErrorOccured" }!!.ar!!
+                alreadyLockedBy =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "AlreadyLockedBy" }!!.ar!!
+
 
             }
             viewModel.readLanguage() == "fr" -> {
 
 
-                confirmlock = viewModel.readDictionary()!!.data!!.find { it.keyword == "LockConfirmation" }!!.fr!!
+                confirmlock =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "LockConfirmation" }!!.fr!!
                 yes = viewModel.readDictionary()!!.data!!.find { it.keyword == "Yes" }!!.fr!!
                 no = viewModel.readDictionary()!!.data!!.find { it.keyword == "No" }!!.fr!!
+                error =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "ErrorOccured" }!!.fr!!
+                alreadyLockedBy =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "AlreadyLockedBy" }!!.fr!!
 
 
             }
         }
-
-
 
 
         val width = (activity.resources.displayMetrics.widthPixels * 0.99).toInt()
@@ -640,7 +1359,8 @@ class CorrespondenceAdapter(
 
 
                     viewModel.lockTransfer(
-                        model.id!!
+                        model.id!!,
+                        delegationId
 
                     ).enqueue(object : Callback<ResponseBody> {
                         override fun onResponse(
@@ -648,44 +1368,67 @@ class CorrespondenceAdapter(
                             response: Response<ResponseBody>
                         ) {
 
+                            var responseRecieved: Any? = null
+                            responseRecieved = response.body()!!.string()
+
                             if (response.code() != 200) {
 
-                                activity.makeToast(activity.getString(R.string.network_error))
+                                activity.makeToast(error)
 
 
                             } else {
+                                if (responseRecieved == "true") {
+                                    val bundle = Bundle()
 
-                                val bundle = Bundle()
+                                    if (status == "broadcast") {
+                                        model.messageLock = "broadcastlockedbyme"
+                                    } else {
+                                        model.messageLock = "lockedbyme"
 
-                                if (status == "broadcast") {
-                                    model.messageLock = "broadcastlockedbyme"
+                                    }
+
+                                    if (delegationId == 0) {
+
+                                        model.lockedBy = "you"
+//                                        model.lockedByDelegatedUser = "false"
+
+                                    } else {
+
+                                        model.lockedBy = "delegator"
+                                        model.lockedByDelegatedUser = "true"
+
+                                    }
+                                    model.lockedDate = getToday()
+
+                                    bundle.putSerializable(Constants.Correspondence_Model, model)
+                                    (activity as AppCompatActivity).supportFragmentManager.commit {
+                                        replace(R.id.fragmentContainer,
+                                            CorrespondenceDetailsFragment().apply {
+                                                arguments = bundleOf(
+                                                    Pair(Constants.PATH, "node"),
+                                                    Pair(Constants.Correspondence_Model, model)
+                                                )
+
+
+                                            }
+                                        )
+                                        addToBackStack("")
+
+                                    }
+
                                 } else {
-                                    model.messageLock = "lockedbyme"
-
+                                    activity.makeToast("${alreadyLockedBy}${responseRecieved}")
+                                    interfacePositionCard.refreshInbox(NodeInherit)
                                 }
 
 
-                                bundle.putSerializable(Constants.Correspondence_Model, model)
-                                (activity as AppCompatActivity).supportFragmentManager.commit {
-                                    replace(R.id.fragmentContainer,
-                                        CorrespondenceDetailsFragment().apply {
-                                            arguments = bundleOf(
-                                                Pair(Constants.PATH, "node"),
-                                                Pair(Constants.Correspondence_Model, model)
-                                            )
-
-
-                                        }
-                                    )
-                                    addToBackStack("")
-
-                                }
                             }
                         }
 
                         override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                            activity.makeToast(activity.getString(R.string.network_error))
+
+                            activity.makeToast(error)
 
                         }
 
@@ -696,7 +1439,7 @@ class CorrespondenceAdapter(
                     )
                 })
             .setNegativeButton(
-               no,
+                no,
                 DialogInterface.OnClickListener { dialogInterface, i ->
                     dialogInterface.dismiss()
                     val bundle = Bundle()
@@ -721,6 +1464,12 @@ class CorrespondenceAdapter(
                     }
 
                 }).show().window!!.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
+    }
+
+
+    private fun getToday(): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm")
+        return sdf.format(Date())
     }
 
     override fun getItemCount() = Messages.size
@@ -786,7 +1535,6 @@ class CorrespondenceAdapter(
             )
 
             val pureFormattedKey = formattedKey.replace("\"", "")
-            Log.d("isExist", pureFormattedKey.toString())
 
             if (pureFormattedKey.contains("Name: Receiving Entity, Type:external") &&
                 pureFormattedKey.contains("Broadcast Receiving Entity:true")
@@ -794,7 +1542,6 @@ class CorrespondenceAdapter(
                 isExist = true
             }
 
-            Log.d("isExist", isExist.toString())
 
         }
 
@@ -803,34 +1550,47 @@ class CorrespondenceAdapter(
         return isExist
     }
 
-    private fun recallTransfer(transferID: Int, nodeid: Int, messageRecall: RelativeLayout) {
+    private fun recallTransfer(transferID: Int, messageRecall: RelativeLayout) {
 
         var confirmrecall = ""
         var yes = ""
         var no = ""
+        var error = ""
+
+
 
         when {
             viewModel.readLanguage() == "en" -> {
 
-                confirmrecall = viewModel.readDictionary()!!.data!!.find { it.keyword == "RecallConfirmation" }!!.en!!
+                confirmrecall =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "RecallConfirmation" }!!.en!!
                 yes = viewModel.readDictionary()!!.data!!.find { it.keyword == "Yes" }!!.en!!
                 no = viewModel.readDictionary()!!.data!!.find { it.keyword == "No" }!!.en!!
+                error =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "ErrorOccured" }!!.en!!
 
 
             }
             viewModel.readLanguage() == "ar" -> {
 
-                confirmrecall = viewModel.readDictionary()!!.data!!.find { it.keyword == "RecallConfirmation" }!!.ar!!
+                confirmrecall =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "RecallConfirmation" }!!.ar!!
                 yes = viewModel.readDictionary()!!.data!!.find { it.keyword == "Yes" }!!.ar!!
                 no = viewModel.readDictionary()!!.data!!.find { it.keyword == "No" }!!.ar!!
+                error =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "ErrorOccured" }!!.ar!!
+
 
             }
             viewModel.readLanguage() == "fr" -> {
 
 
-                confirmrecall = viewModel.readDictionary()!!.data!!.find { it.keyword == "RecallConfirmation" }!!.fr!!
+                confirmrecall =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "RecallConfirmation" }!!.fr!!
                 yes = viewModel.readDictionary()!!.data!!.find { it.keyword == "Yes" }!!.fr!!
                 no = viewModel.readDictionary()!!.data!!.find { it.keyword == "No" }!!.fr!!
+                error =
+                    viewModel.readDictionary()!!.data!!.find { it.keyword == "ErrorOccured" }!!.fr!!
 
 
             }
@@ -841,13 +1601,14 @@ class CorrespondenceAdapter(
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setMessage(confirmrecall)
             .setPositiveButton(
-               yes,
+                yes,
                 DialogInterface.OnClickListener { dialogg, i ->
                     dialogg.dismiss()
 
 //                    dialog = activity.launchLoadingDialog()
                     viewModel.recallTransfer(
-                        transferID
+                        transferID,
+                        delegationId
 
                     ).enqueue(object : Callback<ResponseBody> {
 
@@ -887,7 +1648,7 @@ class CorrespondenceAdapter(
                         override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 //                            dialog!!.dismiss()
 
-                            activity.makeToast(activity.getString(R.string.network_error))
+                            activity.makeToast(error)
                         }
 
                     }
@@ -895,7 +1656,7 @@ class CorrespondenceAdapter(
                     )
                 })
             .setNegativeButton(
-               no,
+                no,
                 DialogInterface.OnClickListener { dialogInterface, i ->
                     dialogInterface.dismiss()
 
@@ -915,6 +1676,7 @@ class CorrespondenceAdapter(
 
     interface InterfacePositionCard {
         fun getPosition(position: Int, status: Int, model: CorrespondenceDataItem?)
+        fun refreshInbox(NodeInherit: String)
     }
 
 }

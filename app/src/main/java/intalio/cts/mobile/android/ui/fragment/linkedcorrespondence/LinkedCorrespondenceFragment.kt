@@ -15,11 +15,11 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cts.mobile.android.R
+import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
 import intalio.cts.mobile.android.ui.adapter.LinkedCAdapter
 import intalio.cts.mobile.android.ui.fragment.advancedsearch.AdvancedSearchFragment
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.allnotes_fragment.*
 import kotlinx.android.synthetic.main.fragment_linkedcorresp.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import timber.log.Timber
@@ -28,10 +28,13 @@ import javax.inject.Named
 
 class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCClicked{
 
-    private var Node_Id :Int = 0
+    private var Node_Inherit :String = ""
     private var DocumentId:Int = 0
     private var TransferId:Int = 0
     private var canDoAction:Boolean = false
+    private var delegationId = 0
+
+    private lateinit var translator: java.util.ArrayList<DictionaryDataItem>
 
     @Inject
     @field:Named("linkedcorrespondence")
@@ -65,15 +68,15 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        translator = viewModel.readDictionary()!!.data!!
+        setLabels()
 
-
-        centered_txt.text = requireActivity().getText(R.string.link_correspondence)
         back_icon.setOnClickListener {
             activity?.onBackPressed()
         }
 
-        requireArguments().getInt(Constants.NODE_ID).let {
-            Node_Id = it
+        requireArguments().getString(Constants.NODE_INHERIT).let {
+            Node_Inherit = it!!
         }
 
         requireArguments().getInt(Constants.DOCUMENT_ID).let {
@@ -89,10 +92,19 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             canDoAction = it
         }
 
-        if (Node_Id == 2 && canDoAction) {
-            linkrel.visibility = View.VISIBLE }
+        if (Node_Inherit == "Inbox" && canDoAction) {
+            linkrel.visibility = View.VISIBLE
+        }
 
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
 
+                it.id!!
+
+            } else {
+                0
+            }
+        }
 
 
 
@@ -116,7 +128,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             }
         }
 
-        getLinkedCData(DocumentId)
+        getLinkedCData(DocumentId,delegationId)
 
     }
 
@@ -125,9 +137,9 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
 
 
 
-    private fun getLinkedCData(DocuId: Int) {
+    private fun getLinkedCData(DocuId: Int, delegationId: Int) {
 
-        autoDispose.add(viewModel.getLinkedC(DocuId).observeOn(AndroidSchedulers.mainThread()).subscribe({
+        autoDispose.add(viewModel.getLinkedC(DocuId,delegationId).observeOn(AndroidSchedulers.mainThread()).subscribe({
 
             if (it.data.isNullOrEmpty()){
                 dialog!!.dismiss()
@@ -139,7 +151,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             }else{
 
                 linkedrecycler.adapter =
-                    LinkedCAdapter(it.data, requireActivity(),this,Node_Id,canDoAction)
+                    LinkedCAdapter(it.data, requireActivity(),this,Node_Inherit,canDoAction)
                 linkedrecycler.layoutManager =
                     LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
@@ -161,18 +173,52 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
     }
 
     private fun showDialog(linkcId: Int) {
+
+        var deleteConfirmation = ""
+        var yes = ""
+        var no = ""
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+
+                deleteConfirmation = translator.find { it.keyword == "DeleteConfirmation" }!!.en!!
+                yes = translator.find { it.keyword == "Yes" }!!.en!!
+                no = translator.find { it.keyword == "No" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                deleteConfirmation = translator.find { it.keyword == "DeleteConfirmation" }!!.ar!!
+                yes = translator.find { it.keyword == "Yes" }!!.ar!!
+                no = translator.find { it.keyword == "No" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+
+                deleteConfirmation = translator.find { it.keyword == "DeleteConfirmation" }!!.fr!!
+                yes = translator.find { it.keyword == "Yes" }!!.fr!!
+                no = translator.find { it.keyword == "No" }!!.fr!!
+
+            }
+        }
+
         val width = (resources.displayMetrics.widthPixels * 0.99).toInt()
         val alertDialog = AlertDialog.Builder(activity)
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setMessage(getString(R.string.delete_item_confirm))
-            .setPositiveButton(getString(R.string.yes), DialogInterface.OnClickListener { dialog, i ->
+            .setMessage(deleteConfirmation)
+            .setPositiveButton(yes, DialogInterface.OnClickListener { dialog, i ->
                 dialog.dismiss()
 
-                autoDispose.add(viewModel.deleteLinkedC(linkcId,DocumentId,TransferId).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                autoDispose.add(viewModel.deleteLinkedC(linkcId,DocumentId,TransferId,delegationId).observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
 
                         if (it.equals(true)){
-                            requireActivity().makeToast(getString(R.string.deleted))
+
                             (linkedrecycler.adapter as LinkedCAdapter).removeLinkedC(linkcId)
 
                         }
@@ -184,7 +230,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
 
                     }))
             })
-            .setNegativeButton(getString(R.string.no), DialogInterface.OnClickListener { dialogInterface, i ->
+            .setNegativeButton(no, DialogInterface.OnClickListener { dialogInterface, i ->
                 dialogInterface.dismiss()
 
 
@@ -193,6 +239,37 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
 
     }
 
+    private fun setLabels() {
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                linkedc_label.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.en
+                addlinked.text = translator.find { it.keyword == "Add" }!!.en
+                centered_txt.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.en
+
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                linkedc_label.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.ar
+                addlinked.text = translator.find { it.keyword == "Add" }!!.ar
+                centered_txt.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.ar
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                linkedc_label.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.fr
+                addlinked.text = translator.find { it.keyword == "Add" }!!.fr
+                centered_txt.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.fr
+
+
+            }
+        }
+    }
 
 
 }

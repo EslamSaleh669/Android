@@ -187,10 +187,10 @@
     <string name="ok">موافق</string>
     <string name="requiredField">الحقول الإلزامية</string>
     <string name="fill_search_criteria">يرجى ملء معايير البحث</string>
-    <string name="wrong_date_less">لا يمكن إختيار تاريخ أصغر من</string>
+    <string name="wrong_date_less">لا يمكن إختيار تاريخ أصغر من تاريخ اليوم</string>
     <string name="wrong_cashed_date_less">لا يمكن إختيار تاريخ أصغر من الذي تم اختياره</string>
 
-    <string name="wrong_date_greater">لا يمكن إختيار تاريخ أكبر من</string>
+    <string name="wrong_date_greater"> لا يمكن إختيار تاريخ أكبر من تاريخ الإنتهاء</string>
 
 
     <string name="transferWarning">سبق أن اخترت هذا المستلم</string>
@@ -552,6 +552,7 @@
     <string name="users_donthave_privacy">المستخدمون التالون ليس لديهم الدرجة السرية المحددة: </string>
     <string name="continue_confirm">هل أنت متأكد أنك تريد الاستمرار؟ </string>
     <string name="lessthan_duedate">selected date must be less than transfer due date</string>
+    <string name="scan_barcode">مسح الرمز </string>
 
 
 </resources>

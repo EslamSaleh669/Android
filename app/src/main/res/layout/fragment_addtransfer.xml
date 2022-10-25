@@ -202,11 +202,12 @@
             android:gravity="center"
             android:paddingStart="30dp"
             android:paddingTop="5dp"
+            android:maxLength="10"
             android:paddingEnd="30dp"
             android:paddingBottom="5dp"
             android:text="@string/save"
             android:textColor="@color/black2"
-            android:textSize="17sp"
+            android:textSize="15sp"
 
             />
 
@@ -232,7 +233,7 @@
             android:paddingBottom="5dp"
             android:text="@string/transfer"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="15sp"
 
             />
 

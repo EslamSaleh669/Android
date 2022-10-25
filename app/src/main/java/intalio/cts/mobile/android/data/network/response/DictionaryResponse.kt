@@ -1,6 +1,7 @@
 package intalio.cts.mobile.android.data.network.response
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class DictionaryResponse(
 
@@ -15,7 +16,7 @@ data class DictionaryResponse(
 
 	@field:SerializedName("recordsTotal")
 	val recordsTotal: Int? = null
-)
+) : Serializable
 
 data class DictionaryDataItem(
 
@@ -36,4 +37,4 @@ data class DictionaryDataItem(
 
 	@field:SerializedName("fr")
 	var fr: String? = null
-)
+) : Serializable

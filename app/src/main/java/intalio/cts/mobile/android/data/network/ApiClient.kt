@@ -7,7 +7,6 @@ import intalio.cts.mobile.android.data.model.viewer.ViewerDocumentVersionModel
 import intalio.cts.mobile.android.data.network.response.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
-import okhttp3.Response
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -74,6 +73,12 @@ interface ApiClient {
     ): Observable<AllStructuresItem>
     // https://iamp.intalio.com/api/GetUser
 
+    @GET("SendingRule/GetStructureIdsSendingRules")
+    fun geStructureSendingRules(
+        @Header("Authorization") token: String,
+        @Query("structureId") id: Int,
+    ): Call<ResponseBody>
+
 
     @GET()
     fun getFullStructures(
@@ -94,14 +99,17 @@ interface ApiClient {
     @GET("Node/ListTreeNodes")
     fun getNodesData(
         @Header("Accept-Language") lang: String,
-        @Header("Authorization") token: String
-    ): Observable<List<NodeResponseItem>>
+        @Header("Authorization") token: String,
+
+    ): Observable<ArrayList<NodeResponseItem>>
 
     @GET("Transfer/GetInboxCounts")
     fun getInboxCount(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("nodeId") nodeId: Int
+        @Query("nodeId") nodeId: Int,
+        @Query("delegationId")delegationId: Int
+
     ): Observable<InboxCountResponse>
 
 
@@ -109,21 +117,34 @@ interface ApiClient {
     fun getSentCount(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("nodeId") nodeId: Int
+        @Query("nodeId") nodeId: Int,
+        @Query("delegationId")delegationId: Int
+
     ): Observable<InboxCountResponse>
 
     @GET("Transfer/GetCompletedCounts")
     fun getCompletedCount(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("nodeId") nodeId: Int
+        @Query("nodeId") nodeId: Int,
+        @Query("delegationId")delegationId: Int
+    ): Observable<InboxCountResponse>
+
+
+    @GET("Document/GetClosedCounts")
+    fun getClosedCount(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("nodeId") nodeId: Int,
+        @Query("delegationId")delegationId: Int
     ): Observable<InboxCountResponse>
 
     @GET("Document/GetMyRequestsCounts")
     fun getRequestedCount(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("nodeId") nodeId: Int
+        @Query("nodeId") nodeId: Int,
+        @Query("delegationId")delegationId: Int
     ): Observable<InboxCountResponse>
 
 
@@ -224,6 +245,16 @@ interface ApiClient {
         @Query("text") text: String
     ): Observable<AllStructuresResponse>
 
+    @FormUrlEncoded
+    @POST()
+    fun getAvailableStructures(
+        @Url url: String,
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("text") text: String,
+        @Field("ids[]") ids: ArrayList<Int>,
+    ): Observable<AllStructuresResponse>
+
     // "https://iamp.intalio.com/api/GetUsersAndStructuresWithSearchAttributes"
     ////
     @FormUrlEncoded
@@ -232,7 +263,8 @@ interface ApiClient {
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
         @Field("start") start: Int,
-        @Field("length") length: Int
+        @Field("length") length: Int,
+        @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>
 
@@ -243,7 +275,8 @@ interface ApiClient {
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
         @Field("start") start: Int,
-        @Field("length") length: Int
+        @Field("length") length: Int,
+        @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>
 
@@ -254,7 +287,20 @@ interface ApiClient {
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
         @Field("start") start: Int,
-        @Field("length") length: Int
+        @Field("length") length: Int,
+        @Field("DelegationId") delegationId: Int
+
+    ): Observable<CorrespondenceResponse>
+
+
+    @FormUrlEncoded
+    @POST("Document/ListClosed")
+    fun closedData(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Field("start") start: Int,
+        @Field("length") length: Int,
+        @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>
 
@@ -264,7 +310,8 @@ interface ApiClient {
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
         @Field("start") start: Int,
-        @Field("length") length: Int
+        @Field("length") length: Int,
+        @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>
 
@@ -272,7 +319,9 @@ interface ApiClient {
     @POST("Transfer/View")
     fun viewAction(
         @Header("Authorization") token: String,
-        @Query("id") transferId: Int
+        @Query("id") transferId: Int,
+        @Query("delegationId") delegationId: Int
+
 
     ): Call<ResponseBody>
 
@@ -280,21 +329,25 @@ interface ApiClient {
     @POST("Transfer/Lock")
     fun lockTransfer(
         @Header("Authorization") token: String,
-        @Query("id") transferId: Int
+        @Query("id") transferId: Int,
+        @Query("delegationId") delegationId: Int,
+
 
     ): Call<ResponseBody>
 
     @POST("Transfer/Recall")
     fun recallTransfer(
         @Header("Authorization") token: String,
-        @Query("id") transferId: Int
+        @Query("id") transferId: Int,
+        @Query("delegationId") delegationId: Int
 
     ):Call<ResponseBody>
 
     @POST("Transfer/UnLock")
     fun unlockTransfer(
         @Header("Authorization") token: String,
-        @Query("id") transferId: Int
+        @Query("id") transferId: Int,
+        @Query("delegationId") delegationId: Int
 
     ):Call<ResponseBody>
 
@@ -305,7 +358,8 @@ interface ApiClient {
     fun transferDismissCopy(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Field("ids[]") ids: Array<Int?>
+        @Field("ids[]") ids: Array<Int?>,
+        @Field("delegationId") delegationId:Int
 
     ): Observable<ArrayList<DismissCopyResponseItem>>
 
@@ -328,12 +382,12 @@ interface ApiClient {
     ): Observable<MetaDataResponse>
 
 
-
     @GET("Document/GetDocumentByTransferId")
     fun getMetaDataInfo(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("id") transferId: Int
+        @Query("id") transferId: Int,
+        @Query("delegationId") delegationId:Int
 
     ): Observable<MetaDataResponse>
 
@@ -342,7 +396,9 @@ interface ApiClient {
     fun getSearchDocument(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("id") documentId: Int
+        @Query("id") documentId: Int,
+        @Query("delegationId") delegationId:Int
+
 
     ): Observable<MetaDataResponse>
 
@@ -380,12 +436,27 @@ interface ApiClient {
         @Field("Id") delegationId: Int
     ): Observable<SaveDelegationResponse>
 
-
-    @DELETE("Delegation/Delete")
+    @DELETE()
     fun deleteDelegation(
         @Header("Authorization") token: String,
-        @Query("ids[]") ids: ArrayList<Int>
-    ): Call<Void>
+        @Url url: String,
+        @Query("ids") ids: Array<Int>
+    ): Call<ResponseBody>
+
+
+    @GET("http://192.168.1.11:6969/Delegation/ListDelegationToUser")
+    fun delegationRequests(
+        @Header("Authorization") token: String
+    ): Call<ArrayList<DelegationRequestsResponseItem>>
+
+    @GET("Delegation/GetByDelegationId")
+    fun getDelegationById(
+        @Header("Accept-Language") lang: String,
+        @Header("Authorization") token: String,
+        @Query("delegationId") delegationId: Int
+    ): Observable<DelegatorResponse>
+
+
 
 
     @GET("Note/List")
@@ -393,7 +464,8 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Query("documentId") documentId: Int,
         @Query("start") start: Int,
-        @Query("length") length: Int
+        @Query("length") length: Int,
+        @Query("delegationId") delegationId: Int
 
     ): Observable<NotesResponse>
 
@@ -407,6 +479,7 @@ interface ApiClient {
         @Field("TransferId") TransferId: Int,
         @Field("Notes") Notes: String,
         @Field("IsPrivate") IsPrivate: Boolean,
+        @Field("delegationId") delegationId: Int
     ): Observable<SaveNotesResponse>
 
 
@@ -419,7 +492,8 @@ interface ApiClient {
         @Field("TransferId") TransferId: Int,
         @Field("Notes") Notes: String,
         @Field("IsPrivate") IsPrivate: Boolean,
-        @Field("Id") nodeId: Int
+        @Field("Id") nodeId: Int,
+        @Field("delegationId") delegationId: Int
     ): Observable<SaveNotesResponse>
 
     @DELETE("Note/Delete")
@@ -427,7 +501,9 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Query("id") noteID: Int,
         @Query("documentId") DocumentId: Int,
-        @Query("transferId") TransferId: Int
+        @Query("transferId") TransferId: Int,
+        @Query("delegationId") delegationId: Int
+
 
     ): Observable<Boolean>
 
@@ -437,8 +513,8 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Query("documentId") documentId: Int,
         @Field("start") start: Int,
-        @Field("length") length: Int
-
+        @Field("length") length: Int,
+        @Query("delegationId") delegationId: Int
     ): Observable<TransferHistoryResponse>
 
 
@@ -455,7 +531,9 @@ interface ApiClient {
     fun getMyTransfer(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("id") transferId: Int
+        @Query("id") transferId: Int,
+        @Query("delegationId") delegationId: Int
+
 
     ): Observable<MyTransferResponse>
 
@@ -466,7 +544,9 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Query("documentId") documentId: Int,
         @Query("start") start: Int,
-        @Query("length") length: Int
+        @Query("length") length: Int,
+        @Query("delegationId") delegationId: Int
+
 
     ): Observable<NonArchAttachmentsResponse>
 
@@ -480,6 +560,8 @@ interface ApiClient {
         @Query("TypeId") TypeId: Int,
         @Query("Description") Description: String,
         @Query("Quantity") Quantity: Int,
+        @Query("delegationId") delegationId: Int
+
     ): Observable<SaveNotesResponse>
 
 
@@ -493,6 +575,8 @@ interface ApiClient {
         @Query("Description") Description: String,
         @Query("Quantity") Quantity: Int,
         @Query("Id") nonarchID: Int,
+        @Query("delegationId") delegationId: Int
+
     ): Observable<SaveNotesResponse>
 
 
@@ -501,7 +585,9 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Query("id") nonarchID: Int,
         @Query("documentId") DocumentId: Int,
-        @Query("transferId") TransferId: Int
+        @Query("transferId") TransferId: Int,
+        @Query("delegationId") delegationId: Int
+
 
     ): Observable<Boolean>
 
@@ -510,7 +596,8 @@ interface ApiClient {
     fun getLinkedC(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("documentId") documentId: Int
+        @Query("documentId") documentId: Int,
+        @Query("delegationId") delegationId: Int
     ): Observable<LinkedCorrespondenceResponse>
 
     @DELETE("LinkedDocument/Delete")
@@ -518,7 +605,9 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Query("id") noteID: Int,
         @Query("documentId") DocumentId: Int,
-        @Query("transferId") TransferId: Int
+        @Query("transferId") TransferId: Int,
+        @Query("delegationId") delegationId: Int
+
 
     ): Observable<Boolean>
 
@@ -528,7 +617,8 @@ interface ApiClient {
     fun completeTransfer(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Field("ids[]") ids: Array<Int?>
+        @Field("ids[]") ids: Array<Int?>,
+        @Field("delegationId") delegationId: Int
 
     ): Observable<ArrayList<CompleteTransferResponseItem>>
 
@@ -537,7 +627,8 @@ interface ApiClient {
     fun getVisualTracking(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("id") DocumentId: Int
+        @Query("id") DocumentId: Int,
+        @Query("delegationId") delegationId: Int
 
     ): Observable<ArrayList<VisualTrackingResponseItem>>
 
@@ -546,7 +637,8 @@ interface ApiClient {
     fun transferTransfer(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Body model: List<TransferRequestModel>
+        @Body model: List<TransferRequestModel>,
+        @Query("delegationId") delegationId: Int
 
     ): Observable<ArrayList<TransferTransferResponseItem>>
 
@@ -562,7 +654,8 @@ interface ApiClient {
         @Field("instruction") instruction: String,
         @Field("structureId") structureId: Int,
         @Field("transferToType") transferToType: Int,
-        @Field("structureReceivers[]") structureReceivers: Array<Int>
+        @Field("structureReceivers[]") structureReceivers: Array<Int>,
+        @Field("delegationId") delegationId: Int
 
     ): Call<ResponseBody>
 
@@ -579,7 +672,9 @@ interface ApiClient {
         @Field("instruction") instruction: String,
         @Field("structureId") structureId: Int,
         @Field("transferToType") transferToType: Int,
-        @Field("structureReceivers[]") structureReceivers: Array<Int>
+        @Field("structureReceivers[]") structureReceivers: Array<Int>,
+        @Field("delegationId") delegationId: Int
+
 
     ): Call<ResponseBody>
 
@@ -599,7 +694,9 @@ interface ApiClient {
     fun attachmentsData(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("documentId") documentId: Int
+        @Query("documentId") documentId: Int,
+        @Query("delegationId") delegationId: Int
+
     ): Observable<ArrayList<AttachmentModel>>
 
 
@@ -650,9 +747,11 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Field("documentId") DocumentId: Int,
         @Field("transferId") TransferId: Int,
-        @Field("linkDocumentIds[]") documentIds: Array<Int>
+        @Field("linkDocumentIds[]") documentIds: Array<Int>,
+        @Field("delegationId") delegationId: Int
 
-    ): Observable<SaveNotesResponse>
+
+        ): Observable<SaveNotesResponse>
 
 
     @GET()
@@ -674,6 +773,13 @@ interface ApiClient {
         @Query("isDraft") isDraft: Boolean
     ): Observable<List<ViewerDocumentVersionModel>>
 
+
+    @GET()
+    fun getViewerPDF(
+        @Header("Authorization") token: String,
+        @Header("Content-Type") contentType: String,
+        @Url url: String,
+    ): Call<ResponseBody>
 
 
 }

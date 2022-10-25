@@ -25,6 +25,7 @@
         <item name="android:paddingLeft">0dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:configChanges">locale|keyboardHidden|orientation|screenSize</item>
     </style>
 
     <style name="BottomDialogAnimation">
@@ -41,12 +42,30 @@
         <item name="windowFixedWidthMajor">90%</item>
         <item name="windowFixedWidthMinor">90%</item>
         <item name="android:windowAnimationStyle">@style/BottomDialogAnimation</item>
+
     </style>
+
+    <style name="DatePickerStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/appcolor</item>
+        <item name="colorAccent">@color/appcolor</item>
+        <item name="android:dateTextAppearance">@android:style/TextAppearance.Small</item>
+    </style>
+
+
+
 
     <style name="Style_TextView">
         <item name="fontFamily">@font/myriadpro_regular</item>
         <item name="android:textSize">16sp</item>
 
+    </style>
+
+    <style name="Theme_Dialog" parent="android:Theme.Holo.Dialog">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
 

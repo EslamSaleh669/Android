@@ -9,7 +9,7 @@ data class AllStructuresResponse(
 	val structures: ArrayList<AllStructuresItem>? = null,
 
 	@field:SerializedName("users")
-	val users: ArrayList<AllStructuresUsersItem?>? = null
+	val users: ArrayList<AllStructuresUsersItem>? = null
 ) : Serializable
 
 data class AllStructuresAttributesItem(

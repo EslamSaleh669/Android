@@ -1,7 +1,6 @@
 package intalio.cts.mobile.android.ui.fragment.correspondencedetails
 
 import androidx.lifecycle.ViewModel
-import com.squareup.okhttp.Response
 import intalio.cts.mobile.android.data.model.AttachmentModel
 import intalio.cts.mobile.android.data.model.viewer.ViewerDocumentDetailsModel
 import intalio.cts.mobile.android.data.model.viewer.ViewerDocumentVersionModel
@@ -10,7 +9,6 @@ import intalio.cts.mobile.android.data.repo.AdminRepo
 import intalio.cts.mobile.android.data.repo.UserRepo
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.ReplaySubject
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -29,20 +27,20 @@ class CorrespondenceDetailsViewModel(private val userRepo: UserRepo, private val
 
     fun readTokenData(): TokenResponse? = userRepo.readTokenData()
 
-    fun checkForTransfersLoading(lastPosition: Int,documentId:Int) {
+    fun checkForTransfersLoading(lastPosition: Int,documentId:Int,delegationId: Int) {
         var currentItemsCount = 0
         for (item in Transfers.values) {
             currentItemsCount += (item as ArrayList<*>).size
         }
         if (currentItemsCount - 1 == lastPosition) {
-            loadMoreTransfers(documentId)
+            loadMoreTransfers(documentId,delegationId)
         }
     }
 
 
-    fun loadMoreTransfers(documentId:Int) {
-        disposable = adminRepo.transfersHistoryData(start,documentId).subscribe({
-            start = start + it.data!!.size
+    fun loadMoreTransfers(documentId:Int,delegationId: Int) {
+        disposable = adminRepo.transfersHistoryData(start,documentId,delegationId).subscribe({
+            start += it.data!!.size
             limit += it.data.size
             Transfers.onNext(it.data)
         }, {
@@ -64,28 +62,28 @@ class CorrespondenceDetailsViewModel(private val userRepo: UserRepo, private val
 
 
 
-    fun getMyTransfer(transferId:Int): Observable<MyTransferResponse> = adminRepo.getMyTransfer(transferId)
+    fun getMyTransfer(transferId:Int,delegationId:Int): Observable<MyTransferResponse> = adminRepo.getMyTransfer(transferId,delegationId)
 
 
-    fun completeTransfer(ids: Array<Int?>): Observable<ArrayList<CompleteTransferResponseItem>> = adminRepo.completeTransfer(ids)
+    fun completeTransfer(ids: Array<Int?>,delegationId: Int): Observable<ArrayList<CompleteTransferResponseItem>> = adminRepo.completeTransfer(ids,delegationId)
 
-    fun transferDismissCopy(ids:Array<Int?>) : Observable<ArrayList<DismissCopyResponseItem>> = adminRepo.transferDismissCopy(ids)
+    fun transferDismissCopy(ids:Array<Int?>,delegationId:Int ) : Observable<ArrayList<DismissCopyResponseItem>> = adminRepo.transferDismissCopy(ids,delegationId)
 
 
-    fun getVisualTracking(documentId:Int) : Observable<ArrayList<VisualTrackingResponseItem>> =
-        adminRepo.getVisualTracking(documentId)
+    fun getVisualTracking(documentId:Int,delegationId: Int) : Observable<ArrayList<VisualTrackingResponseItem>> =
+        adminRepo.getVisualTracking(documentId,delegationId)
 
-    fun readNodeID():Int = userRepo.readNodeID()!!
+    fun readCurrentNode():String = userRepo.readCurrentNode()!!
 
 
     fun savePath(path: String) = userRepo.savePath(path)
 
 
-    fun viewTransfer(transferId: Int) : Call<ResponseBody> = adminRepo.viewTransfer(transferId)
+    fun viewTransfer(transferId: Int, delegationId: Int) : Call<ResponseBody> = adminRepo.viewTransfer(transferId,delegationId)
 
-    fun getOriginalDocument(documentId:Int):
+    fun getOriginalDocument(documentId:Int, delegationId:Int):
             Observable<ArrayList<AttachmentModel>> =
-        adminRepo.attachmentsData(documentId)
+        adminRepo.attachmentsData(documentId,delegationId)
 
 
     fun replaceAttachment(body: MultipartBody):Observable<UploadAttachmentResponse>
@@ -110,7 +108,10 @@ class CorrespondenceDetailsViewModel(private val userRepo: UserRepo, private val
         adminRepo.getViewerDocumentVersions(ctsDocumentId,ctsTransferId,isDraft,documentId)
 
 
-    fun unlockTransfer(transferId: Int) : Call<ResponseBody> = adminRepo.unlockTransfer(transferId)
+    fun getViewerPDF() : Call<ResponseBody> = adminRepo.getViewerPDF()
+
+    fun unlockTransfer(transferId: Int, delegationId: Int) : Call<ResponseBody> = adminRepo.unlockTransfer(transferId,delegationId)
+    fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
 
     override fun onCleared() {
         super.onCleared()

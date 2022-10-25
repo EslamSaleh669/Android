@@ -57,7 +57,7 @@ class DelegationsViewModel (private val userRepo: UserRepo, private val adminRep
         adminRepo.saveEditedDelegations(toUserId,fromDate,toDate,categories,delegationId)
 
 
-    fun deleteDelegation(ids:ArrayList<Int>): Call<Void> = adminRepo.deleteDelegation(ids)
+    fun deleteDelegation(ids:Array<Int>): Call<ResponseBody> = adminRepo.deleteDelegation(ids)
 
     fun readLanguage() : String = userRepo.currentLang()
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()

@@ -20,7 +20,7 @@
         android:text="@string/transfer"
         android:id="@+id/send_transfers"
         android:background="@drawable/green_background"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:fontFamily="@font/myriadpro_bold"
         android:textColor="@color/white"/>
 

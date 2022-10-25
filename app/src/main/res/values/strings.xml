@@ -279,7 +279,7 @@
     <string name="requiredField">Required fields</string>
     <string name="fill_search_criteria">Please fill the search criteria</string>
     <string name="wrong_date_less">Cannot select start date less than today</string>
-    <string name="wrong_cashed_date_less">Cannot select start date less than the Old selected one</string>
+    <string name="wrong_cashed_date_less">Cannot select start date less than the old selected one</string>
     <string name="wrong_date_greater">Cannot select start date greater than end date </string>
 
     <string name="addTransferWarning">Please add a transfer first</string>
@@ -553,6 +553,7 @@
     <string name="users_donthave_privacy">The following receivers don\'t have the selected privacy: </string>
     <string name="continue_confirm">Are you sure you want to continue? </string>
     <string name="lessthan_duedate">selected date must be less than transfer due date</string>
+    <string name="scan_barcode">Scan Barcode</string>
 
 
 </resources>

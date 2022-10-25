@@ -7,7 +7,6 @@ import intalio.cts.mobile.android.data.repo.UserRepo
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.ReplaySubject
-import org.json.JSONObject
 
 class NonArchAttachmentsViewModel (private val userRepo: UserRepo, private val adminRepo: AdminRepo) : ViewModel() {
 
@@ -21,19 +20,19 @@ class NonArchAttachmentsViewModel (private val userRepo: UserRepo, private val a
 
 
 
-    fun checkForNonArchLoading(lastPosition: Int,documentId:Int) {
+    fun checkForNonArchLoading(lastPosition: Int,documentId:Int,delegationId:Int) {
         var currentItemsCount = 0
         for (item in NonArch.values) {
             currentItemsCount += (item as ArrayList<*>).size
         }
         if (currentItemsCount - 1 == lastPosition) {
-            loadMoreNonArch(documentId)
+            loadMoreNonArch(documentId,delegationId)
         }
     }
 
 
-    fun loadMoreNonArch(documentId:Int) {
-        disposable = adminRepo.nonArchData(start,documentId).subscribe({
+    fun loadMoreNonArch(documentId:Int,delegationId:Int) {
+        disposable = adminRepo.nonArchData(start,documentId,delegationId).subscribe({
             start = start + it.data!!.size
             limit += it.data.size
             NonArch.onNext(it.data)
@@ -44,18 +43,18 @@ class NonArchAttachmentsViewModel (private val userRepo: UserRepo, private val a
 
 
 
-    fun saveNonArch(documentId:Int,transferId:Int,typeId:Int,description:String,quantity:Int):
+    fun saveNonArch(documentId:Int,transferId:Int,typeId:Int,description:String,quantity:Int, delegationId: Int):
             Observable<SaveNotesResponse> =
-        adminRepo.saveNonArch(documentId,transferId,typeId,description,quantity)
+        adminRepo.saveNonArch(documentId,transferId,typeId,description,quantity,delegationId)
 
 
-    fun saveEditedNonArch(documentId:Int,transferId:Int,typeId:Int,description:String,quantity:Int,nonarchId:Int):
+    fun saveEditedNonArch(documentId:Int,transferId:Int,typeId:Int,description:String,quantity:Int,nonarchId:Int, delegationId: Int):
             Observable<SaveNotesResponse> =
-        adminRepo.saveEditedNonArch(documentId,transferId,typeId,description,quantity,nonarchId)
+        adminRepo.saveEditedNonArch(documentId,transferId,typeId,description,quantity,nonarchId,delegationId)
 
 
-    fun deleteNonArch(noteID: Int, documentId:Int, transferId:Int): Observable<Boolean> =
-        adminRepo.deleteNonArch(noteID,documentId,transferId)
+    fun deleteNonArch(noteID: Int, documentId:Int, transferId:Int, delegationId: Int): Observable<Boolean> =
+        adminRepo.deleteNonArch(noteID,documentId,transferId,delegationId)
 
     fun readTypesData (): ArrayList<TypesResponseItem>? = userRepo.readTypes()
 
@@ -65,4 +64,10 @@ class NonArchAttachmentsViewModel (private val userRepo: UserRepo, private val a
         disposable?.dispose()
     }
 
- }
+    fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
+
+    fun readLanguage (): String = userRepo.currentLang()
+
+    fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
+
+}

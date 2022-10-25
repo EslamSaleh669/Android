@@ -4,13 +4,8 @@ import androidx.lifecycle.ViewModel
 import intalio.cts.mobile.android.data.network.response.*
 import intalio.cts.mobile.android.data.repo.AdminRepo
 import intalio.cts.mobile.android.data.repo.UserRepo
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.ReplaySubject
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Response
 
 class ReplyViewModel (private val userRepo: UserRepo, private val adminRepo: AdminRepo) : ViewModel() {
 
@@ -21,7 +16,7 @@ class ReplyViewModel (private val userRepo: UserRepo, private val adminRepo: Adm
 
 
     fun replyToUser(documentId:Int, transferId:Int,purposeId:Int,dueDate:String,
-                    instruction:String,structureId:Int,structureReceivers:Array<Int>): Call<ResponseBody>  =
+                    instruction:String,structureId:Int,structureReceivers:Array<Int>,delegationId:Int): Call<ResponseBody>  =
         adminRepo.replyToUser(
             documentId,
             transferId,
@@ -29,11 +24,12 @@ class ReplyViewModel (private val userRepo: UserRepo, private val adminRepo: Adm
             dueDate,
             instruction,
             structureId,
-            structureReceivers
+            structureReceivers,
+            delegationId
         )
 
     fun replyToStructure(documentId:Int, transferId:Int,purposeId:Int,dueDate:String,
-                    instruction:String,structureId:Int,structureReceivers:Array<Int>): Call<ResponseBody>  =
+                    instruction:String,structureId:Int,structureReceivers:Array<Int>,delegationId:Int): Call<ResponseBody>  =
         adminRepo.replyToStructure(
             documentId,
             transferId,
@@ -41,13 +37,18 @@ class ReplyViewModel (private val userRepo: UserRepo, private val adminRepo: Adm
             dueDate,
             instruction,
             structureId,
-            structureReceivers
+            structureReceivers,
+            delegationId
         )
 
 
 
+    fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
 
+    fun readLanguage (): String = userRepo.currentLang()
 
+    fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
 
+    fun readCurrentNode():String = userRepo.readCurrentNode()!!
 
 }

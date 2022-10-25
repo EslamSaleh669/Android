@@ -12,11 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.AdvancedSearchRequest
+import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
 import intalio.cts.mobile.android.ui.adapter.LinkedSearchResultAdapter
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.ReplaySubject
-import kotlinx.android.synthetic.main.fragment_correspondence.noDataFound
 import kotlinx.android.synthetic.main.fragment_linkedsearchresult.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import kotlinx.android.synthetic.main.viewer_layout.back_icon
@@ -36,7 +36,9 @@ class LinkedCorrespondenceResultFragment : Fragment(),
     private var DocumentId: Int = 0
     private var TransferId: Int = 0
     private var documentIDs = ArrayList<Int>()
+    private var delegationId = 0
 
+    private lateinit var translator: java.util.ArrayList<DictionaryDataItem>
 
     @Inject
     @field:Named("linkedcorrespondence")
@@ -69,7 +71,9 @@ class LinkedCorrespondenceResultFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        centered_txt.text = getString(R.string.search)
+
+        translator = viewModel.readDictionary()!!.data!!
+        setLabels()
         back_icon.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -89,6 +93,15 @@ class LinkedCorrespondenceResultFragment : Fragment(),
             TransferId = it
         }
 
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
+
+                it.id!!
+
+            } else {
+                0
+            }
+        }
         val result = arguments?.getSerializable(Constants.SEARCH_MODEL)
         if (result.toString() != "null") {
             searchModel = result as AdvancedSearchRequest
@@ -119,6 +132,24 @@ class LinkedCorrespondenceResultFragment : Fragment(),
         requireArguments().getInt(Constants.SEARCH_TYPE).let {
             typeOfSearch = it
         }
+        var SelectAtLeastOneDocument = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                SelectAtLeastOneDocument = translator.find { it.keyword == "SelectAtLeastOneDocument" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                SelectAtLeastOneDocument = translator.find { it.keyword == "SelectAtLeastOneDocument" }!!.ar!!
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                SelectAtLeastOneDocument = translator.find { it.keyword == "SelectAtLeastOneDocument" }!!.fr!!
+
+            }
+        }
 
 
 
@@ -126,19 +157,39 @@ class LinkedCorrespondenceResultFragment : Fragment(),
             if (documentIDs.size > 0) {
 
                 dialog = requireActivity().launchLoadingDialog()
-                addLinkedDocument(documentIDs)
+                addLinkedDocument(documentIDs,delegationId)
             } else {
-                requireActivity().makeToast(getString(R.string.please_select_corresp))
+                requireActivity().makeToast(SelectAtLeastOneDocument)
             }
         }
 
     }
 
     private fun getResult(searchObject: JSONObject) {
+        var noMoreData = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                noMoreData = "No more data"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                noMoreData = "لا يوجد المزيد"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                noMoreData = "Plus de données"
+                noDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.fr!!
+            }
+        }
+
         viewModel.Items = ReplaySubject.create()
 
         linkedrecyclersres.adapter =
-            LinkedSearchResultAdapter(arrayListOf(), requireActivity(), this)
+            LinkedSearchResultAdapter(arrayListOf(), requireActivity(), this,DocumentId)
         linkedrecyclersres.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
@@ -149,22 +200,33 @@ class LinkedCorrespondenceResultFragment : Fragment(),
             val lastPosition: Int =
                 (linkedrecyclersres.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
             if (it!!.isEmpty() && viewModel.limit == 0) {
-                noDataFound.visibility = View.VISIBLE
+                noDataFounded.visibility = View.VISIBLE
                 linkedrecyclersres.visibility = View.GONE
 
             } else {
                 if (it.isNotEmpty()) {
                     Timber.d("Data Loaded")
+                    val duplicatedItem = it.find { it.id == DocumentId }
+                    it.remove(duplicatedItem)
                     (linkedrecyclersres.adapter as LinkedSearchResultAdapter).addMessages(it)
 
                 } else if (lastPosition > 10) {
-                    requireContext().makeToast(getString(R.string.no_moredata))
+                    requireContext().makeToast(noMoreData)
                 }
             }
         }, {
             dialog!!.dismiss()
-            noDataFound.visibility = View.VISIBLE
+            noDataFounded.visibility = View.VISIBLE
             linkedrecyclersres.visibility = View.GONE
+
+            if (it.message!!.contains("BEGIN_ARRAY")){
+                requireContext().makeToast("Crawling service not configured")
+
+            }else{
+                requireContext().makeToast(it.message!!)
+
+            }
+
             Timber.e(it)
 
         }))
@@ -191,6 +253,25 @@ class LinkedCorrespondenceResultFragment : Fragment(),
         viewModel.start = 0
         viewModel.limit = 0
 
+        searchModel.referenceNumber = ""
+        searchModel.category = ""
+        searchModel.subject = ""
+        searchModel.status = ""
+        searchModel.fromDate = ""
+        searchModel.toDate = ""
+        searchModel.priority = ""
+        searchModel.documentSender = ""
+        searchModel.documentReceiver = ""
+        searchModel.fromUser = ""
+        searchModel.toUser = ""
+        searchModel.fromStructure = ""
+        searchModel.toStructure = ""
+        searchModel.fromTransferDate = ""
+        searchModel.toTransferDate = ""
+        searchModel.keyword = ""
+        searchModel.isOverdue = false
+
+
     }
 
     override fun onSelectedLinkedClicked(documentsIds: ArrayList<Int>) {
@@ -200,12 +281,12 @@ class LinkedCorrespondenceResultFragment : Fragment(),
 
     }
 
-    private fun addLinkedDocument(documentsIds: ArrayList<Int>) {
+    private fun addLinkedDocument(documentsIds: ArrayList<Int>, delegationId: Int) {
 
         val arrayIds: Array<Int> = documentsIds.toTypedArray()
 
         autoDispose.add(
-            viewModel.addLinkedDocument(arrayIds, DocumentId, TransferId)
+            viewModel.addLinkedDocument(arrayIds, DocumentId, TransferId,delegationId)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
 
@@ -228,6 +309,36 @@ class LinkedCorrespondenceResultFragment : Fragment(),
 
                     })
         )
+    }
+
+    private fun setLabels(){
+        when {
+            viewModel.readLanguage() == "en" -> {
+                btnSubmit.text = translator.find { it.keyword == "Submit" }!!.en
+                btnclose.text = translator.find { it.keyword == "Close" }!!.en
+                centered_txt.text = translator.find { it.keyword == "New" }!!.en
+                noDataFounded.text = translator.find { it.keyword == "NoDataToDisplay" }!!.en
+
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                btnSubmit.text = translator.find { it.keyword == "Submit" }!!.ar
+                btnclose.text = translator.find { it.keyword == "Close" }!!.ar
+                centered_txt.text = translator.find { it.keyword == "New" }!!.ar
+                noDataFounded.text = translator.find { it.keyword == "NoDataToDisplay" }!!.ar
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                btnSubmit.text = translator.find { it.keyword == "Submit" }!!.fr
+                btnclose.text = translator.find { it.keyword == "Close" }!!.fr
+                centered_txt.text = translator.find { it.keyword == "New" }!!.fr
+                noDataFounded.text = translator.find { it.keyword == "NoDataToDisplay" }!!.fr
+
+            }
+        }
+
     }
 
 }

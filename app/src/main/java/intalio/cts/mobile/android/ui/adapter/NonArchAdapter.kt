@@ -18,7 +18,7 @@ class NonArchAdapter(
     private val NonArch: ArrayList<NonArchDataItem>,
     val activity: Activity,
     private val onDeleteCLickListener: OnDeleteNoteClicked,
-    private val Node_Id: Int,
+    private val Node_Inherit: String,
     private val canDoAction :Boolean
 
 ) : RecyclerView.Adapter<NonArchAdapter.AllCategoriesVHolder>() {
@@ -32,7 +32,12 @@ class NonArchAdapter(
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onBindViewHolder(holder: AllCategoriesVHolder, position: Int) {
-        if (Node_Id != 2 || !canDoAction){
+        if (Node_Inherit != "Inbox" || !canDoAction){
+            holder.nonArchDelete.visibility = View.INVISIBLE
+            holder.nonArchEdit.visibility = View.INVISIBLE
+        }
+
+        if (NonArch[position].isEditable == false){
             holder.nonArchDelete.visibility = View.INVISIBLE
             holder.nonArchEdit.visibility = View.INVISIBLE
         }

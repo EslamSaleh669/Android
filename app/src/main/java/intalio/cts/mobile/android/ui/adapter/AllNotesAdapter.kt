@@ -3,6 +3,7 @@ package intalio.cts.mobile.android.ui.adapter
 import android.app.Activity
 import android.os.Build
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +20,8 @@ class AllNotesAdapter(
     private val Notes: ArrayList<NotesDataItem>,
     val activity: Activity,
     private val onDeleteCLickListener: OnDeleteNoteClicked,
-    private val Node_Id: Int,
-    private val canDoAction :Boolean
+    private val Node_Inherit: String,
+    private val canDoAction: Boolean
 ) : RecyclerView.Adapter<AllNotesAdapter.AllCategoriesVHolder>() {
 
 
@@ -34,7 +35,12 @@ class AllNotesAdapter(
     override fun onBindViewHolder(holder: AllCategoriesVHolder, position: Int) {
 
 
-        if (Node_Id != 2 || !canDoAction){
+        if (Node_Inherit != "Inbox" || !canDoAction) {
+            holder.noteDelete.visibility = View.INVISIBLE
+            holder.noteEdit.visibility = View.INVISIBLE
+        }
+
+        if (Notes[position].isEditable == false) {
             holder.noteDelete.visibility = View.INVISIBLE
             holder.noteEdit.visibility = View.INVISIBLE
         }
@@ -50,9 +56,9 @@ class AllNotesAdapter(
             holder.vieww.visibility = View.GONE
         }
 
-        if (Notes[position].isPrivate == true){
+        if (Notes[position].isPrivate == true) {
             holder.notePrivacy.visibility = View.VISIBLE
-        }else{
+        } else {
             holder.notePrivacy.visibility = View.GONE
 
         }
@@ -62,7 +68,7 @@ class AllNotesAdapter(
         }
 
         holder.noteEdit.setOnClickListener {
-            onDeleteCLickListener.onEditClicked(position,Notes[position])
+            onDeleteCLickListener.onEditClicked(position, Notes[position])
         }
 
 
@@ -78,7 +84,7 @@ class AllNotesAdapter(
         val noteDelete: ImageView = itemView.findViewById(R.id.deletenote)
         val noteEdit: ImageView = itemView.findViewById(R.id.editnote)
         val notePrivacy: ImageView = itemView.findViewById(R.id.privatenote)
-        val vieww : View =itemView.findViewById(R.id.vieww)
+        val vieww: View = itemView.findViewById(R.id.vieww)
     }
 
 
@@ -104,6 +110,6 @@ class AllNotesAdapter(
 
     public interface OnDeleteNoteClicked {
         fun onDeleteClicked(noteid: Int)
-        fun onEditClicked(position:Int,model: NotesDataItem)
+        fun onEditClicked(position: Int, model: NotesDataItem)
     }
 }

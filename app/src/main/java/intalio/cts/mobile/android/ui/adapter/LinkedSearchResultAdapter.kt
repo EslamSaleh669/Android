@@ -18,6 +18,7 @@ class LinkedSearchResultAdapter(
     private val Messages: ArrayList<AdvancedSearchResponseDataItem>,
     val activity: Activity,
     private val onSelectionClickedListner: OnSelectionClicked,
+    private val DocumentId : Int
 
     ) : RecyclerView.Adapter<LinkedSearchResultAdapter.AllNewsVHolder>() {
 
@@ -36,9 +37,11 @@ class LinkedSearchResultAdapter(
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
 
+
         holder.linkedCreatedBy.text = Messages[position].createdByUser
         holder.linkedCRefNum.text = Messages[position].referenceNumber
         holder.linkedDate.text = Messages[position].createdDate
+
         holder.linkedSwitch.setOnClickListener {
 
             if (holder.linkedSwitch.isChecked){

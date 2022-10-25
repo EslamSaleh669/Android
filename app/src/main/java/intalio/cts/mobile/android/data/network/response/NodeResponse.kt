@@ -1,12 +1,13 @@
 package intalio.cts.mobile.android.data.network.response
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class NodeResponse(
 
 	@field:SerializedName("NodeResponse")
-	val nodeResponse: List<NodeResponseItem?>? = null
-)
+	val nodeResponse: ArrayList<NodeResponseItem?>? = null
+):Serializable
 
 data class NodeResponseItem(
 
@@ -23,7 +24,7 @@ data class NodeResponseItem(
 	val icon: String? = null,
 
 	@field:SerializedName("parentNodeId")
-	val parentNodeId: Any? = null,
+	val parentNodeId: Int? = null,
 
 	@field:SerializedName("filters")
 	val filters: String? = null,
@@ -54,4 +55,4 @@ data class NodeResponseItem(
 
 	@field:SerializedName("order")
 	val order: Int? = null
-)
+):Serializable

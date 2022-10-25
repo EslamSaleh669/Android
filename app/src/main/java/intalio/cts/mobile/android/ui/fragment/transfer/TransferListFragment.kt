@@ -38,6 +38,7 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
     private var transfers = ArrayList<TransferRequestModel>()
     private lateinit var translator:  ArrayList<DictionaryDataItem>
 
+    private var delegationId = 0
 
     private val autoDispose: AutoDispose = AutoDispose()
     var dialog: Dialog? = null
@@ -94,7 +95,15 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
 
 
         }
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
 
+                it.id!!
+
+            } else {
+                0
+            }
+        }
 
         transfers_recycler.adapter =
             TransferList_Adapter(transfers, requireActivity(), this,viewModel,translator)
@@ -102,7 +111,7 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         send_transfers.setOnClickListener {
             if (transfers.size > 0) {
-                sendTransfer()
+                sendTransfer(delegationId)
 
             } else {
                 requireActivity().makeToast(getString(R.string.please_save_transfer))
@@ -112,7 +121,7 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
     }
 
 
-    private fun sendTransfer() {
+    private fun sendTransfer(delegationId: Int) {
 
 
         Log.d("aaaaaaaaaaaaaaaaxx", transfers.size.toString())
@@ -120,7 +129,7 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
         dialog = requireActivity().launchLoadingDialog()
 
         autoDispose.add(
-            viewModel.transferTransfer(transfers).observeOn(AndroidSchedulers.mainThread())
+            viewModel.transferTransfer(transfers,delegationId).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
 
@@ -128,12 +137,12 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
                         Log.d("transfererresponsep",transfers[0].purposeId.toString())
                          if (it[0].updated == true) {
                             transfers.clear()
-                            requireActivity().makeToast(getString(R.string.done))
+
                             (activity as AppCompatActivity).supportFragmentManager.commit {
                                 replace(R.id.fragmentContainer,
                                     CorrespondenceFragment().apply {
                                         arguments = bundleOf(
-                                            Pair(Constants.NODE_ID, 2)
+                                            Pair(Constants.NODE_INHERIT,viewModel.readCurrentNode())
                                         )
                                     }
                                 )

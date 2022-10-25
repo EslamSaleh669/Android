@@ -75,7 +75,7 @@ class VisualTrackingFragment : Fragment() {
 
         requireArguments().getInt(Constants.DOCUMENT_ID).let {
             DocumentId = it
-            getVisualTracking(DocumentId)
+           // getVisualTracking(DocumentId)
         }
 
 
@@ -84,19 +84,19 @@ class VisualTrackingFragment : Fragment() {
 
     private fun getVisualTracking(TransferId: Int) {
 
-        autoDispose.add(viewModel.getVisualTracking(TransferId)
-            .observeOn(AndroidSchedulers.mainThread()).subscribe(
-            {
-                dialog!!.dismiss()
-
-
-            }, {
-                dialog!!.dismiss()
-                Timber.e(it)
-
-
-            })
-        )
+//        autoDispose.add(viewModel.getVisualTracking(TransferId)
+//            .observeOn(AndroidSchedulers.mainThread()).subscribe(
+//            {
+//                dialog!!.dismiss()
+//
+//
+//            }, {
+//                dialog!!.dismiss()
+//                Timber.e(it)
+//
+//
+//            })
+//        )
 
 
     }

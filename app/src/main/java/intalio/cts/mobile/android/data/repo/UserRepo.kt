@@ -128,13 +128,13 @@ class UserRepo @Inject constructor(
     }
 
 
-    fun saveNodeID(nodeID: Int) {
-        shared.edit().putInt(Constants.NODE_ID, nodeID).apply()
+    fun saveCurrentNode(inherit: String) {
+        shared.edit().putString(Constants.NODE_INHERIT, inherit).apply()
     }
 
-    fun readNodeID(): Int? {
+    fun readCurrentNode(): String? {
         return try {
-            shared.getInt(Constants.NODE_ID, 0)
+            shared.getString(Constants.NODE_INHERIT, "")
         } catch (e: Exception) {
             null
         }
@@ -221,6 +221,28 @@ class UserRepo @Inject constructor(
             null
         }
     }
+
+
+
+    fun saveNodes(users: ArrayList<NodeResponseItem>) {
+        shared.edit().putString(Constants.NODES_DATA, Gson().toJson(users)).apply()
+    }
+
+
+    fun readNodes(): ArrayList<NodeResponseItem>? {
+        return try {
+
+            val gson = Gson()
+            val json = shared.getString(Constants.NODES_DATA, "")
+            val type = object :
+                TypeToken<ArrayList<NodeResponseItem>>() {}.type//converting the json to list
+            return gson.fromJson(json, type)
+        } catch (e: Exception) {
+
+            null
+        }
+    }
+
 
 
     fun saveStatuses(users: ArrayList<StatusesResponseItem>) {
@@ -398,6 +420,20 @@ class UserRepo @Inject constructor(
         }
     }
 
+    fun saveDelegatorData(delegator: DelegationRequestsResponseItem) {
+        shared.edit().putString(Constants.DELEGATOR_DATA, Gson().toJson(delegator)).apply()
+    }
+
+    fun readDelegatorData(): DelegationRequestsResponseItem? {
+        return try {
+            Gson().fromJson(
+                shared.getString(Constants.DELEGATOR_DATA, ""),
+                DelegationRequestsResponseItem::class.java
+            )
+        } catch (e: Exception) {
+            null
+        }
+    }
 
 
     fun clearUserData() {
