@@ -187,15 +187,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/loginlin"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
-                android:layout_below="@+id/loginlin"
                 android:fontFamily="@font/myriadpro_regular"
-                android:text="V1.0.1"
+                android:text="V1.0.0"
                 android:textColor="@color/darkGrey"
                 android:textSize="15sp" />
         </RelativeLayout>
