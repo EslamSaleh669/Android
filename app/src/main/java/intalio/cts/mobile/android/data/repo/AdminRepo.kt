@@ -741,11 +741,19 @@ class AdminRepo @Inject constructor(
     }
 
     fun lockTransfer(transferId: Int, delegationId: Int): Call<ResponseBody> {
-        return apiClient.lockTransfer(
-            "Bearer ${userRepo.readTokenData()!!.accessToken}",
-            transferId,
-            delegationId
-        )
+        return if (delegationId == 0){
+            apiClient.lockTransfer(
+                "Bearer ${userRepo.readTokenData()!!.accessToken}",
+                transferId = transferId
+            )
+        }else{
+            apiClient.lockTransfer(
+                "Bearer ${userRepo.readTokenData()!!.accessToken}",
+                transferId = transferId,
+                delegationId = delegationId
+            )
+        }
+
     }
 
     fun unlockTransfer(transferId: Int, delegationId: Int): Call<ResponseBody> {

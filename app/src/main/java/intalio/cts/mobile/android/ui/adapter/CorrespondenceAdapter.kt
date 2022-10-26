@@ -1369,14 +1369,11 @@ class CorrespondenceAdapter(
                         ) {
 
                             var responseRecieved: Any? = null
+                            var lockedByName: Any? = null
+                            lockedByName = response.body()!!.string()
                             responseRecieved = response.body()!!.string()
 
-                            if (response.code() != 200) {
 
-                                activity.makeToast(error)
-
-
-                            } else {
                                 if (responseRecieved == "true") {
                                     val bundle = Bundle()
 
@@ -1417,18 +1414,20 @@ class CorrespondenceAdapter(
                                     }
 
                                 } else {
-                                    activity.makeToast("${alreadyLockedBy}${responseRecieved}")
+                                    activity.makeToast(alreadyLockedBy+" "+lockedByName)
                                     interfacePositionCard.refreshInbox(NodeInherit)
+
+
                                 }
 
 
-                            }
+
                         }
 
                         override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
 
-                            activity.makeToast(error)
+                         activity.makeToast(error)
 
                         }
 

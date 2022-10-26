@@ -85,8 +85,6 @@ class AdvancedSearchResultAdapter(
 
         holder.messageRel.setOnClickListener {
 
-
-            activity.makeToast("clikced")
             val bundle = Bundle()
             bundle.putSerializable(Constants.Correspondence_Model, Messages[position])
             (activity as AppCompatActivity).supportFragmentManager.commit {

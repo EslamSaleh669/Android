@@ -330,7 +330,7 @@ interface ApiClient {
     fun lockTransfer(
         @Header("Authorization") token: String,
         @Query("id") transferId: Int,
-        @Query("delegationId") delegationId: Int,
+        @Query("delegationId") delegationId: Int? = null
 
 
     ): Call<ResponseBody>
