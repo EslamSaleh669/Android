@@ -118,7 +118,7 @@ class AllNotesFragment : Fragment(), AllNotesAdapter.OnDeleteNoteClicked {
                 0
             }
         }
-        getNotes(DocumentId,delegationId)
+        getNotes(DocumentId,TransferId,delegationId)
 
 
         addnotes.setOnClickListener {
@@ -142,7 +142,7 @@ class AllNotesFragment : Fragment(), AllNotesAdapter.OnDeleteNoteClicked {
     }
 
 
-    private fun getNotes(DoctId: Int, delegationId: Int) {
+    private fun getNotes(DoctId: Int,TransID:Int, delegationId: Int) {
         var noMoreData = ""
 
         when {
@@ -163,7 +163,7 @@ class AllNotesFragment : Fragment(), AllNotesAdapter.OnDeleteNoteClicked {
             }
         }
         notesrecycler.adapter =
-            AllNotesAdapter(arrayListOf(), requireActivity(), this, Node_Inherit, canDoAction)
+            AllNotesAdapter(arrayListOf(), requireActivity(), this, Node_Inherit, canDoAction,viewModel)
         notesrecycler.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
@@ -201,12 +201,12 @@ class AllNotesFragment : Fragment(), AllNotesAdapter.OnDeleteNoteClicked {
 
                 val lastPosition: Int =
                     (notesrecycler.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-                viewModel.checkForNotesLoading(lastPosition, DoctId,delegationId)
+                viewModel.checkForNotesLoading(lastPosition, DoctId,TransID,delegationId)
 
             }
         }
 
-        viewModel.loadMoreNotes(DoctId,delegationId)
+        viewModel.loadMoreNotes(DoctId,TransID,delegationId)
 
     }
 

@@ -90,9 +90,6 @@ class CorrespondenceAdapter(
         }
         if (NodeInherit == "Inbox") {
 
-            Log.d("locking", Messages[position].isLocked.toString())
-            Log.d("locking", Messages[position].lockedBy.toString())
-            Log.d("locking", Messages[position].lockedByDelegatedUser.toString())
 
             if (Messages[position].fromUser.isNullOrEmpty()) {
                 holder.messageSentFrom.text = Messages[position].fromStructure
@@ -163,7 +160,8 @@ class CorrespondenceAdapter(
                                 }
                             }
 
-                        } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                        }
+                        else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
                             holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
 
                             holder.messageLock.visibility = View.INVISIBLE
@@ -171,7 +169,8 @@ class CorrespondenceAdapter(
                             holder.messageCced.visibility = View.VISIBLE
 
 
-                        } else {
+                        }
+                        else {
                             Log.d("whereareyou", "IAm at else")
 
                             holder.messageCced.visibility = View.INVISIBLE
@@ -200,7 +199,9 @@ class CorrespondenceAdapter(
                                 }
                             }
                         }
-                    } else {
+                    }
+
+                    else {
                         if (checkBroadCast(Messages[position].categoryId!!)) {
 //                holder.messageLock.visibility = View.INVISIBLE
                             holder.messageCced.visibility = View.INVISIBLE
@@ -230,7 +231,8 @@ class CorrespondenceAdapter(
                                 }
                             }
 
-                        } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                        }
+                        else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
                             holder.messageSentTo.setImageResource(R.drawable.ic_bulding)
 
                             holder.messageLock.visibility = View.INVISIBLE
@@ -238,7 +240,8 @@ class CorrespondenceAdapter(
                             holder.messageCced.visibility = View.VISIBLE
 
 
-                        } else {
+                        }
+                        else {
                             Log.d("whereareyou", "IAm at else")
 
                             holder.messageCced.visibility = View.INVISIBLE
@@ -545,6 +548,7 @@ class CorrespondenceAdapter(
                     if (it != null) {
 
                         if (it.fromUserId == 0) {
+
                             if (Messages[position].cced == false && checkBroadCast(Messages[position].categoryId!!)) {
 
                                 if (Messages[position].sentToStructure == false) {
@@ -582,8 +586,7 @@ class CorrespondenceAdapter(
                                         lockTransfer(Messages[position], "broadcast", NodeInherit)
 
 
-                                    } else if
-                                                   (Messages[position].isLocked == true && Messages[position].lockedBy == it.fromUser) {
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
                                         Messages[position].isexternalbroadcast =
                                             checkExternalBroadCast(Messages[position].categoryId!!)
 
@@ -612,7 +615,7 @@ class CorrespondenceAdapter(
 
                                         }
 
-                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != it.fromUser) {
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
                                         Messages[position].isexternalbroadcast =
                                             checkExternalBroadCast(Messages[position].categoryId!!)
 
@@ -675,7 +678,9 @@ class CorrespondenceAdapter(
 
                                 }
 
-                            } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                            }
+
+                            else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
                                 val bundle = Bundle()
                                 Messages[position].messageLock = "cced"
                                 bundle.putSerializable(
@@ -699,7 +704,8 @@ class CorrespondenceAdapter(
                                     addToBackStack("")
 
                                 }
-                            } else {
+                            }
+                            else {
                                 if (Messages[position].sentToStructure == false) {
                                     val bundle = Bundle()
                                     Messages[position].messageLock = "notlocked"
@@ -730,7 +736,7 @@ class CorrespondenceAdapter(
                                             NodeInherit
                                         )
 
-                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy == it.fromUser) {
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy == viewModel.readUserinfo().fullName) {
 
                                         //// locked by me
                                         val bundle = Bundle()
@@ -757,7 +763,7 @@ class CorrespondenceAdapter(
 
                                         }
 
-                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != it.fromUser) {
+                                    } else if (Messages[position].isLocked == true && Messages[position].lockedBy != viewModel.readUserinfo().fullName) {
 
                                         //// locked by another one (viewonly)
                                         val bundle = Bundle()
@@ -787,6 +793,7 @@ class CorrespondenceAdapter(
                                     }
                                 }
                             }
+
                         } else {
                             if (Messages[position].cced == false && checkBroadCast(Messages[position].categoryId!!)) {
 
@@ -918,7 +925,8 @@ class CorrespondenceAdapter(
 
                                 }
 
-                            } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                            }
+                            else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
                                 val bundle = Bundle()
                                 Messages[position].messageLock = "cced"
                                 bundle.putSerializable(
@@ -942,7 +950,8 @@ class CorrespondenceAdapter(
                                     addToBackStack("")
 
                                 }
-                            } else {
+                            }
+                            else {
                                 if (Messages[position].sentToStructure == false) {
                                     val bundle = Bundle()
                                     Messages[position].messageLock = "notlocked"
@@ -1162,7 +1171,8 @@ class CorrespondenceAdapter(
 
                             }
 
-                        } else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
+                        }
+                        else if (Messages[position].cced == true && !checkBroadCast(Messages[position].categoryId!!)) {
                             val bundle = Bundle()
                             Messages[position].messageLock = "cced"
                             bundle.putSerializable(
@@ -1183,7 +1193,8 @@ class CorrespondenceAdapter(
                                 addToBackStack("")
 
                             }
-                        } else {
+                        }
+                        else {
                             if (Messages[position].sentToStructure == false) {
                                 val bundle = Bundle()
                                 Messages[position].messageLock = "notlocked"
@@ -1271,7 +1282,8 @@ class CorrespondenceAdapter(
                 }
 
 
-            } else {
+            }
+            else {
                 val bundle = Bundle()
                 bundle.putSerializable(Constants.Correspondence_Model, Messages[position])
                 (activity as AppCompatActivity).supportFragmentManager.commit {
@@ -1374,7 +1386,8 @@ class CorrespondenceAdapter(
                             responseRecieved = response.body()!!.string()
 
 
-                                if (responseRecieved == "true") {
+
+                                if (lockedByName.toString().contains("true")) {
                                     val bundle = Bundle()
 
                                     if (status == "broadcast") {
@@ -1633,6 +1646,8 @@ class CorrespondenceAdapter(
 
 
                                         messageRecall.visibility = View.GONE
+                                        interfacePositionCard.refreshSent(NodeInherit)
+
 
                                     }
 
@@ -1676,6 +1691,7 @@ class CorrespondenceAdapter(
     interface InterfacePositionCard {
         fun getPosition(position: Int, status: Int, model: CorrespondenceDataItem?)
         fun refreshInbox(NodeInherit: String)
+        fun refreshSent(NodeInherit: String)
     }
 
 }

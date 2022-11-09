@@ -20,6 +20,7 @@ import intalio.cts.mobile.android.ui.adapter.LinkedCAdapter
 import intalio.cts.mobile.android.ui.fragment.advancedsearch.AdvancedSearchFragment
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.allnotes_fragment.*
 import kotlinx.android.synthetic.main.fragment_linkedcorresp.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import timber.log.Timber
@@ -138,7 +139,25 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
 
 
     private fun getLinkedCData(DocuId: Int, delegationId: Int) {
+        var noMoreData = ""
 
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                noMoreData = "No more data"
+                linkednoDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                noMoreData = "لا يوجد المزيد"
+                linkednoDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                noMoreData = "Plus de données"
+                linkednoDataFounded.text  = translator.find { it.keyword == "NoDataToDisplay" }!!.fr!!
+            }
+        }
         autoDispose.add(viewModel.getLinkedC(DocuId,delegationId).observeOn(AndroidSchedulers.mainThread()).subscribe({
 
             if (it.data.isNullOrEmpty()){
@@ -157,6 +176,9 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
 
                 dialog!!.dismiss()
             }
+
+
+
 
 
 

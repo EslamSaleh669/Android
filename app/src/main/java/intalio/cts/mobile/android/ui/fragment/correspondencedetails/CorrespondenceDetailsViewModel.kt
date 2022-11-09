@@ -56,7 +56,7 @@ class CorrespondenceDetailsViewModel(private val userRepo: UserRepo, private val
 
 
     fun getDocumentBasicInfo(transferId:Int): Observable<DocumentBasicInfoResponse> = adminRepo.getDocumentBasicInfo(transferId)
-    fun getTransferDetails(transferId:Int): Observable<TransferDetailsResponse> = adminRepo.getTransferDetails(transferId)
+    fun getTransferDetails(transferId: Int, delegationId: Int): Observable<TransferDetailsResponse> = adminRepo.getTransferDetails(transferId,delegationId)
 
     fun getDocument(documentId: Int): Observable<MetaDataResponse> = adminRepo.getDocument(documentId)
 
@@ -85,6 +85,8 @@ class CorrespondenceDetailsViewModel(private val userRepo: UserRepo, private val
             Observable<ArrayList<AttachmentModel>> =
         adminRepo.attachmentsData(documentId,delegationId)
 
+    fun getSearchDocumentInfo(documentId:Int,delegationId:Int): Observable<MetaDataResponse> = adminRepo.getSearchDocument(documentId,delegationId)
+
 
     fun replaceAttachment(body: MultipartBody):Observable<UploadAttachmentResponse>
             = adminRepo.replaceAttachment(body)
@@ -112,6 +114,7 @@ class CorrespondenceDetailsViewModel(private val userRepo: UserRepo, private val
 
     fun unlockTransfer(transferId: Int, delegationId: Int) : Call<ResponseBody> = adminRepo.unlockTransfer(transferId,delegationId)
     fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
+    fun readSettings (): ArrayList<ParamSettingsResponseItem> = userRepo.readSettings()!!
 
     override fun onCleared() {
         super.onCleared()

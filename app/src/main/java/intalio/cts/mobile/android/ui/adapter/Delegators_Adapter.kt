@@ -1,7 +1,6 @@
 package intalio.cts.mobile.android.ui.adapter
 
 import android.app.Activity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,19 +9,18 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.*
-import intalio.cts.mobile.android.ui.fragment.main.MainFragment
-
-import intalio.cts.mobile.android.ui.fragment.transfer.TransfersViewModel
+import intalio.cts.mobile.android.ui.fragment.main.MainViewModel
 
 
 class Delegators_Adapter(
     private val Delegators: ArrayList<DelegationRequestsResponseItem>,
     val activity: Activity,
     private val OnDelegatorClickListener: OnDelegatorClicked,
-    private val currentDelegator : Int
+    private val currentDelegator: Int,
+    private val  viewModel: MainViewModel
 
 
-    ) : RecyclerView.Adapter<Delegators_Adapter.AllNewsVHolder>() {
+) : RecyclerView.Adapter<Delegators_Adapter.AllNewsVHolder>() {
 
 
 
@@ -36,9 +34,30 @@ class Delegators_Adapter(
 
 
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
+        var transfers = ""
+
+        val translator = viewModel.readDictionary().data!!
 
 
-        holder.delegatorName.text = Delegators[position].fromUser
+        when {
+            viewModel.readLanguage() == "en" -> {
+                transfers = translator.find { it.keyword == "Transfers" }!!.en!!
+            }
+            viewModel.readLanguage() == "ar" -> {
+                transfers = translator.find { it.keyword == "Transfers" }!!.ar!!
+            }
+            viewModel.readLanguage() == "fr" -> {
+                transfers = translator.find { it.keyword == "Transfers" }!!.fr!!
+            }
+        }
+
+
+        if (Delegators[position].fromUserId == 0){
+            holder.delegatorName.text = Delegators[position].fromUser
+        }else{
+            holder.delegatorName.text = "${Delegators[position].fromUser} $transfers"
+        }
+
 
         if (Delegators[position].fromUserId == currentDelegator){
             holder.delegatorCard.setBackgroundColor(activity.resources.getColor(R.color.appcolor))

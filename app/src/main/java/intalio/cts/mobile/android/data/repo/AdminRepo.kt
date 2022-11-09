@@ -319,7 +319,7 @@ class AdminRepo @Inject constructor(
     }
 
 
-    fun getSearchDocument(documentId: Int,delegationId:Int): Observable<MetaDataResponse> {
+    fun getSearchDocument(documentId: Int, delegationId: Int): Observable<MetaDataResponse> {
         return apiClient.getSearchDocument(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
@@ -404,14 +404,31 @@ class AdminRepo @Inject constructor(
         )
 
 
-    fun notesData(start: Int, documentId: Int,delegationId: Int): Observable<NotesResponse> {
-        return apiClient.notesData(
-            "Bearer ${userRepo.readTokenData()!!.accessToken}",
-            documentId,
-            start,
-            10,
-            delegationId
-        ).subscribeOn(Schedulers.io())
+    fun notesData(
+        start: Int,
+        documentId: Int,
+        transferId: Int,
+        delegationId: Int
+    ): Observable<NotesResponse> {
+        if (transferId == 0  ) {
+            return apiClient.notesData(
+                "Bearer ${userRepo.readTokenData()!!.accessToken}",
+                documentId = documentId,
+                start = start,
+                length = 10,
+                delegationId = delegationId
+            ).subscribeOn(Schedulers.io())
+        }else {
+            return apiClient.notesData(
+                "Bearer ${userRepo.readTokenData()!!.accessToken}",
+                documentId,
+                transferId,
+                start,
+                10,
+                delegationId
+            ).subscribeOn(Schedulers.io())
+        }
+
     }
 
 
@@ -453,7 +470,12 @@ class AdminRepo @Inject constructor(
         ).subscribeOn(Schedulers.io())
     }
 
-    fun deleteNote(noteID: Int, documentId: Int, transferId: Int,delegationId: Int): Observable<Boolean> {
+    fun deleteNote(
+        noteID: Int,
+        documentId: Int,
+        transferId: Int,
+        delegationId: Int
+    ): Observable<Boolean> {
         return apiClient.deleteNote(
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             noteID,
@@ -465,7 +487,11 @@ class AdminRepo @Inject constructor(
     }
 
 
-    fun transfersHistoryData(start: Int, documentId: Int, delegationId: Int): Observable<TransferHistoryResponse> {
+    fun transfersHistoryData(
+        start: Int,
+        documentId: Int,
+        delegationId: Int
+    ): Observable<TransferHistoryResponse> {
         return apiClient.transfersHistoryData(
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             documentId,
@@ -486,16 +512,24 @@ class AdminRepo @Inject constructor(
     }
 
 
-    fun getTransferDetails(transferId: Int): Observable<TransferDetailsResponse> {
+    fun getTransferDetails(
+        transferId: Int,
+        delegationId: Int
+    ): Observable<TransferDetailsResponse> {
         return apiClient.getTransferDetails(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             transferId,
+            delegationId
         ).subscribeOn(Schedulers.io())
     }
 
 
-    fun nonArchData(start: Int, documentId: Int, delegationId: Int): Observable<NonArchAttachmentsResponse> {
+    fun nonArchData(
+        start: Int,
+        documentId: Int,
+        delegationId: Int
+    ): Observable<NonArchAttachmentsResponse> {
         return apiClient.nonArchData(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
@@ -549,7 +583,12 @@ class AdminRepo @Inject constructor(
     }
 
 
-    fun deleteNonArch(nonarchID: Int, documentId: Int, transferId: Int, delegationId: Int): Observable<Boolean> {
+    fun deleteNonArch(
+        nonarchID: Int,
+        documentId: Int,
+        transferId: Int,
+        delegationId: Int
+    ): Observable<Boolean> {
         return apiClient.deleteNonArch(
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             nonarchID,
@@ -573,10 +612,15 @@ class AdminRepo @Inject constructor(
             transferId,
             documentIds,
             delegationId
-            ).subscribeOn(Schedulers.io())
+        ).subscribeOn(Schedulers.io())
     }
 
-    fun deleteLinkedC(linkId: Int, documentId: Int, transferId: Int,delegationId: Int): Observable<Boolean> {
+    fun deleteLinkedC(
+        linkId: Int,
+        documentId: Int,
+        transferId: Int,
+        delegationId: Int
+    ): Observable<Boolean> {
         return apiClient.deleteLinkedC(
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             linkId,
@@ -623,7 +667,10 @@ class AdminRepo @Inject constructor(
         ).subscribeOn(Schedulers.io())
     }
 
-    fun transferTransfer(list: List<TransferRequestModel>, delegationId: Int): Observable<ArrayList<TransferTransferResponseItem>> {
+    fun transferTransfer(
+        list: List<TransferRequestModel>,
+        delegationId: Int
+    ): Observable<ArrayList<TransferTransferResponseItem>> {
         return apiClient.transferTransfer(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
@@ -741,12 +788,12 @@ class AdminRepo @Inject constructor(
     }
 
     fun lockTransfer(transferId: Int, delegationId: Int): Call<ResponseBody> {
-        return if (delegationId == 0){
+        return if (delegationId == 0) {
             apiClient.lockTransfer(
                 "Bearer ${userRepo.readTokenData()!!.accessToken}",
                 transferId = transferId
             )
-        }else{
+        } else {
             apiClient.lockTransfer(
                 "Bearer ${userRepo.readTokenData()!!.accessToken}",
                 transferId = transferId,

@@ -38,9 +38,9 @@ class NetworkModule (val context:Context) {
     @Provides
     fun provideApiClient(client: OkHttpClient): ApiClient =
         Retrofit.Builder()
+//            .addConverterFactory(NullOnEmptyConverterFactory2())
 
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(NullOnEmptyConverterFactory2())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
             .baseUrl(Constants.BASE_URL)
             .client(client)

@@ -23,6 +23,7 @@ public class FileNodeBinder extends TreeViewBinder<FileNodeBinder.ViewHolder> {
         File fileNode = (File) node.getContent();
         holder.tvName.setText(fileNode.fileName);
         holder.fileID.setText(fileNode.id);
+        holder.fileParentId.setText(fileNode.parentId);
 
     }
 
@@ -33,16 +34,20 @@ public class FileNodeBinder extends TreeViewBinder<FileNodeBinder.ViewHolder> {
 
     public class ViewHolder extends TreeViewBinder.ViewHolder {
         public TextView tvName;
-        public TextView fileID;
+        public TextView fileID, fileParentId;
 
         public ViewHolder(View rootView) {
             super(rootView);
             this.tvName = (TextView) rootView.findViewById(R.id.tv_name);
             this.fileID = (TextView) rootView.findViewById(R.id.fileid);
+            this.fileParentId = (TextView) rootView.findViewById(R.id.fileparentid);
 
         }
         public String getId () {
             return fileID.getText().toString();
+        }
+        public String getParentId () {
+            return fileParentId.getText().toString();
         }
     }
 

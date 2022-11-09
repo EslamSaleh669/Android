@@ -78,20 +78,24 @@ class AddNotesFragment : Fragment() {
         }
 
         var requiredFields = ""
+        var validationMessage = ""
 
         when {
             viewModel.readLanguage() == "en" -> {
 
                 requiredFields = translator.find { it.keyword == "RequiredFields" }!!.en!!
+                validationMessage = "This value is too short. It should have 10 characters or more."
 
             }
             viewModel.readLanguage() == "ar" -> {
                 requiredFields = translator.find { it.keyword == "RequiredFields" }!!.ar!!
+                validationMessage = "القيمة المدخلة قصيرة جداً . تأكد من إدخال 10 حرف أو أكثر"
 
 
             }
             viewModel.readLanguage() == "fr" -> {
                 requiredFields = translator.find { it.keyword == "RequiredFields" }!!.fr!!
+                validationMessage = "Cette chaîne est trop courte. Elle doit avoir au minimum 10 caractères."
 
             }
         }
@@ -110,7 +114,11 @@ class AddNotesFragment : Fragment() {
 
             if (note.isEmpty()) {
                 requireActivity().makeToast(requiredFields)
-            } else {
+            }else if (note.toCharArray().size < 10){
+                requireActivity().makeToast(validationMessage)
+
+            }
+            else {
                 dialog = requireContext().launchLoadingDialog()
 
                 addNote(DocumentId, TransferId, note,delegationId)

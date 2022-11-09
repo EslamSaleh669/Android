@@ -1226,5 +1226,19 @@ class CorrespondenceFragment : Fragment(), CorrespondenceAdapter.InterfacePositi
         }
     }
 
+    override fun refreshSent(NodeInherit: String) {
+        (activity as AppCompatActivity).supportFragmentManager.commit {
+            replace(R.id.fragmentContainer,
+                CorrespondenceFragment().apply {
+                    arguments = bundleOf(
+                        Pair(Constants.NODE_INHERIT, NodeInherit)
+                    )
+                }
+            )
+
+
+        }
+    }
+
 
 }

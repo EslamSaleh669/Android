@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.borjabravo.readmoretextview.ReadMoreTextView
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.NotesDataItem
+import intalio.cts.mobile.android.ui.fragment.note.NotesViewModel
 
 
 class AllNotesAdapter(
@@ -21,7 +22,8 @@ class AllNotesAdapter(
     val activity: Activity,
     private val onDeleteCLickListener: OnDeleteNoteClicked,
     private val Node_Inherit: String,
-    private val canDoAction: Boolean
+    private val canDoAction: Boolean,
+    private val viewModel: NotesViewModel
 ) : RecyclerView.Adapter<AllNotesAdapter.AllCategoriesVHolder>() {
 
 
@@ -34,17 +36,37 @@ class AllNotesAdapter(
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onBindViewHolder(holder: AllCategoriesVHolder, position: Int) {
 
-
+        val translator = viewModel.readDictionary()!!.data!!
+        var onBehalfOf = ""
+        when {
+            viewModel.readLanguage() == "en" -> {
+                onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.en!!
+            }
+            viewModel.readLanguage() == "ar" -> {
+                onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.ar!!
+            }
+            viewModel.readLanguage() == "fr" -> {
+                onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.fr!!
+            }
+        }
         if (Node_Inherit != "Inbox" || !canDoAction) {
             holder.noteDelete.visibility = View.INVISIBLE
             holder.noteEdit.visibility = View.INVISIBLE
         }
 
+
+
         if (Notes[position].isEditable == false) {
             holder.noteDelete.visibility = View.INVISIBLE
             holder.noteEdit.visibility = View.INVISIBLE
         }
-        holder.createsBy.text = Notes[position].createdBy
+
+        if (Notes[position].createdByDelegatedUser.isNullOrEmpty()){
+            holder.createsBy.text = Notes[position].createdBy
+
+        }else{
+            holder.createsBy.text = "${Notes[position].createdBy} $onBehalfOf ${Notes[position].createdByDelegatedUser}"
+        }
         holder.noteDate.text = Notes[position].createdDate
         holder.noteDescription.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(Notes[position].notes, Html.FROM_HTML_MODE_COMPACT)

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.borjabravo.readmoretextview.ReadMoreTextView
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.NonArchDataItem
+import intalio.cts.mobile.android.ui.fragment.nonarchattachments.NonArchAttachmentsViewModel
 
 
 class NonArchAdapter(
@@ -19,7 +20,8 @@ class NonArchAdapter(
     val activity: Activity,
     private val onDeleteCLickListener: OnDeleteNoteClicked,
     private val Node_Inherit: String,
-    private val canDoAction :Boolean
+    private val canDoAction: Boolean,
+    private val viewModel: NonArchAttachmentsViewModel
 
 ) : RecyclerView.Adapter<NonArchAdapter.AllCategoriesVHolder>() {
 
@@ -32,6 +34,21 @@ class NonArchAdapter(
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onBindViewHolder(holder: AllCategoriesVHolder, position: Int) {
+
+        val translator = viewModel.readDictionary()!!.data!!
+        var onBehalfOf = ""
+        when {
+            viewModel.readLanguage() == "en" -> {
+                onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.en!!
+            }
+            viewModel.readLanguage() == "ar" -> {
+                onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.ar!!
+            }
+            viewModel.readLanguage() == "fr" -> {
+                onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.fr!!
+            }
+        }
+
         if (Node_Inherit != "Inbox" || !canDoAction){
             holder.nonArchDelete.visibility = View.INVISIBLE
             holder.nonArchEdit.visibility = View.INVISIBLE
@@ -41,7 +58,17 @@ class NonArchAdapter(
             holder.nonArchDelete.visibility = View.INVISIBLE
             holder.nonArchEdit.visibility = View.INVISIBLE
         }
+
         holder.nonArchCreatesBy.text = NonArch[position].createdBy
+
+
+        if (NonArch[position].createdByDelegatedUser.isNullOrEmpty()){
+            holder.nonArchCreatesBy.text = NonArch[position].createdBy
+
+        }else{
+            holder.nonArchCreatesBy.text = "${NonArch[position].createdBy} $onBehalfOf ${NonArch[position].createdByDelegatedUser}"
+        }
+
         holder.nonArchDescription.text = NonArch[position].description
         holder.nonArchFileCount.text = NonArch[position].quantity.toString()
         holder.nonArchFileType.text = NonArch[position].type

@@ -49,6 +49,7 @@ import kotlinx.android.synthetic.main.categories_viewshape.*
 import tellh.com.recyclertreeview_lib.TreeNode
 import tellh.com.recyclertreeview_lib.TreeViewAdapter.OnTreeNodeListener
 import java.util.*
+import kotlin.math.log
 
 
 class AttachmentsFragment : Fragment() {
@@ -151,6 +152,7 @@ class AttachmentsFragment : Fragment() {
 
         arguments?.getSerializable(Constants.Correspondence_Model).let {
 
+            Log.d("mypath",viewModel.readPath())
             if (viewModel.readPath() == "search") {
                 searchModel = it as AdvancedSearchResponseDataItem
                 attachmentsData(searchModel.id!!)
@@ -159,7 +161,11 @@ class AttachmentsFragment : Fragment() {
                     requestedModel = it as MetaDataResponse
                     attachmentsData(requestedModel.id!!)
 
-                } else {
+                }else if (Node_Inherit == "Closed"){
+                    requestedModel = it as MetaDataResponse
+                    attachmentsData(requestedModel.id!!)
+                }
+                else {
 
                     model = it as CorrespondenceDataItem
                     attachmentsData(model.documentId!!)
@@ -219,6 +225,7 @@ class AttachmentsFragment : Fragment() {
 
                 },
                 {
+                    requireActivity().makeToast(it.toString())
                     Timber.e(it)
                     dialog!!.dismiss()
 
@@ -281,7 +288,8 @@ class AttachmentsFragment : Fragment() {
                                                             val mostExtraChild = TreeNode(
                                                                 File(
                                                                     mostExtraChildItem.text,
-                                                                    mostExtraChildItem.id
+                                                                    mostExtraChildItem.id,
+                                                                    mostExtraChildItem.parentId,
                                                                 )
                                                             )
                                                             extraChild.addChild(mostExtraChild)
@@ -296,7 +304,8 @@ class AttachmentsFragment : Fragment() {
                                                 val extraChild = TreeNode(
                                                     File(
                                                         extraChildItem.text,
-                                                        extraChildItem.id
+                                                        extraChildItem.id,
+                                                        extraChildItem.parentId
                                                     )
                                                 )
 
@@ -310,7 +319,7 @@ class AttachmentsFragment : Fragment() {
                                     subChild.addChild(child)
 
                                 } else {
-                                    val child = TreeNode(File(childItem.text, childItem.id))
+                                    val child = TreeNode(File(childItem.text, childItem.id,childItem.parentId))
                                     subChild.addChild(child)
 
                                 }
@@ -321,7 +330,7 @@ class AttachmentsFragment : Fragment() {
                         parent.addChild(subChild)
 
                     } else {
-                        val subChild = TreeNode(File(subChildItem.text, subChildItem.id))
+                        val subChild = TreeNode(File(subChildItem.text, subChildItem.id,subChildItem.parentId))
                         parent.addChild(subChild)
 
 
@@ -362,7 +371,11 @@ class AttachmentsFragment : Fragment() {
 
                 if (fileViewHolder != null) {
                     val fileId = fileViewHolder.id
-                    viewModel.savePath("attachment")
+
+                    val fileParentId = fileViewHolder.parentId
+                    var isOriginalFile = false
+
+                    isOriginalFile = fileParentId.equals("folder_originalMail")
 
                     if (viewModel.readPath() == "search") {
                         (activity as AppCompatActivity).supportFragmentManager.commit {
@@ -373,16 +386,17 @@ class AttachmentsFragment : Fragment() {
 
                                         Pair(Constants.Correspondence_Model, searchModel),
                                         Pair(Constants.FILE_ID, fileId.substringAfter("_")),
+                                        Pair(Constants.FILE_PARENT_ID, isOriginalFile),
                                         Pair(Constants.VIEWMODE, viewMode),
                                         Pair(Constants.PATH, "attachment"),
                                         Pair(Constants.LATEST_PATH, "search"),
-
                                         )
 
                                 }
                             ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
                         }
+
                     } else if (viewModel.readPath() == "node" || viewModel.readPath() == "attachment"){
                         if (Node_Inherit == "MyRequests") {
                             (activity as AppCompatActivity).supportFragmentManager.commit {
@@ -393,6 +407,7 @@ class AttachmentsFragment : Fragment() {
 
                                             Pair(Constants.Correspondence_Model, requestedModel),
                                             Pair(Constants.FILE_ID, fileId.substringAfter("_")),
+                                            Pair(Constants.FILE_PARENT_ID, isOriginalFile),
                                             Pair(Constants.VIEWMODE, viewMode),
                                             Pair(Constants.PATH, "attachment"),
                                             Pair(Constants.LATEST_PATH, "requested node"),
@@ -402,7 +417,28 @@ class AttachmentsFragment : Fragment() {
                                 ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
                             }
-                        } else {
+                        }
+                        else if (Node_Inherit == "Closed"){
+                            (activity as AppCompatActivity).supportFragmentManager.commit {
+                                add(R.id.fragmentContainer,
+                                    CorrespondenceDetailsFragment().apply {
+                                        arguments = bundleOf(
+                                            Pair(Constants.NODE_INHERIT, Node_Inherit),
+
+                                            Pair(Constants.Correspondence_Model, requestedModel),
+                                            Pair(Constants.FILE_ID, fileId.substringAfter("_")),
+                                            Pair(Constants.FILE_PARENT_ID, isOriginalFile),
+                                            Pair(Constants.VIEWMODE, viewMode),
+                                            Pair(Constants.PATH, "attachment"),
+                                            Pair(Constants.LATEST_PATH, "closed node"),
+                                        )
+
+                                    }
+                                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+
+                            }
+                        }
+                        else {
                             (activity as AppCompatActivity).supportFragmentManager.commit {
                                 add(R.id.fragmentContainer,
                                     CorrespondenceDetailsFragment().apply {
@@ -411,6 +447,7 @@ class AttachmentsFragment : Fragment() {
 
                                             Pair(Constants.Correspondence_Model, model),
                                             Pair(Constants.FILE_ID, fileId.substringAfter("_")),
+                                            Pair(Constants.FILE_PARENT_ID, isOriginalFile),
                                             Pair(Constants.VIEWMODE, viewMode),
                                             Pair(Constants.PATH, "attachment"),
                                             Pair(Constants.LATEST_PATH, "node"),
@@ -424,6 +461,7 @@ class AttachmentsFragment : Fragment() {
                         }
 
                     }
+                    viewModel.savePath("attachment")
 
                 }
 

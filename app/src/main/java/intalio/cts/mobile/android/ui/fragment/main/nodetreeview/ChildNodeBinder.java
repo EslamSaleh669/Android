@@ -4,6 +4,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -207,6 +208,25 @@ public class ChildNodeBinder extends TreeViewBinder<ChildNodeBinder.ChildViewHol
                 break;
         }
 
+        if (!fileNode.enableTodayCount && !fileNode.enableTotalCount){
+            holder.counterFrame.setVisibility(View.INVISIBLE);
+            holder.totalCounterFrame.setVisibility(View.INVISIBLE);
+
+        }else if (!fileNode.enableTodayCount && fileNode.enableTotalCount){
+            holder.counterFrame.setVisibility(View.INVISIBLE);
+            holder.totalCounterFrame.setVisibility(View.VISIBLE);
+
+
+        }else if (fileNode.enableTodayCount && !fileNode.enableTotalCount){
+            holder.counterFrame.setVisibility(View.VISIBLE);
+            holder.totalCounterFrame.setVisibility(View.INVISIBLE);
+
+        }else  {
+            holder.counterFrame.setVisibility(View.VISIBLE);
+            holder.totalCounterFrame.setVisibility(View.VISIBLE);
+        }
+
+
         // holder.notifyAll();
         synchronized(holder) {
             holder.notifyAll();
@@ -226,6 +246,7 @@ public class ChildNodeBinder extends TreeViewBinder<ChildNodeBinder.ChildViewHol
         public ImageView childIcon;
         public TextView nodeCounter, totalNodeCounter;
         public ProgressBar countProgress, totalCountProgress;
+        public FrameLayout counterFrame, totalCounterFrame ;
 
         public ChildViewHolder(View rootView) {
             super(rootView);
@@ -237,6 +258,11 @@ public class ChildNodeBinder extends TreeViewBinder<ChildNodeBinder.ChildViewHol
             totalNodeCounter = (TextView) rootView.findViewById(R.id.nodetotalCount);
             countProgress = (ProgressBar) rootView.findViewById(R.id.countProgress);
             totalCountProgress = (ProgressBar) rootView.findViewById(R.id.totalcountProgress);
+
+
+            counterFrame = (FrameLayout) rootView.findViewById(R.id.counterFrame);
+            totalCounterFrame = (FrameLayout) rootView.findViewById(R.id.totalcounterFrame);
+
 
         }
 

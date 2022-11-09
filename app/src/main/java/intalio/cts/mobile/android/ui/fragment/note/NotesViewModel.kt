@@ -21,19 +21,19 @@ class NotesViewModel (private val userRepo: UserRepo, private val adminRepo: Adm
 
 
 
-    fun checkForNotesLoading(lastPosition: Int,documentId:Int,delegationId: Int) {
+    fun checkForNotesLoading(lastPosition: Int,documentId:Int,transferId:Int,delegationId: Int) {
         var currentItemsCount = 0
         for (item in Notes.values) {
             currentItemsCount += (item as ArrayList<*>).size
         }
         if (currentItemsCount - 1 == lastPosition) {
-            loadMoreNotes(documentId,delegationId)
+            loadMoreNotes(documentId,transferId,delegationId)
         }
     }
 
 
-    fun loadMoreNotes(documentId:Int,delegationId: Int) {
-        disposable = adminRepo.notesData(start,documentId,delegationId).subscribe({
+    fun loadMoreNotes(documentId:Int,transferId:Int,delegationId: Int) {
+        disposable = adminRepo.notesData(start,documentId,transferId,delegationId).subscribe({
             start = start + it.data!!.size
             limit += it.data.size
             Notes.onNext(it.data)

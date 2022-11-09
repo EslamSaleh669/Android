@@ -14,8 +14,12 @@ public class NodeChild implements LayoutItemType {
     public int id ;
     public MainViewModel viewModel ;
     public AutoDispose autoDispose ;
+    public boolean enableTodayCount ;
+    public boolean enableTotalCount ;
 
-    public NodeChild(String fileName, String inherit , String location, int padding, int id ,MainViewModel viewModel,AutoDispose autoDispose) {
+    public NodeChild(String fileName, String inherit , String location,
+                     int padding, int id ,MainViewModel viewModel,
+                     AutoDispose autoDispose,boolean enableTodayCount , boolean enableTotalCount) {
         this.fileName = fileName;
         this.inherit = inherit;
         this.location = location;
@@ -23,6 +27,8 @@ public class NodeChild implements LayoutItemType {
         this.id = id ;
         this.viewModel = viewModel;
         this.autoDispose = autoDispose ;
+        this.enableTodayCount = enableTodayCount ;
+        this.enableTotalCount = enableTotalCount ;
 
 
     }

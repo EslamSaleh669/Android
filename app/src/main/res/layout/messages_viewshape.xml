@@ -17,15 +17,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
-        android:visibility="visible"
-        android:src="@drawable/ic_dot_meduim" />
+        android:src="@drawable/ic_dot_meduim"
+        android:visibility="visible" />
 
 
     <LinearLayout
         android:id="@+id/messagelin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
         android:layout_toEndOf="@+id/message_dot"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">

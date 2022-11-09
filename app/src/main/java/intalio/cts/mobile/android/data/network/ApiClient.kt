@@ -444,7 +444,7 @@ interface ApiClient {
     ): Call<ResponseBody>
 
 
-    @GET("http://192.168.1.11:6969/Delegation/ListDelegationToUser")
+    @GET("Delegation/ListDelegationToUser")
     fun delegationRequests(
         @Header("Authorization") token: String
     ): Call<ArrayList<DelegationRequestsResponseItem>>
@@ -457,15 +457,14 @@ interface ApiClient {
     ): Observable<DelegatorResponse>
 
 
-
-
     @GET("Note/List")
     fun notesData(
         @Header("Authorization") token: String,
         @Query("documentId") documentId: Int,
+        @Query("TransferId") transferId: Int? = null,
         @Query("start") start: Int,
         @Query("length") length: Int,
-        @Query("delegationId") delegationId: Int
+        @Query("delegationId") delegationId:  Int? = null
 
     ): Observable<NotesResponse>
 
@@ -522,7 +521,8 @@ interface ApiClient {
     fun getTransferDetails(
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("id") transferId: Int
+        @Query("id") transferId: Int,
+        @Query("delegationId") delegationId: Int
 
     ): Observable<TransferDetailsResponse>
 

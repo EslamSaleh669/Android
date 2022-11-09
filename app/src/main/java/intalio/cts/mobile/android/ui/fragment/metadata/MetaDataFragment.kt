@@ -96,17 +96,46 @@ class MetaDataFragment : Fragment() {
         requireArguments().getInt(Constants.TRANSFER_ID).let {
             TransferId = it
 
-            if (viewModel.readPath() == "node" || viewModel.readPath() == "attachment") {
+            Log.d("pattthy",viewModel.readPath())
+            if (viewModel.readPath() == "node" ) {
                 requireArguments().getString(Constants.NODE_INHERIT).let { nodeID ->
                     if (nodeID == "MyRequests") {
                         getRequestedDocumentInfo(TransferId)
+                    } else if (nodeID == "Closed"){
+                        getSearchDocumentInfo(TransferId,delegationId)
+
                     } else {
                         getMetaData(TransferId,delegationId)
 
                     }
                 }
 
-            } else {
+            }else if (viewModel.readPath() == "attachment"){
+                requireArguments().getString(Constants.LATEST_PATH).let { latest_path ->
+
+                    when (latest_path) {
+                        "node" -> {
+                            getMetaData(TransferId,delegationId)
+
+                        }
+                        "requested node" -> {
+                            getRequestedDocumentInfo(TransferId)
+
+                        }
+                        "closed node" -> {
+                            getSearchDocumentInfo(TransferId,delegationId)
+
+                        }
+                        else -> {
+                            getSearchDocumentInfo(TransferId,delegationId)
+
+                        }
+                    }
+
+                }
+
+            }
+            else {
                 getSearchDocumentInfo(TransferId,delegationId)
             }
         }

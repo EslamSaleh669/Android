@@ -7,10 +7,12 @@ import tellh.com.recyclertreeview_lib.LayoutItemType;
 public class File implements LayoutItemType {
     public String fileName;
     public String id;
+    public String parentId;
 
-    public File(String fileName, String id) {
+    public File(String fileName, String id, String parentId) {
         this.fileName = fileName;
         this.id = id;
+        this.parentId = parentId ;
     }
 
     @Override

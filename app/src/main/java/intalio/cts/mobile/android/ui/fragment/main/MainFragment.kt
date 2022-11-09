@@ -390,8 +390,11 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                                                                                                     150,
                                                                                                     levelSexItem.id!!,
                                                                                                     viewModel,
-                                                                                                    autoDispose
-                                                                                                )
+                                                                                                    autoDispose,
+                                                                                                    levelSexItem.enableTodayCount!!,
+                                                                                                    levelSexItem.enableTotalCount!!,
+
+                                                                                                    )
                                                                                             )
                                                                                         levelSexParent.addChild(
                                                                                             levelSevenChild
@@ -414,7 +417,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                                                                                         125,
                                                                                         levelFivItem.id!!,
                                                                                         viewModel,
-                                                                                        autoDispose
+                                                                                        autoDispose,
+                                                                                        levelFivItem.enableTodayCount!!,
+                                                                                        levelFivItem.enableTotalCount!!,
                                                                                     )
                                                                                 )
                                                                             levelFiveParent.addChild(
@@ -436,7 +441,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                                                                         100,
                                                                         levelFourITem.id!!,
                                                                         viewModel,
-                                                                        autoDispose
+                                                                        autoDispose,
+                                                                        levelFourITem.enableTodayCount!!,
+                                                                        levelFourITem.enableTotalCount!!,
                                                                     )
                                                                 )
                                                                 levelFourParent.addChild(
@@ -458,7 +465,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                                                             75,
                                                             levelThreeItem.id!!,
                                                             viewModel,
-                                                            autoDispose
+                                                            autoDispose,
+                                                            levelThreeItem.enableTodayCount!!,
+                                                            levelThreeItem.enableTotalCount!!,
                                                         )
                                                     )
                                                     levelThreeParent.addChild(levelFourChild)
@@ -478,7 +487,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                                                 50,
                                                 levelTwoItem.id!!,
                                                 viewModel,
-                                                autoDispose
+                                                autoDispose,
+                                                levelTwoItem.enableTodayCount!!,
+                                                levelTwoItem.enableTotalCount!!,
                                             )
                                         )
                                         levelTwoParent.addChild(levelThreeChild)
@@ -495,7 +506,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                                         "insideParent", 25,
                                         levelOneItem.id!!,
                                         viewModel,
-                                        autoDispose
+                                        autoDispose,
+                                        levelOneItem.enableTodayCount!!,
+                                        levelOneItem.enableTotalCount!!,
                                     )
                                 )
                             levelOneParent.addChild(levelOneChild)
@@ -512,7 +525,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                         "outsideParent", 0,
                         parentItem.id!!,
                         viewModel,
-                        autoDispose
+                        autoDispose,
+                        parentItem.enableTodayCount!!,
+                        parentItem.enableTotalCount!!,
                     )
                 )
                 nodes.add(parent)
@@ -597,7 +612,10 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
         for (item in nodeItem) {
             if (item.parentNodeId == nodeId) {
-                children.add(item)
+                if (item.visible == true){
+                    children.add(item)
+
+                }
             }
         }
 
@@ -864,7 +882,10 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                         responseRecieved = response.body()
 
 
-                        showDelegatorsDialog(response.body(),currentDelegator)
+                        if (response.body()!!.size > 0){
+                            showDelegatorsDialog(response.body(),currentDelegator)
+
+                        }
 
 
                     } catch (e: Exception) {
@@ -898,12 +919,12 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
             }
             viewModel.readLanguage() == "ar" -> {
-                myCorrespondence = translator.find { it.keyword == "MyCorrespondences" }!!.en!!
+                myCorrespondence = translator.find { it.keyword == "MyCorrespondences" }!!.ar!!
 
 
             }
             viewModel.readLanguage() == "fr" -> {
-                myCorrespondence = translator.find { it.keyword == "MyCorrespondences" }!!.en!!
+                myCorrespondence = translator.find { it.keyword == "MyCorrespondences" }!!.fr!!
 
             }
         }
@@ -928,7 +949,7 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
 
         delegatorsRecycler.adapter =
-            Delegators_Adapter(model, requireActivity(), this,currentDelegator)
+            Delegators_Adapter(model, requireActivity(), this,currentDelegator, viewModel)
 
 
         delegatorsRecycler.layoutManager =

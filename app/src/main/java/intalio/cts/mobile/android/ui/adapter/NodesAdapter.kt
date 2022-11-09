@@ -1,6 +1,7 @@
 package intalio.cts.mobile.android.ui.adapter
 
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,14 +38,14 @@ class NodesAdapter(
 
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
 
-
         when (Nodes[position].inherit) {
             "Inbox" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_inboxicon)
 
                 autoDispose.add(
-                    viewModel.inboxCount(Nodes[position].id!!,delegationId)
+                    viewModel.inboxCount(Nodes[position].id!!, delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
+
                             holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
 
@@ -61,7 +62,7 @@ class NodesAdapter(
             "Sent" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_senticon)
                 autoDispose.add(
-                    viewModel.sentCount(Nodes[position].id!!,delegationId)
+                    viewModel.sentCount(Nodes[position].id!!, delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
                             holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
@@ -78,7 +79,7 @@ class NodesAdapter(
             "Completed" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_completedicon)
                 autoDispose.add(
-                    viewModel.completedCount(Nodes[position].id!!,delegationId)
+                    viewModel.completedCount(Nodes[position].id!!, delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
                             holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
@@ -96,7 +97,7 @@ class NodesAdapter(
             "Closed" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_completedicon)
                 autoDispose.add(
-                    viewModel.closedCount(Nodes[position].id!!,delegationId)
+                    viewModel.closedCount(Nodes[position].id!!, delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
                             holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
@@ -113,7 +114,7 @@ class NodesAdapter(
             "MyRequests" -> {
                 holder.nodeImage.setImageResource(R.drawable.ic_requestsicon)
                 autoDispose.add(
-                    viewModel.requestedCount(Nodes[position].id!!,delegationId)
+                    viewModel.requestedCount(Nodes[position].id!!, delegationId)
                         .observeOn(AndroidSchedulers.mainThread()).subscribe({
                             holder.nodeCounter.text = it.today.toString()
                             holder.totalNodeCounter.text = it.total.toString()
@@ -138,6 +139,24 @@ class NodesAdapter(
                 holder.totalCounterFrame.visibility = View.INVISIBLE
             }
         }
+
+ 
+
+
+        if (Nodes[position].enableTodayCount == false && Nodes[position].enableTotalCount == false) {
+            holder.counterFrame.visibility = View.INVISIBLE
+            holder.totalCounterFrame.visibility = View.INVISIBLE
+        } else if (Nodes[position].enableTodayCount == false && Nodes[position].enableTotalCount == true) {
+            holder.counterFrame.visibility = View.INVISIBLE
+            holder.totalCounterFrame.visibility = View.VISIBLE
+        } else if (Nodes[position].enableTodayCount == true && Nodes[position].enableTotalCount == false) {
+            holder.counterFrame.visibility = View.VISIBLE
+            holder.totalCounterFrame.visibility = View.INVISIBLE
+        } else {
+            holder.counterFrame.visibility = View.VISIBLE
+            holder.totalCounterFrame.visibility = View.VISIBLE
+        }
+
 
 
         holder.nodeTitle.text = Nodes[position].name

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.cts.mobile.android.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.yariksoffice.lingver.Lingver
 import intalio.cts.mobile.android.data.model.ScanResponse
 import intalio.cts.mobile.android.data.model.UserCredentials
 import intalio.cts.mobile.android.data.model.viewer.TokenManager
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -44,6 +46,10 @@ class LoginActivity : AppCompatActivity() {
         (application as MyApplication).appComponent?.inject(this)
          autoDispose.bindTo(this.lifecycle)
 
+        val lan = viewModel.readLanguage()
+        Lingver.getInstance().setLocale(this, Locale(lan))
+
+        Log.d("locallogin", lan)
 
 
         val sharedPref = getSharedPreferences(Constants.SCANNER_PREF,Context.MODE_PRIVATE)

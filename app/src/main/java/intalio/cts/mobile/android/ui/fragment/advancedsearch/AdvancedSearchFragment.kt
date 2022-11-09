@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.ArrayList
 
 
 class AdvancedSearchFragment : Fragment() {
@@ -539,14 +540,27 @@ class AdvancedSearchFragment : Fragment() {
 
     private fun initTransferFromUserAutoComplete() {
         transferFromUserAutoComplete.threshold = 0
+        val filteredUserArray = ArrayList<AllStructuresUsersItem>()
+
         val usersArray = viewModel.readAllStructureData().users
+
+
+        for (item in usersArray!!){
+
+          val result = filteredUserArray.find { it.fullName == item.fullName }
+          if (result.toString() == "null"){
+              filteredUserArray.add(item)
+          }
+
+        }
+
 
 
         var arrayAdapter =
             UserssAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                usersArray
+                filteredUserArray
             )
 
         transferFromUserAutoComplete.setAdapter(arrayAdapter)
@@ -600,13 +614,22 @@ class AdvancedSearchFragment : Fragment() {
                             if (it.users != null) {
                                 allUsers.addAll(it.users)
                             }
+                            val allUsersFiltered = ArrayList<AllStructuresUsersItem>()
 
+                            for (item in allUsers){
+
+                                val result = allUsersFiltered.find { it.fullName == item.fullName }
+                                if (result.toString() == "null"){
+                                    allUsersFiltered.add(item)
+                                }
+
+                            }
 
                             arrayAdapter =
                                 UserssAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsers
+                                    allUsersFiltered
                                 )
                             transferFromUserAutoComplete.setAdapter(arrayAdapter)
                             if (transferFromUserAutoComplete.hasFocus()) {
@@ -660,13 +683,22 @@ class AdvancedSearchFragment : Fragment() {
         transferToUserAutoComplete.threshold = 0
 
         val usersArray = viewModel.readAllStructureData().users
+        val filteredUserArray = ArrayList<AllStructuresUsersItem>()
 
+        for (item in usersArray!!){
+
+            val result = filteredUserArray.find { it.fullName == item.fullName }
+            if (result.toString() == "null"){
+                filteredUserArray.add(item)
+            }
+
+        }
 
         var arrayAdapter =
             UserssAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                usersArray
+                filteredUserArray
             )
 
 
@@ -721,12 +753,21 @@ class AdvancedSearchFragment : Fragment() {
                                 allUsers.addAll(it.users)
                             }
 
+                            val allUsersFiltered = ArrayList<AllStructuresUsersItem>()
 
+                            for (item in allUsers){
+
+                                val result = allUsersFiltered.find { it.fullName == item.fullName }
+                                if (result.toString() == "null"){
+                                    allUsersFiltered.add(item)
+                                }
+
+                            }
                             arrayAdapter =
                                 UserssAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsers
+                                    allUsersFiltered
                                 )
                             transferToUserAutoComplete.setAdapter(arrayAdapter)
                             if (transferToUserAutoComplete.hasFocus()) {
@@ -1553,7 +1594,7 @@ class AdvancedSearchFragment : Fragment() {
 
 
     private fun emptyForm() {
-        typeOfSearch = 0
+//        typeOfSearch = 0
 
         prioritySelectedId = 0
         statusSelectedId = 0
@@ -1566,6 +1607,17 @@ class AdvancedSearchFragment : Fragment() {
 
         sendingEntitySelectedId = 0
         receivingEntitySelectedId = 0
+
+        categoryAutoComplete.clearFocus()
+        statusAutoComplete.clearFocus()
+        priorityAutoComplete.clearFocus()
+        sendingEntityAutoComplete.clearFocus()
+        receivingEntityAutoComplete.clearFocus()
+        transferFromUserAutoComplete.clearFocus()
+        transferToUserAutoComplete.clearFocus()
+        transferFromStructureAutoComplete.clearFocus()
+        transferToStructureAutoComplete.clearFocus()
+
 
         categoryAutoComplete.setText("")
         etRefNumber.setText("")
@@ -1584,6 +1636,8 @@ class AdvancedSearchFragment : Fragment() {
         searchDateTo.setText("")
         searchKeyword.setText("")
         OverdueCheckbox.isChecked = false
+
+
     }
 
     private fun prepareModel() {

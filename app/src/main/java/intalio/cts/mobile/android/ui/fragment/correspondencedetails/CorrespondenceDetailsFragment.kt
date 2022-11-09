@@ -85,6 +85,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     lateinit var popupWindow: PopupWindow
     private var Node_Inherit: String = ""
+    private var Latest_Path: String = ""
     private var fileId: String = ""
     private lateinit var correspondenceModel: CorrespondenceDataItem
     private lateinit var searchModel: AdvancedSearchResponseDataItem
@@ -93,7 +94,7 @@ class CorrespondenceDetailsFragment : Fragment() {
     //  private lateinit var originalAttachment: AttachmentsResponseItem
 
 
-//    lateinit var viewerAdapter: ViewerAdapter
+    //    lateinit var viewerAdapter: ViewerAdapter
     private lateinit var _fastScroller: FastScroller
     private lateinit var _rvViewer: RecyclerView
     private lateinit var _rvMenu: RecyclerView
@@ -166,18 +167,18 @@ class CorrespondenceDetailsFragment : Fragment() {
 
         requireActivity().findViewById<ImageView>(R.id.dropedmenu).setOnClickListener {
 
+
             popupWindow.showAsDropDown(it, 0, 20);
 
         }
 
         back_icon.setOnClickListener {
-             requireActivity().onBackPressed()
+            requireActivity().onBackPressed()
         }
 
         arguments?.getString(Constants.PATH)?.let {
 
             viewModel.savePath(it)
-            Log.d("mypath",it)
 
             if (it == "node") {
                 Node_Inherit = viewModel.readCurrentNode()
@@ -187,9 +188,23 @@ class CorrespondenceDetailsFragment : Fragment() {
                 title_new_viewer_activity.text = correspondenceModel.referenceNumber
 
                 if (Node_Inherit == "MyRequests") {
+
+
                     viewMode = false
                     //my requests returns document id only
-                    getDocument(correspondenceModel.id!!,delegationId)
+                    getDocument(correspondenceModel.id!!, delegationId, Latest_Path)
+                    getOriginalDocument(
+                        correspondenceModel.id!!,
+                        "null",
+                        false,
+                        viewMode,
+                        delegationId
+                    )
+                } else if (Node_Inherit == "Closed") {
+
+                    viewMode = false
+                    //my requests returns document id only
+                    getSearchedDocument(correspondenceModel.id!!, delegationId)
                     getOriginalDocument(
                         correspondenceModel.id!!,
                         "null",
@@ -198,7 +213,6 @@ class CorrespondenceDetailsFragment : Fragment() {
                         delegationId
                     )
                 } else {
-                    Log.d("mypath",Node_Inherit)
 
                     viewMode = Node_Inherit == "Inbox" &&
                             (correspondenceModel.messageLock == "lockedbyme" ||
@@ -206,8 +220,11 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 //                    correspondenceModel.messageLock == "broadcastlockedbyme" ||
 //                            correspondenceModel.messageLock == "broadcastnotlocked"
-                    viewDocument(correspondenceModel.id!!,delegationId)
-                    setPopUpWindow(correspondenceModel,delegationId)
+                    if (Node_Inherit == "Inbox") {
+                        viewDocument(correspondenceModel.id!!, delegationId)
+
+                    }
+                    setPopUpWindow(correspondenceModel, delegationId, Latest_Path)
                     getOriginalDocument(
                         correspondenceModel.documentId!!,
                         correspondenceModel.id!!.toString(),
@@ -215,6 +232,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                         viewMode,
                         delegationId
                     )
+
 
                 }
 
@@ -231,7 +249,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                     arguments?.getSerializable(Constants.Correspondence_Model) as AdvancedSearchResponseDataItem
                 title_new_viewer_activity.text = searchModel.referenceNumber
 
-                setSearchPopUpWindow(searchModel,delegationId)
+                setSearchPopUpWindow(searchModel, delegationId,Latest_Path)
                 getOriginalDocument(
                     searchModel.id!!,
                     "null",
@@ -239,8 +257,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                     viewMode,
                     delegationId
                 )
-            }
-            else {
+            } else {
 
 
                 requireArguments().getString(Constants.FILE_ID).let { id ->
@@ -248,14 +265,20 @@ class CorrespondenceDetailsFragment : Fragment() {
                     fileId = id!!
                 }
 
-                requireArguments().getString(Constants.NODE_INHERIT).let {
-                    Node_Inherit = it!!
-                    Log.d("mypathnodeinherit",it)
 
+                requireArguments().getString(Constants.LATEST_PATH).let { latest_path ->
+
+                    Latest_Path = latest_path!!
                 }
 
+//                requireArguments().getString(Constants.NODE_INHERIT).let {
+//                    Node_Inherit = it!!
+//                    Log.d("mypathnodeinherit",it)
+//
+//                }
 
-                if (Node_Inherit == "MyRequests") {
+
+                if (Latest_Path == "requested node" || Latest_Path == "closed node") {
 
                     requestedModel =
                         arguments?.getSerializable(Constants.Correspondence_Model) as MetaDataResponse
@@ -263,7 +286,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
                     viewMode = false
                     //my requests returns document id only
-                    getDocument(requestedModel.id!!,delegationId)
+                    getDocument(requestedModel.id!!, delegationId, Latest_Path)
                     getOriginalDocument(
                         requestedModel.id!!,
                         "null",
@@ -272,12 +295,11 @@ class CorrespondenceDetailsFragment : Fragment() {
                         delegationId
                     )
                 }
-                else if (Node_Inherit == "Inbox" || Node_Inherit == "Completed" || Node_Inherit == "MyRequests") {
+                else if (Latest_Path == "node") {
                     requireArguments().getBoolean(Constants.VIEWMODE).let { viewmode ->
 
                         viewMode = viewmode
                     }
-                    Log.d("mypathnodeinherit","I came from attachments path")
 
 
                     correspondenceModel =
@@ -285,8 +307,8 @@ class CorrespondenceDetailsFragment : Fragment() {
                     title_new_viewer_activity.text = correspondenceModel.referenceNumber
 
 
-                    viewDocument(correspondenceModel.id!!,delegationId)
-                    setPopUpWindow(correspondenceModel, delegationId)
+                    //viewDocument(correspondenceModel.id!!,delegationId)
+                    setPopUpWindow(correspondenceModel, delegationId,Latest_Path)
                     getOriginalDocument(
                         correspondenceModel.documentId!!,
                         correspondenceModel.id!!.toString(),
@@ -299,13 +321,14 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 //                    _menuLayout.visibility = View.INVISIBLE
 
+
                     viewMode = false
 
                     searchModel =
                         arguments?.getSerializable(Constants.Correspondence_Model) as AdvancedSearchResponseDataItem
                     title_new_viewer_activity.text = searchModel.referenceNumber
 
-                    setSearchPopUpWindow(searchModel, delegationId)
+                    setSearchPopUpWindow(searchModel, delegationId,Latest_Path)
                     getOriginalDocument(
                         searchModel.id!!,
                         "null",
@@ -423,7 +446,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                 updateBottomMenu()
                 _fastScroller.setRecyclerView(_rvViewer)
 
-          //      viewerAdapter = ViewerAdapter(attachment.annotations, false, this)
+                //      viewerAdapter = ViewerAdapter(attachment.annotations, false, this)
 
 //                _rvViewer.adapter = viewerAdapter
 
@@ -473,7 +496,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         ctsTransferID: String,
         isDraft: Boolean,
         viewMode: Boolean,
-        delegationId:Int
+        delegationId: Int
     ) {
 
         var noAttachments = ""
@@ -500,11 +523,18 @@ class CorrespondenceDetailsFragment : Fragment() {
 
 
         if (fileId.toCharArray().isNotEmpty()) {
+            val isOriginalFile: Boolean
+
+            requireArguments().getBoolean(Constants.FILE_PARENT_ID).let { fileParentId ->
+
+                isOriginalFile = fileParentId
+            }
             webviewviewer(
                 fileId,
                 ctsDocumentId,
                 ctsTransferID,
-                isDraft
+                isDraft,
+                isOriginalFile
             )
         } else {
 
@@ -516,11 +546,12 @@ class CorrespondenceDetailsFragment : Fragment() {
                     originalFileId,
                     ctsDocumentId,
                     ctsTransferID,
-                    isDraft
+                    isDraft,
+                    true
                 )
             } else {
 
-                autoDispose.add(viewModel.getOriginalDocument(ctsDocumentId,delegationId)
+                autoDispose.add(viewModel.getOriginalDocument(ctsDocumentId, delegationId)
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(
                         {
 
@@ -543,7 +574,9 @@ class CorrespondenceDetailsFragment : Fragment() {
                                         originalMail.id.substringAfter("_"),
                                         ctsDocumentId,
                                         ctsTransferID,
-                                        isDraft
+                                        isDraft,
+                                        true
+
                                     )
 
                                 } else if (folder.id.equals("folder_originalMail") && folder.children == null) {
@@ -612,18 +645,18 @@ class CorrespondenceDetailsFragment : Fragment() {
     }
 
 
-    private fun getDocument(documentId: Int,delegationId: Int) {
+    private fun getDocument(documentId: Int, delegationId: Int, Latest_Path: String) {
 
         autoDispose.add(viewModel.getDocument(documentId)
             .observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
 
-                    dialog!!.dismiss()
 
-                    setRequestedPopUpWindow(it,delegationId)
+                    setRequestedPopUpWindow(it, delegationId,Latest_Path)
 
 
                 }, {
+
                     dialog!!.dismiss()
                     Timber.e(it)
 
@@ -634,18 +667,40 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
-    private fun viewDocument(transferID: Int,delegationId : Int) {
+    private fun getSearchedDocument(documentId: Int, delegationId: Int) {
+
+        autoDispose.add(viewModel.getSearchDocumentInfo(documentId, delegationId)
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+
+
+                    setRequestedPopUpWindow(it, delegationId, Latest_Path)
+
+
+                }, {
+
+                    dialog!!.dismiss()
+                    Timber.e(it)
+
+
+                })
+        )
+
+
+    }
+
+    private fun viewDocument(transferID: Int, delegationId: Int) {
         dialog!!.dismiss()
 
 
 
-        viewModel.viewTransfer(transferID,delegationId).enqueue(object : Callback<ResponseBody?> {
+        viewModel.viewTransfer(transferID, delegationId).enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
 
                 if (response.code() != 200) {
 
 
-                    requireActivity().makeToast(getString(R.string.serverError))
+                    requireActivity().makeToast(getString(R.string.error))
 
                 }
             }
@@ -711,7 +766,12 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
-    private fun setPopUpWindow(model: CorrespondenceDataItem, delegationId: Int) {
+    private fun setPopUpWindow(
+        model: CorrespondenceDataItem,
+        delegationId: Int,
+        Latest_Path: String
+    ) {
+        dialog!!.dismiss()
         val inflater = requireActivity().applicationContext
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.menu_layout, null, false)
@@ -782,7 +842,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                     view.findViewById<View>(R.id.transfer_btn).visibility = View.GONE
                     view.findViewById<View>(R.id.complete_btn).visibility = View.VISIBLE
                     canDoAction = false
-                    if (model.isexternalbroadcast ) {
+                    if (model.isexternalbroadcast) {
                         view.findViewById<View>(R.id.transfer_btn).visibility = View.VISIBLE
                         view.findViewById<View>(R.id.reply_user_btn).visibility = View.VISIBLE
                         view.findViewById<View>(R.id.reply_structure_btn).visibility = View.VISIBLE
@@ -813,8 +873,10 @@ class CorrespondenceDetailsFragment : Fragment() {
                     MetaDataFragment().apply {
 
                         arguments = bundleOf(
-                            Pair(Constants.TRANSFER_ID, model.id)
-                        )
+                            Pair(Constants.TRANSFER_ID, model.id),
+                            Pair(Constants.LATEST_PATH, Latest_Path)
+
+                            )
                     }
                 ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack("")
@@ -952,19 +1014,19 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.unlock_btn).setOnClickListener {
             popupWindow.dismiss()
 
-            unlockTransfer(model.id!!,delegationId)
+            unlockTransfer(model.id!!, delegationId)
 
         }
         view.findViewById<View>(R.id.dismis_copy_btn).setOnClickListener {
 
             popupWindow.dismiss()
             val transferId = arrayOf(model.id)
-            dismissTransferCopy(transferId,delegationId)
+            dismissTransferCopy(transferId, delegationId)
         }
         view.findViewById<View>(R.id.complete_btn).setOnClickListener {
             popupWindow.dismiss()
             val transferId = arrayOf(model.id)
-            completeTransfer(transferId,delegationId)
+            completeTransfer(transferId, delegationId)
 
 
         }
@@ -1045,7 +1107,7 @@ class CorrespondenceDetailsFragment : Fragment() {
             popupWindow.dismiss()
             dialog = requireContext().launchLoadingDialog()
 
-            autoDispose.add(viewModel.getVisualTracking(model.documentId!!,delegationId)
+            autoDispose.add(viewModel.getVisualTracking(model.documentId!!, delegationId)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
                         dialog!!.dismiss()
@@ -1056,7 +1118,10 @@ class CorrespondenceDetailsFragment : Fragment() {
                         modell.visualTrackingResponse = it
 
                         bundle.putSerializable(Constants.TRACKING_MODEL, modell)
-                        bundle.putSerializable(Constants.STRUCTURE_MODEL, viewModel.readAllStructureData())
+                        bundle.putSerializable(
+                            Constants.STRUCTURE_MODEL,
+                            viewModel.readAllStructureData()
+                        )
                         bundle.putString(Constants.CURRENT_LANG, viewModel.readLanguage())
 //                        bundle.putSerializable(Constants.TRANSLATION_MODEL, viewModel.readDictionary()!!.data!!)
                         intent.putExtras(bundle)
@@ -1207,7 +1272,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
-    private fun setSearchPopUpWindow(model: AdvancedSearchResponseDataItem, delegationId: Int) {
+    private fun setSearchPopUpWindow(model: AdvancedSearchResponseDataItem, delegationId: Int, latestPath:String) {
         dialog!!.dismiss()
 
         val inflater = requireActivity().applicationContext
@@ -1225,7 +1290,8 @@ class CorrespondenceDetailsFragment : Fragment() {
                 add(R.id.fragmentContainer,
                     MetaDataFragment().apply {
                         arguments = bundleOf(
-                            Pair(Constants.TRANSFER_ID, model.id)
+                            Pair(Constants.TRANSFER_ID, model.id),
+                            Pair(Constants.LATEST_PATH, latestPath)
                         )
 
 
@@ -1281,14 +1347,14 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.show_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     AttachmentsFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(Constants.Correspondence_Model, model)
                         )
                     }
-                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                )
                 addToBackStack("")
 
             }
@@ -1341,7 +1407,7 @@ class CorrespondenceDetailsFragment : Fragment() {
             popupWindow.dismiss()
             dialog = requireContext().launchLoadingDialog()
 
-            autoDispose.add(viewModel.getVisualTracking(model.id!!,delegationId)
+            autoDispose.add(viewModel.getVisualTracking(model.id!!, delegationId)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
                         dialog!!.dismiss()
@@ -1385,7 +1451,14 @@ class CorrespondenceDetailsFragment : Fragment() {
         popupWindow = PopupWindow(view, x, LinearLayout.LayoutParams.WRAP_CONTENT, true)
     }
 
-    private fun setRequestedPopUpWindow(model: MetaDataResponse, delegationId: Int) {
+    private fun setRequestedPopUpWindow(
+        model: MetaDataResponse,
+        delegationId: Int,
+        Latest_Path: String
+    ) {
+        dialog!!.dismiss()
+
+
         val inflater = requireActivity().applicationContext
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.searchmenu_layout, null, false)
@@ -1399,7 +1472,8 @@ class CorrespondenceDetailsFragment : Fragment() {
                     MetaDataFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.TRANSFER_ID, model.id),
-                            Pair(Constants.NODE_INHERIT, Node_Inherit)
+                            Pair(Constants.NODE_INHERIT, Node_Inherit),
+                            Pair(Constants.LATEST_PATH, Latest_Path),
 
                         )
 
@@ -1456,14 +1530,14 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.show_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     AttachmentsFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.NODE_INHERIT, Node_Inherit),
                             Pair(Constants.Correspondence_Model, model)
                         )
                     }
-                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                )
                 addToBackStack("")
 
             }
@@ -1516,7 +1590,7 @@ class CorrespondenceDetailsFragment : Fragment() {
             popupWindow.dismiss()
             dialog = requireContext().launchLoadingDialog()
 
-            autoDispose.add(viewModel.getVisualTracking(model.id!!,delegationId)
+            autoDispose.add(viewModel.getVisualTracking(model.id!!, delegationId)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
                         dialog!!.dismiss()
@@ -1645,7 +1719,6 @@ class CorrespondenceDetailsFragment : Fragment() {
     }
 
 
-
     private fun unlockTransfer(transferID: Int, delegationId: Int) {
 
         var fileInUSe = ""
@@ -1687,14 +1760,12 @@ class CorrespondenceDetailsFragment : Fragment() {
         }
 
 
-
-
         val width = (requireActivity().resources.displayMetrics.widthPixels * 0.99).toInt()
         val alertDialog = AlertDialog.Builder(requireActivity())
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setMessage(unlockConfirmMessage)
             .setPositiveButton(
-               yes,
+                yes,
                 DialogInterface.OnClickListener { dialogg, i ->
                     dialogg.dismiss()
 
@@ -1760,7 +1831,7 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
-    private fun completeTransfer(transferID: Array<Int?>,delegationId: Int) {
+    private fun completeTransfer(transferID: Array<Int?>, delegationId: Int) {
 
         var noOriginalMail = ""
         var lockedbyUser = ""
@@ -1773,20 +1844,26 @@ class CorrespondenceDetailsFragment : Fragment() {
         when {
             viewModel.readLanguage() == "en" -> {
 
-                noOriginalMail = translator.find { it.keyword == "CorrespondenceNotCompleteNoOriginalMail" }!!.en!!
+                noOriginalMail =
+                    translator.find { it.keyword == "CorrespondenceNotCompleteNoOriginalMail" }!!.en!!
                 lockedbyUser = translator.find { it.keyword == "HasLockedAttachmentsByUser" }!!.en!!
-                mailCheckedOut = translator.find { it.keyword == "OriginalDocumentLockedByUser" }!!.en!!
-                completeConfirm = translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.en!!
+                mailCheckedOut =
+                    translator.find { it.keyword == "OriginalDocumentLockedByUser" }!!.en!!
+                completeConfirm =
+                    translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.en!!
                 yes = translator.find { it.keyword == "Yes" }!!.en!!
                 no = translator.find { it.keyword == "No" }!!.en!!
 
             }
             viewModel.readLanguage() == "ar" -> {
 
-                noOriginalMail = translator.find { it.keyword == "CorrespondenceNotCompleteNoOriginalMail" }!!.ar!!
+                noOriginalMail =
+                    translator.find { it.keyword == "CorrespondenceNotCompleteNoOriginalMail" }!!.ar!!
                 lockedbyUser = translator.find { it.keyword == "HasLockedAttachmentsByUser" }!!.ar!!
-                mailCheckedOut = translator.find { it.keyword == "OriginalDocumentLockedByUser" }!!.ar!!
-                completeConfirm = translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.ar!!
+                mailCheckedOut =
+                    translator.find { it.keyword == "OriginalDocumentLockedByUser" }!!.ar!!
+                completeConfirm =
+                    translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.ar!!
                 yes = translator.find { it.keyword == "Yes" }!!.ar!!
                 no = translator.find { it.keyword == "No" }!!.ar!!
 
@@ -1794,10 +1871,13 @@ class CorrespondenceDetailsFragment : Fragment() {
             viewModel.readLanguage() == "fr" -> {
 
 
-                noOriginalMail = translator.find { it.keyword == "CorrespondenceNotCompleteNoOriginalMail" }!!.fr!!
+                noOriginalMail =
+                    translator.find { it.keyword == "CorrespondenceNotCompleteNoOriginalMail" }!!.fr!!
                 lockedbyUser = translator.find { it.keyword == "HasLockedAttachmentsByUser" }!!.fr!!
-                mailCheckedOut = translator.find { it.keyword == "OriginalDocumentLockedByUser" }!!.fr!!
-                completeConfirm = translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.fr!!
+                mailCheckedOut =
+                    translator.find { it.keyword == "OriginalDocumentLockedByUser" }!!.fr!!
+                completeConfirm =
+                    translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.fr!!
                 yes = translator.find { it.keyword == "Yes" }!!.fr!!
                 no = translator.find { it.keyword == "No" }!!.fr!!
 
@@ -1808,13 +1888,13 @@ class CorrespondenceDetailsFragment : Fragment() {
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setMessage(completeConfirm)
             .setPositiveButton(
-             yes,
+                yes,
                 DialogInterface.OnClickListener { dialogg, i ->
                     dialogg.dismiss()
                     dialog = requireContext().launchLoadingDialog()
 
                     autoDispose.add(
-                        viewModel.completeTransfer(transferID,delegationId)
+                        viewModel.completeTransfer(transferID, delegationId)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                 {
@@ -1855,12 +1935,12 @@ class CorrespondenceDetailsFragment : Fragment() {
                 DialogInterface.OnClickListener { dialogInterface, i ->
                     dialogInterface.dismiss()
 
-                 }).show().window!!.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
+                }).show().window!!.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
 
 
     }
 
-    private fun dismissTransferCopy(transferID: Array<Int?>,delegationId: Int) {
+    private fun dismissTransferCopy(transferID: Array<Int?>, delegationId: Int) {
 //DismissCarbonCopyOneTsfConfirmation
         var DismissCarbonCopyOneTsfConfirmation = ""
         var yes = ""
@@ -1868,19 +1948,22 @@ class CorrespondenceDetailsFragment : Fragment() {
         when {
             viewModel.readLanguage() == "en" -> {
 
-                DismissCarbonCopyOneTsfConfirmation = translator.find { it.keyword == "DismissCarbonCopyOneTsfConfirmation" }!!.en!!
+                DismissCarbonCopyOneTsfConfirmation =
+                    translator.find { it.keyword == "DismissCarbonCopyOneTsfConfirmation" }!!.en!!
                 yes = translator.find { it.keyword == "Yes" }!!.en!!
                 no = translator.find { it.keyword == "No" }!!.en!!
 
             }
             viewModel.readLanguage() == "ar" -> {
-                DismissCarbonCopyOneTsfConfirmation = translator.find { it.keyword == "DismissCarbonCopyOneTsfConfirmation" }!!.ar!!
+                DismissCarbonCopyOneTsfConfirmation =
+                    translator.find { it.keyword == "DismissCarbonCopyOneTsfConfirmation" }!!.ar!!
 
                 yes = translator.find { it.keyword == "Yes" }!!.ar!!
                 no = translator.find { it.keyword == "No" }!!.ar!!
             }
             viewModel.readLanguage() == "fr" -> {
-                DismissCarbonCopyOneTsfConfirmation = translator.find { it.keyword == "DismissCarbonCopyOneTsfConfirmation" }!!.fr!!
+                DismissCarbonCopyOneTsfConfirmation =
+                    translator.find { it.keyword == "DismissCarbonCopyOneTsfConfirmation" }!!.fr!!
 
                 yes = translator.find { it.keyword == "Yes" }!!.fr!!
                 no = translator.find { it.keyword == "No" }!!.fr!!
@@ -1898,7 +1981,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                     dialog = requireContext().launchLoadingDialog()
 
                     autoDispose.add(
-                        viewModel.transferDismissCopy(transferID,delegationId)
+                        viewModel.transferDismissCopy(transferID, delegationId)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                 {
@@ -1963,24 +2046,39 @@ class CorrespondenceDetailsFragment : Fragment() {
         documentId: String,
         ctsDocumentId: Int,
         ctsTransferID: String,
-        isDraft: Boolean
+        isDraft: Boolean,
+        isOriginal : Boolean
+
     ) {
 
-        Log.d("fileid",documentId)
 
         var result = ""
         if (!viewMode) {
             result = "view"
         }
 
-        val url =
-            "${Constants.VIEWER_URL}/templates/?documentId=${documentId}&language=${viewModel.currentLanguage()}" +
-                    "&token=${viewModel.readTokenData()!!.accessToken}&version=autocheck&ctsDocumentId=${ctsDocumentId}" +
-                    "&ctsTransferId=${ctsTransferID}&delegationId=null&isDraft=${isDraft}&viewermode=${result}"
+        val settingss: ArrayList<ParamSettingsResponseItem> = viewModel.readSettings()
+        val attachmentEditable = settingss.find { it.keyword == "AttachmentEditable" }!!.content
+
+        var url = ""
+        if (attachmentEditable == "false" && !isOriginal){
+
+             url =
+                "${Constants.VIEWER_URL}/templates/?documentId=${documentId}&language=${viewModel.currentLanguage()}" +
+                        "&token=${viewModel.readTokenData()!!.accessToken}&version=autocheck&ctsDocumentId=${ctsDocumentId}" +
+                        "&ctsTransferId=${ctsTransferID}&delegationId=null&isDraft=${isDraft}&viewermode=view"
 
 
-        Log.d("urrrrrl",url)
-//        val url = "https://dmsp.intalio.com/VIEWER/templates/?documentId=210&language=en&token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjRBMUI0MkQ5OTdGNDEzNDdGNzhBNEQ0MDEwQTYzMTQyIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE2NjIzMDgxNTQsImV4cCI6MTY5Mzg2NTc1NCwiaXNzIjoiaHR0cHM6Ly9pYW1wLmludGFsaW8uY29tIiwiYXVkIjpbIklkZW50aXR5U2VydmVyQXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiY2xpZW50X2lkIjoiNWQyYzhmYTUtOWY1OC00MzBjLWJjZjItNWY0MzY2ZDQyNWRjIiwic3ViIjoiMzAwMDA2IiwiYXV0aF90aW1lIjoxNjYyMzA4MTU0LCJpZHAiOiJsb2NhbCIsIkRpc3BsYXlOYW1lIjoiRmFkZWwgU2FobWFyYW5pIiwiTG9naW5Qcm92aWRlclR5cGUiOjEsIkVtYWlsIjoiZmFkaS5hbW1vdXJ5QGludGFsaW8uY29tcyIsIklkIjozMDAwMDYsIkZpcnN0TmFtZSI6IkZhZGVsIiwiTGFzdE5hbWUiOiJTYWhtYXJhbmkiLCJNaWRkbGVOYW1lIjoiIiwiU3RydWN0dXJlSWQiOiI2NjY1IiwiTWFuYWdlcklkIjoiMzAwMDA4IiwiU3RydWN0dXJlSWRzIjoiNjY2NSIsIkdyb3VwSWRzIjoiIiwiU3RydWN0dXJlU2VuZGVyIjoidHJ1ZSIsIlN0cnVjdHVyZVJlY2VpdmVyIjoidHJ1ZSIsIlByaXZhY3kiOiIzIiwiRnVsbE5hbWUiOiJGYWRlbCBTYWhtYXJhbmkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDb250cmlidXRlIiwiQXBwbGljYXRpb25Sb2xlSWQiOiIzIiwiQ2xpZW50cyI6WyJ7XCJSb2xlSWRcIjozLFwiUm9sZVwiOlwiQ29udHJpYnV0ZVwiLFwiQ2xpZW50SWRcIjpcIjVkMmM4ZmE1LTlmNTgtNDMwYy1iY2YyLTVmNDM2NmQ0MjVkY1wifSIsIntcIlJvbGVJZFwiOjIsXCJSb2xlXCI6XCJGdWxsIENvbnRyb2xcIixcIkNsaWVudElkXCI6XCJiMDI3OTUxMS0wMzhhLTRkMzktYmUxNi0zYzFjMzljOWVkYWVcIn0iLCJ7XCJSb2xlSWRcIjoyLFwiUm9sZVwiOlwiRnVsbCBDb250cm9sXCIsXCJDbGllbnRJZFwiOlwiMjZkYjQwNjEtMzIxNi00NTFlLThkYmUtYWY1NjVhY2MwZGM2XCJ9Iiwie1wiUm9sZUlkXCI6MixcIlJvbGVcIjpcIkZ1bGwgQ29udHJvbFwiLFwiQ2xpZW50SWRcIjpcIjk1YzhkMjdlLTA1MWQtNDkwMy04MTM1LWUzOWQ0NjIzZGU5N1wifSIsIntcIlJvbGVJZFwiOjEsXCJSb2xlXCI6XCJBZG1pbmlzdHJhdG9yXCIsXCJDbGllbnRJZFwiOlwiYTM5ZDRlOTYtM2UwZi00ODVlLWI0YjMtMDVmMTVmMjMzYzQ5XCJ9Il0sImp0aSI6IkQ3QzY3NTM3MkM5MDk4QjU2MTA2REFFMDcyN0Q1MjEyIiwic2lkIjoiNDdBRERGRjc4MzhCQzczQzNDNTVCNDE4RTIyRDQyREUiLCJpYXQiOjE2NjIzMDgxNTQsInNjb3BlIjpbIm9wZW5pZCIsIklkZW50aXR5U2VydmVyQXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.SdbGSX-3XnLtODlDu_0s82PsCkH6pESW3TyxMZDf65Rxhk93h_s0DcYDgSxyEi522ShkkvkDloSf7_2iVTy2bD3a9-hNuCpl07ZUDzrmrhnQf69ODftlfPJQlbxX8rnAK7VlUu92HgVr8SQeDdFmHtN-hke9cLJzNSS95p29EhPK7FEbwa-iitFwEah5wpev4OdE6B7av6AfIMKjKIPrsDaUf-nqgL61RwCecK8ckgCM_a6Bls1_khQwrV2x3VqaG7yMVsFwnzvMp9YytWpT-8e9yJJBTgf3WWxw2Ti3d6EIKTH0Knn5B_KT9OZTQMhnYMZGfLlj0KsY_XzvEFKaOg&version=1&ctsDocumentId=521&ctsTransferId=409&delegationId=null&isDraft=false&viewermode=view"
+        }else{
+             url =
+                "${Constants.VIEWER_URL}/templates/?documentId=${documentId}&language=${viewModel.currentLanguage()}" +
+                        "&token=${viewModel.readTokenData()!!.accessToken}&version=autocheck&ctsDocumentId=${ctsDocumentId}" +
+                        "&ctsTransferId=${ctsTransferID}&delegationId=null&isDraft=${isDraft}&viewermode=${result}"
+
+
+        }
+
+
 
         webView = requireActivity().findViewById(R.id.webview)
         webView.performContextClick()
@@ -2111,7 +2209,6 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("iamhere", requestCode.toString())
 
         when (requestCode) {
 

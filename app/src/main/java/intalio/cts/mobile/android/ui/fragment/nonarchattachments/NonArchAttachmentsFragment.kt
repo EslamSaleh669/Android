@@ -158,7 +158,7 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
         }
 
         nonarchrecycler.adapter =
-            NonArchAdapter(arrayListOf(), requireActivity(),this,Node_Inherit,canDoAction)
+            NonArchAdapter(arrayListOf(), requireActivity(),this,Node_Inherit,canDoAction,viewModel)
         nonarchrecycler.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 

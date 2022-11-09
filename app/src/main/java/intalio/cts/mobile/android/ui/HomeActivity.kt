@@ -1,6 +1,7 @@
 package intalio.cts.mobile.android.ui
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -41,6 +43,11 @@ import androidx.fragment.app.Fragment
 import com.yariksoffice.lingver.Lingver
 import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
 import intalio.cts.mobile.android.data.network.response.DictionaryResponse
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -163,10 +170,11 @@ class HomeActivity : AppCompatActivity() {
             drawer_layout.closeDrawer(GravityCompat.START)
         }
         findViewById<View>(R.id.menusignout).setOnClickListener {
-            val lan = viewModel.readLanguage()
+
             viewModel.logout()
 
             launchActivityFinishCurrent(SplashActivity::class.java)
+            val lan = viewModel.readLanguage()
             getSharedPreferences(Constants.SHARED_NAME, Context.MODE_PRIVATE)?.edit {
                 putString(Constants.LANG_KEY, lan)
             }
@@ -177,22 +185,15 @@ class HomeActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.menubarcode).setOnClickListener {
+
+            scanNewQRCode()
             val lan = viewModel.readLanguage()
-            viewModel.logout()
-
-            launchActivityFinishCurrent(SplashActivity::class.java)
-            val sharedPref =
-                getSharedPreferences(Constants.SCANNER_PREF, Context.MODE_PRIVATE)
-            sharedPref.edit().clear().apply()
-
 
             getSharedPreferences(Constants.SHARED_NAME, Context.MODE_PRIVATE)?.edit {
                 putString(Constants.LANG_KEY, lan)
             }
             Lingver.getInstance().setLocale(this, Locale(lan))
 
-
-            drawer_layout.closeDrawer(GravityCompat.START)
         }
 
 
@@ -205,6 +206,74 @@ class HomeActivity : AppCompatActivity() {
         findViewById<View>(R.id.menutodolist).setOnClickListener {
             drawer_layout.closeDrawer(GravityCompat.START)
         }
+
+    }
+
+    private fun scanNewQRCode() {
+
+        var continueConfirmatiuon = ""
+        var yes = ""
+        var no = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                continueConfirmatiuon = translator.find { it.keyword == "ProceedConfirmation" }!!.en!!
+                yes = translator.find { it.keyword == "Yes" }!!.en!!
+                no = translator.find { it.keyword == "No" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                continueConfirmatiuon = translator.find { it.keyword == "ProceedConfirmation" }!!.ar!!
+                yes = translator.find { it.keyword == "Yes" }!!.ar!!
+                no = translator.find { it.keyword == "No" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+                continueConfirmatiuon = translator.find { it.keyword == "ProceedConfirmation" }!!.fr!!
+                yes = translator.find { it.keyword == "Yes" }!!.fr!!
+                no = translator.find { it.keyword == "No" }!!.fr!!
+
+            }
+        }
+
+
+
+
+        val width = (resources.displayMetrics.widthPixels * 0.99).toInt()
+        val alertDialog = android.app.AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setMessage(continueConfirmatiuon)
+            .setPositiveButton(
+                yes,
+                DialogInterface.OnClickListener { dialogg, i ->
+                    dialogg.dismiss()
+                    viewModel.logout()
+
+                    launchActivityFinishCurrent(SplashActivity::class.java)
+                    val sharedPref =
+                        getSharedPreferences(Constants.SCANNER_PREF, Context.MODE_PRIVATE)
+                    sharedPref.edit().clear().apply()
+
+
+
+                    drawer_layout.closeDrawer(GravityCompat.START)
+
+
+
+                })
+            .setNegativeButton(
+                no,
+                DialogInterface.OnClickListener { dialogInterface, i ->
+                    dialogInterface.dismiss()
+                    drawer_layout.closeDrawer(GravityCompat.START)
+
+
+                }).show().window!!.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
+
 
     }
 

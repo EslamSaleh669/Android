@@ -1071,11 +1071,6 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         Transfers.add(addedModel)
         offlineId += 1
-        Log.d("purposeid", itemType)
-
-        Log.d("selecteddatatype", itemType)
-        Log.d("selecteddataname", structureSelectedName)
-        Log.d("selecteddatastruc", structureSelectedId.toString())
 
         purposeSelectedId = 0
         purposeSelectedName = ""
@@ -1093,6 +1088,45 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
 
     private fun addUserTransfer(userPrivacyLevel: Int, docPrivacyLevel: Int) {
+
+        var fileInUSe = ""
+        var originalDocumentInUse = ""
+
+        var unlockConfirmMessage = ""
+        var yes = ""
+        var no = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.en!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.en!!
+                unlockConfirmMessage = translator.find { it.keyword == "UnlockConfirmation" }!!.en!!
+                yes = translator.find { it.keyword == "Yes" }!!.en!!
+                no = translator.find { it.keyword == "No" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.ar!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.ar!!
+                unlockConfirmMessage = translator.find { it.keyword == "UnlockConfirmation" }!!.ar!!
+                yes = translator.find { it.keyword == "Yes" }!!.ar!!
+                no = translator.find { it.keyword == "No" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.fr!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.fr!!
+                unlockConfirmMessage = translator.find { it.keyword == "UnlockConfirmation" }!!.fr!!
+                yes = translator.find { it.keyword == "Yes" }!!.fr!!
+                no = translator.find { it.keyword == "No" }!!.fr!!
+
+            }
+        }
         if (userPrivacyLevel >= docPrivacyLevel) {
 
             val addedModel = TransferRequestModel()
@@ -1115,13 +1149,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
             Transfers.add(addedModel)
             offlineId += 1
-            Log.d("selecteddatatype", itemType)
-            Log.d("selecteddataid", userSelectedId.toString())
-            Log.d("selecteddataname", structureSelectedName)
-            Log.d("selecteddatastruc", structureSelectedId.toString())
 
-            Log.d("selecteddadoclevel", userPrivacyLevel.toString())
-            Log.d("selecteddastruclevel", userPrivacyLevel.toString())
 
             purposeSelectedId = 0
             purposeSelectedName = ""

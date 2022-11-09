@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
+import intalio.cts.mobile.android.data.network.response.TransferDetailsResponse
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_mytransfers.*
 import kotlinx.android.synthetic.main.fragment_mytransfers.receiving_entity
 import kotlinx.android.synthetic.main.fragment_mytransfers.sending_entity
@@ -130,12 +131,14 @@ class MyTransferFragment : Fragment() {
 
 
         getMyTransfers(TransferId, delegationId)
+        //  getTransferDetails(TransferId, delegationId)
 
 
     }
 
 
     private fun getMyTransfers(TransferId: Int, delegationId: Int) {
+
 
         autoDispose.add(viewModel.getMyTransfer(TransferId, delegationId)
             .observeOn(AndroidSchedulers.mainThread()).subscribe(
@@ -219,86 +222,83 @@ class MyTransferFragment : Fragment() {
 
                         }
 
-                        viewModel.readSavedDelegator().let {
-                            if (it != null) {
-
-                                if (it.fromUserId == 0) {
-                                    if ((lockedBy == viewModel.readUserinfo().fullName || lockedBy == "you")) {
-                                        when {
-                                            viewModel.readLanguage() == "en" -> {
-                                                lockedby.text =
-                                                    translator.find { it.keyword == "You" }!!.en
-
-                                            }
-                                            viewModel.readLanguage() == "ar" -> {
-                                                lockedby.text =
-                                                    translator.find { it.keyword == "You" }!!.ar
-
-                                            }
-                                            viewModel.readLanguage() == "fr" -> {
-                                                lockedby.text =
-                                                    translator.find { it.keyword == "You" }!!.fr
-
-                                            }
-                                        }
-                                    } else {
-                                        lockedby.text = lockedBy
-
-                                    }
-                                } else {
-                                    if ((lockedBy == it.fromUser || lockedBy == "delegator") && lockedByDelegator == "true") {
-                                        when {
-                                            viewModel.readLanguage() == "en" -> {
-
-                                                lockedby.text =
-                                                    "${translator.find { it.keyword == "You" }!!.en} ${translator.find { it.keyword == "OnBehalfOf" }!!.en} ${it.fromUser}"
-                                            }
-                                            viewModel.readLanguage() == "ar" -> {
-
-                                                lockedby.text =
-                                                    "${translator.find { it.keyword == "You" }!!.ar} ${translator.find { it.keyword == "OnBehalfOf" }!!.ar} ${it.fromUser}"
-
-                                            }
-                                            viewModel.readLanguage() == "fr" -> {
-
-                                                lockedby.text =
-                                                    "${translator.find { it.keyword == "You" }!!.fr} ${translator.find { it.keyword == "OnBehalfOf" }!!.fr} ${it.fromUser}"
-                                            }
-                                        }
-                                    }  else {
-                                        lockedby.text = lockedBy
-
-                                    }
-                                }
-
-                            } else {
-                                if ((lockedBy == viewModel.readUserinfo().fullName || lockedBy == "you")) {
-                                    when {
-                                        viewModel.readLanguage() == "en" -> {
-                                            lockedby.text =
-                                                translator.find { it.keyword == "You" }!!.en
-
-                                        }
-                                        viewModel.readLanguage() == "ar" -> {
-                                            lockedby.text =
-                                                translator.find { it.keyword == "You" }!!.ar
-
-                                        }
-                                        viewModel.readLanguage() == "fr" -> {
-                                            lockedby.text =
-                                                translator.find { it.keyword == "You" }!!.fr
-
-                                        }
-                                    }
-                                } else {
-                                    lockedby.text = lockedBy
-
-                                }
-                            }
-                        }
-
-
-                        lockeddate.text = lockedDate
+                        getTransferDetails(TransferId, delegationId)
+                        //                        viewModel.readSavedDelegator().let {
+//
+//                            if (it != null) {
+//
+//                                if (it.fromUserId == 0) {
+//
+//                                    if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+//                                        if (transferDetails.lockedBy == viewModel.readUserinfo().fullName) {
+//                                            lockedby.text = you
+//
+//                                        } else {
+//                                            lockedby.text = transferDetails.lockedBy
+//
+//                                        }
+//                                    } else {
+//
+//                                        if (transferDetails.lockedByDelegatedUser == it.fromUser) {
+//                                            lockedby.text =
+//                                                "$you $onBehalfOf ${transferDetails.lockedBy}"
+//
+//                                        } else {
+//                                            lockedby.text =
+//                                                "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+//
+//                                        }
+//
+//                                    }
+//
+//                                } else {
+//                                    if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+//                                        if (transferDetails.lockedBy == it.fromUser) {
+//                                            lockedby.text = you
+//
+//                                        } else {
+//                                            lockedby.text = transferDetails.lockedBy
+//
+//                                        }
+//                                    } else {
+//
+//                                        if (transferDetails.lockedByDelegatedUser == it.fromUser) {
+//                                            lockedby.text =
+//                                                "$you $onBehalfOf ${transferDetails.lockedBy}"
+//
+//                                        } else {
+//                                            lockedby.text =
+//                                                "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+//
+//                                        }
+//
+//                                    }
+//                                }
+//
+//                            } else {
+//                                if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+//                                    if (transferDetails.lockedBy == viewModel.readUserinfo().fullName) {
+//                                        lockedby.text = you
+//
+//                                    } else {
+//                                        lockedby.text = transferDetails.lockedBy
+//
+//                                    }
+//                                } else {
+//
+//                                    if (transferDetails.lockedByDelegatedUser == it?.fromUser) {
+//                                        lockedby.text =
+//                                            "$you $onBehalfOf ${transferDetails.lockedBy}"
+//
+//                                    } else {
+//                                        lockedby.text =
+//                                            "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+//
+//                                    }
+//
+//                                }
+//                            }
+//                        }
 
 
                     }
@@ -314,6 +314,142 @@ class MyTransferFragment : Fragment() {
 
 
     }
+
+    private fun getTransferDetails(TransferId: Int, delegationId: Int) {
+
+        var you = ""
+        var onBehalfOf = ""
+        when {
+            viewModel.readLanguage() == "en" -> {
+                you =
+                    translator.find { it.keyword == "You" }!!.en!!
+                onBehalfOf =
+                    translator.find { it.keyword == "OnBehalfOf" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                you =
+                    translator.find { it.keyword == "You" }!!.ar!!
+                onBehalfOf =
+                    translator.find { it.keyword == "OnBehalfOf" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                you =
+                    translator.find { it.keyword == "You" }!!.fr!!
+                onBehalfOf =
+                    translator.find { it.keyword == "OnBehalfOf" }!!.fr!!
+
+            }
+        }
+
+        var transferDetailss = TransferDetailsResponse()
+        autoDispose.add(viewModel.getTransferDetails(TransferId, delegationId)
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(
+                { transferDetails ->
+                    dialog!!.dismiss()
+                    if (transferDetails.toString().isNotEmpty()) {
+
+                        Log.d("xcxcxcxcxc", transferDetails.toString())
+
+//                        transferDetails = it
+                        Log.d("xcxcxcxcxc", transferDetails.lockedBy.toString())
+                        Log.d("xcxcxcxcxc", transferDetails.lockedByDelegatedUser.toString())
+                        Log.d("xcxcxcxcxc", transferDetails.lockedDate.toString())
+                        Log.d("xcxcxcxcxc", transferDetails.isLocked.toString())
+
+                        viewModel.readSavedDelegator().let {
+
+                            if (it != null) {
+
+                                if (it.fromUserId == 0) {
+
+                                    if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+                                        if (transferDetails.lockedBy == viewModel.readUserinfo().fullName) {
+                                            lockedby.text = you
+
+                                        } else {
+                                            lockedby.text = transferDetails.lockedBy
+
+                                        }
+                                    } else {
+
+                                        if (transferDetails.lockedByDelegatedUser == it.fromUser) {
+                                            lockedby.text =
+                                                "$you $onBehalfOf ${transferDetails.lockedBy}"
+
+                                        } else {
+                                            lockedby.text =
+                                                "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+
+                                        }
+
+                                    }
+
+                                } else {
+                                    if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+                                        if (transferDetails.lockedBy == it.fromUser) {
+                                            lockedby.text = you
+
+                                        } else {
+                                            lockedby.text = transferDetails.lockedBy
+
+                                        }
+                                    } else {
+
+                                        if (transferDetails.lockedByDelegatedUser == it.fromUser) {
+                                            lockedby.text =
+                                                "$you $onBehalfOf ${transferDetails.lockedBy}"
+
+                                        } else {
+                                            lockedby.text =
+                                                "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+
+                                        }
+
+                                    }
+                                }
+
+                            } else {
+                                if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+                                    if (transferDetails.lockedBy == viewModel.readUserinfo().fullName) {
+                                        lockedby.text = you
+
+                                    } else {
+                                        lockedby.text = transferDetails.lockedBy
+
+                                    }
+                                } else {
+
+                                    if (transferDetails.lockedByDelegatedUser == it?.fromUser) {
+                                        lockedby.text =
+                                            "$you $onBehalfOf ${transferDetails.lockedBy}"
+
+                                    } else {
+                                        lockedby.text =
+                                            "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+
+                                    }
+
+                                }
+                            }
+                        }
+
+                    }
+                    lockeddate.text = transferDetails.lockedDate
+
+
+                }, {
+                    dialog!!.dismiss()
+                    Timber.e(it)
+
+
+                })
+        )
+
+//        return transferDetailss
+    }
+
 
     private fun setLabels() {
 

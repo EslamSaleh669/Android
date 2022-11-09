@@ -61,6 +61,7 @@ class Constants {
         const val VIEWMODE = "viewmode"
 
         const val FILE_ID = "fileid"
+        const val FILE_PARENT_ID = "filparentid"
         const val DOCUMENT_ID = "docid"
         const val Delegation_Model = "delegationmodel"
         const val Correspondence_Model = "correspondencemodel"
