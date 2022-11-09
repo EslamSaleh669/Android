@@ -17,7 +17,7 @@ class TransfersViewModel (private val userRepo: UserRepo, private val adminRepo:
         adminRepo.transferTransfer(list,delegationId)
 
 
-    fun getAllStructures(text: String): Observable<AllStructuresResponse> = adminRepo.getAllStructures(text)
+    fun getAllStructures(text: String,ids: ArrayList<Int>): Observable<AllStructuresResponse> = adminRepo.getAllStructures(text,ids)
     fun getAvailableStructures(text:String, ids: ArrayList<Int>): Observable<AllStructuresResponse> = adminRepo.getAvailableStructures(text,ids)
 
 

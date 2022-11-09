@@ -42,7 +42,7 @@ class MainViewModel(private val userRepo: UserRepo, private val adminRepo: Admin
     }
 
 
-    fun getAllStructures(): Observable<AllStructuresResponse> = adminRepo.getAllStructures("")
+    fun getAllStructures(ids: ArrayList<Int>): Observable<AllStructuresResponse> = adminRepo.getAllStructures("",ids)
 
     fun saveAllStructures(structure: AllStructuresResponse) {
         userRepo.saveAllStructureData(structure)

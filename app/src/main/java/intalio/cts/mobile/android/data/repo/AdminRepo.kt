@@ -165,11 +165,12 @@ class AdminRepo @Inject constructor(
     }
 
 
-    fun getAllStructures(text: String): Observable<AllStructuresResponse> {
+    fun getAllStructures(text: String,ids: ArrayList<Int>
+    ): Observable<AllStructuresResponse> {
         return apiClient.getAllStructures(
             "${Constants.BASE_URL2}/api/GetUsersAndStructuresWithSearchAttributes",
             userRepo.currentLang(),
-            "Bearer ${userRepo.readTokenData()!!.accessToken}", text
+            "Bearer ${userRepo.readTokenData()!!.accessToken}", text,ids, userRepo.currentLang()
         ).subscribeOn(Schedulers.io())
     }
 
@@ -182,7 +183,8 @@ class AdminRepo @Inject constructor(
             "${Constants.BASE_URL2}/api/GetUsersAndStructuresWithSearchAttributes",
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}", text,
-            ids
+            ids,
+            userRepo.currentLang()
 
         ).subscribeOn(Schedulers.io())
     }

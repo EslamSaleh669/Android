@@ -118,7 +118,12 @@ abstract class GraphActivity : AppCompatActivity() {
                         }
                         holder.colorView.setBackgroundColor(resources.getColor(R.color.orange))
                         holder.Category.text = Objects.requireNonNull(getNodeCategory(position)).toString()
-                        holder.RefNumber.text = "${structures}/${user}"
+                        if (user.isEmpty()){
+                            holder.RefNumber.text = structures
+                        }else{
+                            holder.RefNumber.text = "${structures}/${user}"
+
+                        }
                         holder.CreatedDateTitle.text = getString(R.string.transfer_date)
                         holder.CreatedDate.text = Objects.requireNonNull(getNodeCreatedDate(position)).toString()
                         holder.CreatedByTitle.text = getString(R.string.created_by)

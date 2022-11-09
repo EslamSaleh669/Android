@@ -54,6 +54,6 @@ class AdvanceSearchViewModel (private val userRepo: UserRepo, private val adminR
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
 
 
-    fun getAllStructures(text: String): Observable<AllStructuresResponse> = adminRepo.getAllStructures(text)
+    fun getAllStructures(text: String,ids:ArrayList<Int>): Observable<AllStructuresResponse> = adminRepo.getAllStructures(text,ids)
 
 }

@@ -603,9 +603,10 @@ class AdvancedSearchFragment : Fragment() {
 
 
         transferFromUserAutoComplete.doOnTextChanged { text, start, before, count ->
+            val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString())
+                viewModel.getAllStructures(text.toString(),structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -741,9 +742,10 @@ class AdvancedSearchFragment : Fragment() {
 
 
         transferToUserAutoComplete.doOnTextChanged { text, start, before, count ->
+            val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString())
+                viewModel.getAllStructures(text.toString(),structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -868,9 +870,10 @@ class AdvancedSearchFragment : Fragment() {
 
 
         transferFromStructureAutoComplete.doOnTextChanged { text, start, before, count ->
+            val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString())
+                viewModel.getAllStructures(text.toString(), structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -989,9 +992,10 @@ class AdvancedSearchFragment : Fragment() {
             }
 
         transferToStructureAutoComplete.doOnTextChanged { text, start, before, count ->
+            val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString())
+                viewModel.getAllStructures(text.toString(),structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -1117,9 +1121,10 @@ class AdvancedSearchFragment : Fragment() {
 
 
         sendingEntityAutoComplete.doOnTextChanged { text, start, before, count ->
+            val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString())
+                viewModel.getAllStructures(text.toString(),structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -1238,9 +1243,10 @@ class AdvancedSearchFragment : Fragment() {
 
         receivingEntityAutoComplete.doOnTextChanged { text, start, before, count ->
 
+            val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString())
+                viewModel.getAllStructures(text.toString(),structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {

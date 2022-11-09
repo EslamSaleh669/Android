@@ -93,16 +93,25 @@
         android:layout_marginStart="15dp"
         android:textSize="16sp"
         android:textColor="#CCCCCC"
+        android:layout_marginBottom="5dp"
         android:fontFamily="@font/myriadpro_regular"
         android:layout_marginTop="20dp"
         android:id="@+id/nodestitle"
         />
 
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipecontainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
-        android:id="@+id/noderecycler"
-        />
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:id="@+id/noderecycler"
+            />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </LinearLayout>

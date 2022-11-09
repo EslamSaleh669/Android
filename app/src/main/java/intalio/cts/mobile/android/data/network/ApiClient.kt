@@ -236,14 +236,17 @@ interface ApiClient {
 
     ): Observable<ArrayList<TypesResponseItem>>
 
-
     @POST()
     fun getAllStructures(
         @Url url: String,
         @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
-        @Query("text") text: String
-    ): Observable<AllStructuresResponse>
+        @Query("text") text: String,
+        @Query("ids[]") ids: ArrayList<Int>,
+        @Query("language") language: String
+
+
+        ): Observable<AllStructuresResponse>
 
     @FormUrlEncoded
     @POST()
@@ -253,6 +256,8 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Field("text") text: String,
         @Field("ids[]") ids: ArrayList<Int>,
+        @Field("language") language: String
+
     ): Observable<AllStructuresResponse>
 
     // "https://iamp.intalio.com/api/GetUsersAndStructuresWithSearchAttributes"

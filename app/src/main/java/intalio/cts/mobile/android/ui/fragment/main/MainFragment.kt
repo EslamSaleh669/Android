@@ -108,29 +108,52 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
         }
 
 
-       viewModel.readSavedDelegator().let {
-           if (it !=null){
+        viewModel.readSavedDelegator().let {
+            if (it != null) {
 
-               if (it.fromUserId == 0){
-                   nodestitle.text = myCorrespondence
-                   getNodesData()
-               }
-               else{
-                   nodestitle.text = "${it.fromUser} ${transfers}"
-                   getDelegatedNodesData(it.id!!)
-               }
+                if (it.fromUserId == 0) {
+                    nodestitle.text = myCorrespondence
+                    getNodesData()
+                } else {
+                    nodestitle.text = "${it.fromUser} ${transfers}"
+                    getDelegatedNodesData(it.id!!)
+                }
 
-           }else{
-               nodestitle.text = myCorrespondence
-               getNodesData()
-           }
-       }
-
+            } else {
+                nodestitle.text = myCorrespondence
+                getNodesData()
+            }
+        }
 
 
+        swipecontainer.setColorSchemeColors(resources.getColor(R.color.appcolor))
+        swipecontainer.setOnRefreshListener {
+            swipecontainer.isRefreshing = false
+
+            viewModel.readSavedDelegator().let {
+                if (it != null) {
+
+                    if (it.fromUserId == 0) {
+                        nodestitle.text = myCorrespondence
+                        getNodesData()
+                    } else {
+                        nodestitle.text = "${it.fromUser} ${transfers}"
+                        getDelegatedNodesData(it.id!!)
+                    }
+
+                } else {
+                    nodestitle.text = myCorrespondence
+                    getNodesData()
+                }
+            }
 
 
-         drawer_icon.setOnClickListener {
+
+        }
+
+
+
+        drawer_icon.setOnClickListener {
             requireActivity().drawer_layout.openDrawer(GravityCompat.START)
         }
 
@@ -612,7 +635,7 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
         for (item in nodeItem) {
             if (item.parentNodeId == nodeId) {
-                if (item.visible == true){
+                if (item.visible == true) {
                     children.add(item)
 
                 }
@@ -820,17 +843,22 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
     private fun getAllStructureData() {
 
-        autoDispose.add(viewModel.getAllStructures().observeOn(Schedulers.io()).subscribe({
+        val structureIds = ArrayList<Int>()
+
+        autoDispose.add(
+            viewModel.getAllStructures(structureIds).observeOn(Schedulers.io()).subscribe({
 
 
-            viewModel.saveAllStructures(it)
+
+                viewModel.saveAllStructures(it)
 
 
-        }, {
-            Timber.e(it)
+            }, {
+                Timber.e(it)
 //            requireActivity().makeToast(it.toString())
 
-        }))
+            })
+        )
     }
 
     private fun getSettings() {
@@ -855,16 +883,16 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
         viewModel.readSavedDelegator().let {
 
 
-            if (it !=null){
-                if (it.fromUserId == 0){
-                    currentDelegator =0
+            if (it != null) {
+                if (it.fromUserId == 0) {
+                    currentDelegator = 0
 
-                }else{
+                } else {
                     currentDelegator = it.fromUserId!!
 
                 }
-            }else{
-                currentDelegator =0
+            } else {
+                currentDelegator = 0
 
             }
         }
@@ -882,15 +910,14 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                         responseRecieved = response.body()
 
 
-                        if (response.body()!!.size > 0){
-                            showDelegatorsDialog(response.body(),currentDelegator)
+                        if (response.body()!!.size > 0) {
+                            showDelegatorsDialog(response.body(), currentDelegator)
 
                         }
 
 
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Log.d("delegations", e.toString())
 
 
                     }
@@ -900,7 +927,6 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                     call: Call<ArrayList<DelegationRequestsResponseItem>>,
                     t: Throwable
                 ) {
-                    Log.d("delegations", t.message.toString())
 
                 }
 
@@ -909,7 +935,10 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
     }
 
 
-    fun showDelegatorsDialog(model: ArrayList<DelegationRequestsResponseItem>?, currentDelegator:Int) {
+    fun showDelegatorsDialog(
+        model: ArrayList<DelegationRequestsResponseItem>?,
+        currentDelegator: Int
+    ) {
         var myCorrespondence = ""
 
         when {
@@ -936,7 +965,7 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
         val delegatorsRecycler =
             dialogg!!.findViewById(R.id.delegators_recycler) as RecyclerView
 
-        if (model!!.size > 0){
+        if (model!!.size > 0) {
             val originalUser = DelegationRequestsResponseItem()
             originalUser.id = 0
             originalUser.fromUser = myCorrespondence
@@ -949,7 +978,7 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
 
         delegatorsRecycler.adapter =
-            Delegators_Adapter(model, requireActivity(), this,currentDelegator, viewModel)
+            Delegators_Adapter(model, requireActivity(), this, currentDelegator, viewModel)
 
 
         delegatorsRecycler.layoutManager =
@@ -970,23 +999,23 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
         when {
             viewModel.readLanguage() == "en" -> {
                 transfers = translator.find { it.keyword == "Transfers" }!!.en!!
-             }
+            }
             viewModel.readLanguage() == "ar" -> {
                 transfers = translator.find { it.keyword == "Transfers" }!!.ar!!
-             }
+            }
             viewModel.readLanguage() == "fr" -> {
                 transfers = translator.find { it.keyword == "Transfers" }!!.fr!!
-             }
+            }
         }
 
 
         viewModel.saveDelegatorData(delegator)
 
-        if (delegator.fromUserId == 0){
+        if (delegator.fromUserId == 0) {
             getNodesData()
             nodestitle.text = delegator.fromUser
 
-        }else{
+        } else {
             getDelegatedNodesData(delegator.id!!)
             nodestitle.text = "${delegator.fromUser} $transfers"
 
@@ -1043,11 +1072,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
 
             noderecycler.adapter =
-                NodesAdapter(nodes, requireActivity(), viewModel, autoDispose,delegationId)
+                NodesAdapter(nodes, requireActivity(), viewModel, autoDispose, delegationId)
             noderecycler.layoutManager =
                 LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-
-
 
 
 //            //   nodes.add(bam)
