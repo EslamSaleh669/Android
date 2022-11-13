@@ -29,6 +29,7 @@ import intalio.cts.mobile.android.ui.fragment.transfer.AddTransferFragment
 import intalio.cts.mobile.android.ui.fragment.transfer.TransferListFragment
 import intalio.cts.mobile.android.ui.fragment.uploadattachment.UploadAttachmentFragment
 import intalio.cts.mobile.android.ui.fragment.visualtracking.VisualTrackingFragment
+import intalio.cts.mobile.android.ui.fragment.visualtracking.visualtrackingutil.GraphActivity
 
 
 @Component(modules = [
@@ -65,6 +66,7 @@ interface AppComponent {
     fun inject(replyToStructureFragment: ReplyToStructureFragment)
     fun inject(transferListFragment: TransferListFragment)
     fun inject(scanningActivity: ScanningActivity)
+    fun inject(graphActivity: GraphActivity)
 
 
 }

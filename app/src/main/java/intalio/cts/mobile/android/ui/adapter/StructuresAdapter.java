@@ -1,6 +1,7 @@
 package intalio.cts.mobile.android.ui.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,17 +26,19 @@ public class StructuresAdapter extends ArrayAdapter {
     private List<AllStructuresItem> dataList;
     private Context mContext;
     private int itemLayout;
+    private String language;
 
     private final ListFilter listFilter = new ListFilter();
     private List<AllStructuresItem> dataListAllItems;
 
 
-
-    public StructuresAdapter(Context context, int resource, List<AllStructuresItem> storeDataLst) {
+    public StructuresAdapter(Context context, int resource, List<AllStructuresItem> storeDataLst, String mylanguage
+    ) {
         super(context, resource, storeDataLst);
         dataList = storeDataLst;
         mContext = context;
         itemLayout = resource;
+        language = mylanguage;
     }
 
     @Override
@@ -46,7 +49,7 @@ public class StructuresAdapter extends ArrayAdapter {
     @Override
     public AllStructuresItem getItem(int position) {
 
-        return dataList.get(position) ;
+        return dataList.get(position);
     }
 
     @Override
@@ -60,14 +63,33 @@ public class StructuresAdapter extends ArrayAdapter {
         TextView strName = (TextView) view.findViewById(R.id.autoValue);
         ImageView imageView = (ImageView) view.findViewById(R.id.imgtype);
 
-        if (dataList.get(position).getItemType() == "user"){
+
+        if (dataList.get(position).getItemType().equals("user")) {
             imageView.setImageResource(R.drawable.ic_touser_black);
-        }else {
+            //      strName.setText(dataList.get(position).getName());
+
+        } else {
+            switch (language) {
+                case "en":
+                    strName.setText(dataList.get(position).getName());
+                    break;
+
+                case "ar":
+                    String structureNameAr = Objects.requireNonNull(dataList.get(position).getAttributes()).get(1).getValue();
+                    strName.setText(structureNameAr);
+                    break;
+
+                case "fr":
+                    String structureNameFr = Objects.requireNonNull(dataList.get(position).getAttributes()).get(0).getValue();
+                    strName.setText(structureNameFr);
+                    break;
+
+            }
+
+
             imageView.setImageResource(R.drawable.ic_bulding_black);
         }
 
-
-        strName.setText(dataList.get(position).getName());
 
         return view;
     }

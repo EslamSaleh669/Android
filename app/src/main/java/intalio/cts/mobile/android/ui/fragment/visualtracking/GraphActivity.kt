@@ -12,19 +12,37 @@ import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.cts.mobile.android.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import intalio.cts.mobile.android.data.network.response.AllStructuresResponse
+import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
 import intalio.cts.mobile.android.data.network.response.DictionaryResponse
 import intalio.cts.mobile.android.data.network.response.VisualTrackingResponseItem
+import intalio.cts.mobile.android.ui.activity.auth.login.LoginViewModel
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Graph
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Node
 import intalio.cts.mobile.android.ui.fragment.visualtracking.layouts.AbstractGraphAdapter
+import intalio.cts.mobile.android.util.AutoDispose
+import intalio.cts.mobile.android.util.MyApplication
 
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Named
 
 abstract class GraphActivity : AppCompatActivity() {
+
+    private lateinit var translator:  ArrayList<DictionaryDataItem>
+    @Inject
+    @field:Named("login")
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: LoginViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(LoginViewModel::class.java)
+    }
+    private val autoDispose: AutoDispose = AutoDispose()
+
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var adapter: AbstractGraphAdapter<NodeViewHolder>
     private lateinit var fab: FloatingActionButton
@@ -42,6 +60,8 @@ abstract class GraphActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph)
+        (application as MyApplication).appComponent?.inject(this)
+        autoDispose.bindTo(this.lifecycle)
 
         val graph = createGraph()
         val structure = getStructuresAndUsers()
@@ -55,6 +75,8 @@ abstract class GraphActivity : AppCompatActivity() {
 
       //  setupFab(graph)
         setupToolbar()
+      //  translator = viewModel.readDictionary()!!.data!!
+
     }
 
     private fun setupGraphView(
@@ -72,7 +94,31 @@ abstract class GraphActivity : AppCompatActivity() {
 
             override fun onBindViewHolder(holder: NodeViewHolder, position: Int) {
 
-
+                val translator = viewModel.readDictionary()!!.data!!
+                var onBehalfOf = ""
+                var CreatedBy = ""
+                var TransferDate = ""
+                var CreatedDate = ""
+                when {
+                    viewModel.readLanguage() == "en" -> {
+                        onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.en!!
+                        TransferDate = translator.find { it.keyword == "TransferDate" }!!.en!!
+                        CreatedBy = translator.find { it.keyword == "CreatedBy" }!!.en!!
+                        CreatedDate = translator.find { it.keyword == "CreatedDate" }!!.en!!
+                    }
+                    viewModel.readLanguage() == "ar" -> {
+                        onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.ar!!
+                        TransferDate = translator.find { it.keyword == "TransferDate" }!!.ar!!
+                        CreatedBy = translator.find { it.keyword == "CreatedBy" }!!.ar!!
+                        CreatedDate = translator.find { it.keyword == "CreatedDate" }!!.ar!!
+                    }
+                    viewModel.readLanguage() == "fr" -> {
+                        onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.fr!!
+                        TransferDate = translator.find { it.keyword == "TransferDate" }!!.fr!!
+                        CreatedBy = translator.find { it.keyword == "CreatedBy" }!!.fr!!
+                        CreatedDate = translator.find { it.keyword == "CreatedDate" }!!.fr!!
+                    }
+                }
 
 
                 if (position == 0){
@@ -80,9 +126,9 @@ abstract class GraphActivity : AppCompatActivity() {
                     holder.colorView.setBackgroundColor(resources.getColor(R.color.appcolor))
                     holder.Category.text = Objects.requireNonNull(getNodeCategory(position)).toString()
                     holder.RefNumber.text = Objects.requireNonNull(getNodeRefNumber(position)).toString()
-                    holder.CreatedDateTitle.text = getString(R.string.created_date)
+                    holder.CreatedDateTitle.text = CreatedDate
                     holder.CreatedDate.text = Objects.requireNonNull(getNodeCreatedDate(position)).toString()
-                    holder.CreatedByTitle.text = getString(R.string.created_by)
+                    holder.CreatedByTitle.text = CreatedBy
                     holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
 
                 }else{
@@ -97,9 +143,9 @@ abstract class GraphActivity : AppCompatActivity() {
 
                         holder.colorView.setBackgroundColor(resources.getColor(R.color.blue))
                         holder.Category.text = Objects.requireNonNull(getNodeCategory(position)).toString()
-                        holder.CreatedDateTitle.text = getString(R.string.transfer_date)
+                        holder.CreatedDateTitle.text = TransferDate
                         holder.CreatedDate.text = Objects.requireNonNull(getNodeCreatedDate(position)).toString()
-                        holder.CreatedByTitle.text = getString(R.string.created_by)
+                        holder.CreatedByTitle.text = CreatedBy
                         holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
                     }else{
                         var structures = ""

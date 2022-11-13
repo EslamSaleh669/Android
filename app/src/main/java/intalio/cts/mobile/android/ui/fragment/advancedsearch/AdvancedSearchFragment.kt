@@ -829,7 +829,8 @@ class AdvancedSearchFragment : Fragment() {
             StructuresAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                structuresArray
+                structuresArray,
+                viewModel.readLanguage()
             )
 
         transferFromStructureAutoComplete.setAdapter(arrayAdapter)
@@ -890,7 +891,9 @@ class AdvancedSearchFragment : Fragment() {
                                 StructuresAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures
+                                    allUsersAndStructures,
+                                    viewModel.readLanguage()
+
                                 )
                             transferFromStructureAutoComplete.setAdapter(arrayAdapter)
                             if (transferFromStructureAutoComplete.hasFocus()) {
@@ -951,7 +954,9 @@ class AdvancedSearchFragment : Fragment() {
             StructuresAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                structuresArray
+                structuresArray,
+                viewModel.readLanguage()
+
             )
 
         transferToStructureAutoComplete.setAdapter(arrayAdapter)
@@ -1012,7 +1017,9 @@ class AdvancedSearchFragment : Fragment() {
                                 StructuresAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures
+                                    allUsersAndStructures,
+                                    viewModel.readLanguage()
+
                                 )
                             transferToStructureAutoComplete.setAdapter(arrayAdapter)
                             if (transferToStructureAutoComplete.hasFocus()) {
@@ -1074,7 +1081,9 @@ class AdvancedSearchFragment : Fragment() {
             StructuresAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                structuresArray
+                structuresArray,
+                viewModel.readLanguage()
+
             )
 
         sendingEntityAutoComplete.setAdapter(arrayAdapter)
@@ -1141,7 +1150,9 @@ class AdvancedSearchFragment : Fragment() {
                                 StructuresAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures
+                                    allUsersAndStructures,
+                                    viewModel.readLanguage()
+
                                 )
                             sendingEntityAutoComplete.setAdapter(arrayAdapter)
                             if (sendingEntityAutoComplete.hasFocus()) {
@@ -1200,7 +1211,9 @@ class AdvancedSearchFragment : Fragment() {
             StructuresAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                structuresArray
+                structuresArray,
+                viewModel.readLanguage()
+
             )
 
         receivingEntityAutoComplete.setAdapter(arrayAdapter)
@@ -1263,7 +1276,9 @@ class AdvancedSearchFragment : Fragment() {
                                 StructuresAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures
+                                    allUsersAndStructures,
+                                    viewModel.readLanguage()
+
                                 )
                             receivingEntityAutoComplete.setAdapter(arrayAdapter)
                             if (receivingEntityAutoComplete.hasFocus()) {

@@ -395,7 +395,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             StructuresAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                structuresArray
+                structuresArray,
+                viewModel.readLanguage()
+
             )
 
         actvTransferautocomplete.setAdapter(arrayAdapter)
@@ -410,7 +412,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     StructuresAdapter(
                         requireContext(),
                         R.layout.support_simple_spinner_dropdown_item,
-                        structuresArray
+                        structuresArray,
+                        viewModel.readLanguage()
+
                     )
                 actvTransferautocomplete.setAdapter(arrayAdapterr)
                 actvTransferautocomplete.showDropDown()
@@ -516,7 +520,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 StructuresAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures
+                                    allUsersAndStructures,
+                                    viewModel.readLanguage()
+
                                 )
                             actvTransferautocomplete.setAdapter(arrayAdapter)
                             if (actvTransferautocomplete.hasFocus()) {
@@ -626,7 +632,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             StructuresAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                structuresArray
+                structuresArray,
+                viewModel.readLanguage()
+
             )
 
         actvTransferautocomplete.setAdapter(arrayAdapter)
@@ -641,7 +649,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     StructuresAdapter(
                         requireContext(),
                         R.layout.support_simple_spinner_dropdown_item,
-                        structuresArray
+                        structuresArray,
+                        viewModel.readLanguage()
+
                     )
                 actvTransferautocomplete.setAdapter(arrayAdapterr)
                 actvTransferautocomplete.showDropDown()
@@ -744,7 +754,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 StructuresAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures
+                                    allUsersAndStructures,
+                                    viewModel.readLanguage()
+
                                 )
                             actvTransferautocomplete.setAdapter(arrayAdapter)
                             if (actvTransferautocomplete.hasFocus()) {

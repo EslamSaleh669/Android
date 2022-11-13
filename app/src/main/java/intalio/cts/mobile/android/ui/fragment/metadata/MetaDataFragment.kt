@@ -641,10 +641,8 @@ class MetaDataFragment : Fragment() {
             val component = customAttributesArray.getJSONObject(it)
 
             if (key == component.get("key")) {
-                val myLabel = component.get("type").toString()
 
-                return myLabel
-
+                return component.get("type").toString()
 
             }
 
