@@ -64,7 +64,7 @@ class AdminRepo @Inject constructor(
     }
 
 
-    fun getFullStructures(language: Int): Observable<FullStructuresResponse> {
+    fun getFullStructures(language: Int): Observable<FullStructuresResponseItem> {
 
         return apiClient.getFullStructures(
             "${Constants.BASE_URL2}/api/ListStructures",

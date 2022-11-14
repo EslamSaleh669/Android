@@ -88,7 +88,7 @@ interface ApiClient {
         @Query("pageSize") pageSize: Int,
         @Query("language") language: Int
 
-    ): Observable<FullStructuresResponse>
+    ): Observable<FullStructuresResponseItem>
 
 
     @GET("Parameter/List")

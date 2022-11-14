@@ -23,7 +23,7 @@ class TransfersViewModel (private val userRepo: UserRepo, private val adminRepo:
 
 
     fun readprivacies (): ArrayList<PrivaciesResponseItem> = userRepo.readPrivacies()!!
-    fun readFullStructures (): ArrayList<FullStructuresResponseItem> = userRepo.readFullStructures()!!
+    fun readFullStructures (): ArrayList<ItemsItem>? = userRepo.readFullStructures()!!
     fun readSettings (): ArrayList<ParamSettingsResponseItem> = userRepo.readSettings()!!
 
     fun listUserExistenceAttributeInStructure(ids:Array<Int>): Call<ResponseBody> = adminRepo.listUserExistenceAttributeInStructure(ids)

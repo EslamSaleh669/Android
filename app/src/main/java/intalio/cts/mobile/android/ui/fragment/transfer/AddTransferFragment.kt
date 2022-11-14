@@ -23,6 +23,7 @@ import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 import kotlinx.android.synthetic.main.fragment_addtransfer.*
+import kotlinx.android.synthetic.main.fragment_correspondence.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import okhttp3.ResponseBody
 import org.json.JSONObject
@@ -368,10 +369,34 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     val structureItem = AllStructuresItem()
                     structureItem.id = item.id
 
-                    fullStructures.find { it.id == item.structureIds?.get(0) }?.name.let {
+                    fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
                         if (it != null) {
-                            structureItem.name =
-                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                            when {
+                                viewModel.readLanguage() == "en" -> {
+                                    structureItem.name =
+                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                }
+                                viewModel.readLanguage() == "ar" -> {
+
+                                    val structureName =
+                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                            it!!.text == "NameAr"
+                                        }!!.value
+                                    structureItem.name =
+                                        "$structureName / ${item.fullName}"
+
+                                }
+                                viewModel.readLanguage() == "fr" -> {
+                                    val structureName =
+                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                            it!!.text == "NameFr"
+                                        }!!.value
+                                    structureItem.name =
+                                        "$structureName / ${item.fullName}"
+
+                                }
+                            }
+
                         }
                     }
 
@@ -392,7 +417,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             StructuresAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                structuresArray
+                structuresArray,
+                viewModel.readLanguage()
             )
 
         actvTransferautocomplete.setAdapter(arrayAdapter)
@@ -407,7 +433,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     StructuresAdapter(
                         requireContext(),
                         R.layout.support_simple_spinner_dropdown_item,
-                        structuresArray
+                        structuresArray,
+                        viewModel.readLanguage()
                     )
                 actvTransferautocomplete.setAdapter(arrayAdapterr)
                 actvTransferautocomplete.showDropDown()
@@ -487,11 +514,35 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 if (it.users!!.size > 0) {
 
                                     for (item in it.users) {
-                                        if (item!!.id != viewModel.readUserinfo().id) {
+                                        if (item.id != viewModel.readUserinfo().id) {
                                             val structureItem = AllStructuresItem()
                                             structureItem.id = item.id
-                                            structureItem.name =
-                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                            when {
+                                                viewModel.readLanguage() == "en" -> {
+                                                    structureItem.name =
+                                                        "${fullStructures!!.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                }
+                                                viewModel.readLanguage() == "ar" -> {
+
+                                                    val structureName =
+                                                        fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                            it!!.text == "NameAr"
+                                                        }!!.value
+                                                    structureItem.name =
+                                                        "$structureName / ${item.fullName}"
+
+                                                }
+                                                viewModel.readLanguage() == "fr" -> {
+                                                    val structureName =
+                                                        fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                            it!!.text == "NameFr"
+                                                        }!!.value
+                                                    structureItem.name =
+                                                        "$structureName / ${item.fullName}"
+
+                                                }
+                                            }
+
 
                                             structureItem.attributes = item.attributes
                                             structureItem.structureIds = item.structureIds
@@ -511,7 +562,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 StructuresAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures
+                                    allUsersAndStructures,
+                                    viewModel.readLanguage()
                                 )
                             actvTransferautocomplete.setAdapter(arrayAdapter)
                             if (actvTransferautocomplete.hasFocus()) {
@@ -602,8 +654,32 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 if (item.id != viewModel.readUserinfo().id) {
                     val structureItem = AllStructuresItem()
                     structureItem.id = item.id
-                    structureItem.name =
-                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                    when {
+                        viewModel.readLanguage() == "en" -> {
+                            structureItem.name =
+                                "${fullStructures!!.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                        }
+                        viewModel.readLanguage() == "ar" -> {
+
+                            val structureName =
+                                fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                    it!!.text == "NameAr"
+                                }!!.value
+                            structureItem.name =
+                                "$structureName / ${item.fullName}"
+
+                        }
+                        viewModel.readLanguage() == "fr" -> {
+                            val structureName =
+                                fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                    it!!.text == "NameFr"
+                                }!!.value
+                            structureItem.name =
+                                "$structureName / ${item.fullName}"
+
+                        }
+                    }
+
                     structureItem.attributes = item.attributes
                     structureItem.structureIds = item.structureIds
                     structureItem.itemType = "user"
@@ -621,7 +697,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             StructuresAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                structuresArray
+                structuresArray,
+                viewModel.readLanguage()
             )
 
         actvTransferautocomplete.setAdapter(arrayAdapter)
@@ -636,7 +713,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     StructuresAdapter(
                         requireContext(),
                         R.layout.support_simple_spinner_dropdown_item,
-                        structuresArray
+                        structuresArray,
+                        viewModel.readLanguage()
                     )
                 actvTransferautocomplete.setAdapter(arrayAdapterr)
                 actvTransferautocomplete.showDropDown()
@@ -720,9 +798,31 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                         if (item.id != viewModel.readUserinfo().id) {
                                             val structureItem = AllStructuresItem()
                                             structureItem.id = item.id
-                                            structureItem.name =
-                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                            when {
+                                                viewModel.readLanguage() == "en" -> {
+                                                    structureItem.name =
+                                                        "${fullStructures!!.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                }
+                                                viewModel.readLanguage() == "ar" -> {
 
+                                                    val structureName =
+                                                        fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                            it!!.text == "NameAr"
+                                                        }!!.value
+                                                    structureItem.name =
+                                                        "$structureName / ${item.fullName}"
+
+                                                }
+                                                viewModel.readLanguage() == "fr" -> {
+                                                    val structureName =
+                                                        fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                            it!!.text == "NameFr"
+                                                        }!!.value
+                                                    structureItem.name =
+                                                        "$structureName / ${item.fullName}"
+
+                                                }
+                                            }
                                             structureItem.attributes = item.attributes
                                             structureItem.structureIds = item.structureIds
                                             structureItem.itemType = "user"
@@ -739,7 +839,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 StructuresAdapter(
                                     requireContext(),
                                     R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures
+                                    allUsersAndStructures,
+                                    viewModel.readLanguage()
                                 )
                             actvTransferautocomplete.setAdapter(arrayAdapter)
                             if (actvTransferautocomplete.hasFocus()) {
@@ -827,7 +928,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
                     })
         )
-        Log.d("stresponsename", structureName)
+
 
         return structureName
     }

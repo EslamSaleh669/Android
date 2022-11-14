@@ -105,8 +105,8 @@ class MainViewModel(private val userRepo: UserRepo, private val adminRepo: Admin
 
 
 
-    fun getFullStructures(language: Int):Observable<FullStructuresResponse> = adminRepo.getFullStructures(language)
-    fun saveFullStructures(structures: ArrayList<FullStructuresResponseItem>) {
+    fun getFullStructures(language: Int):Observable<FullStructuresResponseItem> = adminRepo.getFullStructures(language)
+    fun saveFullStructures(structures: ArrayList<ItemsItem>) {
         userRepo.saveFullStructures(structures)
     }
 

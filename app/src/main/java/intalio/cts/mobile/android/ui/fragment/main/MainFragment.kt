@@ -764,12 +764,15 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
             }
         }
+        Log.d("fullstrucutru",languageCode.toString())
+
         autoDispose.add(viewModel.getFullStructures(languageCode).observeOn(Schedulers.io())
             .subscribe(
                 {
 
                     viewModel.saveFullStructures(it.items!!)
 
+                    Log.d("fullstrucutru",it.toString())
 
                 }, {
                     Timber.e(it)
