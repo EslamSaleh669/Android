@@ -36,7 +36,7 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
     }
 
     private var transfers = ArrayList<TransferRequestModel>()
-    private lateinit var translator:  ArrayList<DictionaryDataItem>
+    private lateinit var translator: ArrayList<DictionaryDataItem>
 
     private var delegationId = 0
 
@@ -106,7 +106,7 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
         }
 
         transfers_recycler.adapter =
-            TransferList_Adapter(transfers, requireActivity(), this,viewModel,translator)
+            TransferList_Adapter(transfers, requireActivity(), this, viewModel, translator)
         transfers_recycler.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         send_transfers.setOnClickListener {
@@ -124,25 +124,25 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
     private fun sendTransfer(delegationId: Int) {
 
 
-        Log.d("aaaaaaaaaaaaaaaaxx", transfers.size.toString())
-
         dialog = requireActivity().launchLoadingDialog()
 
         autoDispose.add(
-            viewModel.transferTransfer(transfers,delegationId).observeOn(AndroidSchedulers.mainThread())
+            viewModel.transferTransfer(transfers, delegationId)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
 
-                        Log.d("transfererresponse", it.toString())
-                        Log.d("transfererresponsep",transfers[0].purposeId.toString())
-                         if (it[0].updated == true) {
+                        if (it[0].updated == true) {
                             transfers.clear()
 
                             (activity as AppCompatActivity).supportFragmentManager.commit {
                                 replace(R.id.fragmentContainer,
                                     CorrespondenceFragment().apply {
                                         arguments = bundleOf(
-                                            Pair(Constants.NODE_INHERIT,viewModel.readCurrentNode())
+                                            Pair(
+                                                Constants.NODE_INHERIT,
+                                                viewModel.readCurrentNode()
+                                            )
                                         )
                                     }
                                 )

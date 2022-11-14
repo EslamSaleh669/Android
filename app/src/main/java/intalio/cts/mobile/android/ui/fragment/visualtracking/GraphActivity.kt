@@ -133,7 +133,6 @@ abstract class GraphActivity : AppCompatActivity() {
 
                 }else{
 
-
                     if ((position) == 0){
                          for (item in structure.structures!!){
                             if (getNodeStructureID(position).toInt() == item!!.id){

@@ -156,6 +156,32 @@ class ReplyToStructureFragment : Fragment(){
     }
 
     private fun replyToStructure(delegationId: Int) {
+        var fileInUSe = ""
+        var originalDocumentInUse = ""
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.en!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.ar!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.fr!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.fr!!
+
+            }
+        }
 
          val recievers = ArrayList<Int>()
          if (model.receivingEntityId!!.size > 0){
@@ -178,27 +204,31 @@ class ReplyToStructureFragment : Fragment(){
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 dialog!!.dismiss()
 
-                if (response.code() != 200) {
+                var responseRecieved: Any? = null
+                responseRecieved = response.body()!!.string()
 
-                    requireActivity().makeToast(getString(R.string.network_error))
-                    activity!!.onBackPressed()
+                if (responseRecieved.toString().isEmpty()) {
 
-                } else {
-                     (activity as AppCompatActivity).supportFragmentManager.commit {
+                    (activity as AppCompatActivity).supportFragmentManager.commit {
                         replace(R.id.fragmentContainer,
                             CorrespondenceFragment().apply {
                                 arguments = bundleOf(
-                                    Pair(Constants.NODE_INHERIT,viewModel.readCurrentNode())
-
+                                    Pair(Constants.NODE_INHERIT, viewModel.readCurrentNode())
                                 )
-
 
                             }
                         )
-                        addToBackStack("")
+
+                    }
+                } else {
+                    if (responseRecieved.toString() == "FileInUse") {
+                        requireActivity().makeToast(fileInUSe)
+                    } else if (responseRecieved.toString() == "OriginalFileInUse") {
+                        requireActivity().makeToast(originalDocumentInUse)
 
                     }
                 }
+
 
             }
 
