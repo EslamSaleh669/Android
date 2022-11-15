@@ -467,6 +467,7 @@ class AdminRepo @Inject constructor(
 
     fun transfersHistoryData(start: Int, documentId: Int, delegationId: Int): Observable<TransferHistoryResponse> {
         return apiClient.transfersHistoryData(
+            userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             documentId,
             start,

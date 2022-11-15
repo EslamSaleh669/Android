@@ -54,19 +54,19 @@ class ScanningActivity : AppCompatActivity() {
 ////
 //            val  scannerModel = ScanResponse()
 //
-////            scannerModel.serviceUrl = "http://192.168.1.11:6969"
-////            scannerModel.url = "http://192.168.1.11:9949"
-////            scannerModel.clientId = "5c7d368c-2053-40a5-b005-caa6647a0070"
-////            scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
-//////
-//
-//
-//
-//            scannerModel.serviceUrl = "http://172.20.10.9:6969"
-//            scannerModel.url = "http://172.20.10.9:9949"
-//            scannerModel.clientId = "5c7d368c-2053-40a5-b005-caa6647a0070"
-//            scannerModel.ViewerUrl = "http://172.20.10.9:8080/VIEWER"
+//            scannerModel.serviceUrl = "http://192.168.1.11:6969"
+//            scannerModel.url = "http://192.168.1.11:9949"
+//            scannerModel.clientId = "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc"
+//            scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
 ////
+//
+//
+////
+////            scannerModel.serviceUrl = "http://172.20.10.9:6969"
+////            scannerModel.url = "http://172.20.10.9:9949"
+////            scannerModel.clientId = "5c7d368c-2053-40a5-b005-caa6647a0070"
+////            scannerModel.ViewerUrl = "http://172.20.10.9:8080/VIEWER"
+//////
 //
 //
 //

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import intalio.cts.mobile.android.data.network.response.AllStructuresAttributesItem;
 import intalio.cts.mobile.android.data.network.response.AllStructuresItem;
 import intalio.cts.mobile.android.data.network.response.PurposesResponseItem;
 
@@ -74,14 +75,28 @@ public class StructuresAdapter extends ArrayAdapter {
                     break;
 
                 case "ar":
-                    String structureNameAr = Objects.requireNonNull(dataList.get(position).getAttributes()).get(1).getValue();
-                    strName.setText(structureNameAr);
+                    List<AllStructuresAttributesItem> attributes = dataList.get(position).getAttributes();
+                    for (int i = 0; i < Objects.requireNonNull(attributes).size(); i++) {
+                        if (Objects.equals(attributes.get(i).getText(), "NameAr")) {
+                            String structureNameAr = attributes.get(i).getValue();
+                            strName.setText(structureNameAr);
+
+                        }
+                    }
                     break;
 
                 case "fr":
-                    String structureNameFr = Objects.requireNonNull(dataList.get(position).getAttributes()).get(0).getValue();
-                    strName.setText(structureNameFr);
+
+                    List<AllStructuresAttributesItem> attributes2 = dataList.get(position).getAttributes();
+                    for (int i = 0; i < Objects.requireNonNull(attributes2).size(); i++) {
+                        if (Objects.equals(attributes2.get(i).getText(), "NameFr")) {
+                            String structureNameFR = attributes2.get(i).getValue();
+                            strName.setText(structureNameFR);
+
+                        }
+                    }
                     break;
+
 
             }
 

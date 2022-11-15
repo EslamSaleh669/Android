@@ -1,3 +1,5 @@
+
+
 package intalio.cts.mobile.android.ui.fragment.transfer
 
 import android.app.AlertDialog
@@ -23,7 +25,6 @@ import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 import kotlinx.android.synthetic.main.fragment_addtransfer.*
-import kotlinx.android.synthetic.main.fragment_correspondence.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import okhttp3.ResponseBody
 import org.json.JSONObject
@@ -130,18 +131,21 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         if (structureSender == "false") {
             val structureIds = ArrayList<Int>()
 
-            structureIds.add(viewModel.readUserinfo().defaultStructureId!!)
+            Log.d("structureIds", viewModel.readUserinfo().structureIds!!.toString())
+            for (item in viewModel.readUserinfo().structureIds!!) {
+                structureIds.add(item)
+            }
             getAvailableStructures(structureIds)
 
         } else {
-        if (enableSendingRules == "true") {
-            geStructureSendingRules(model.fromStructureId!!)
+            if (enableSendingRules == "true") {
+                geStructureSendingRules(model.fromStructureId!!)
 
-        } else {
+            } else {
 
-            initStructuresAutoComplete()
+                initStructuresAutoComplete()
 
-        }
+            }
         }
 
 
@@ -353,6 +357,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
     private fun initStructuresAutoComplete() {
 
 
+
         actvTransferautocomplete.threshold = 0
         val structuresArray = viewModel.readAllStructureData().structures
         val userArray = viewModel.readAllStructureData().users
@@ -370,7 +375,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     structureItem.id = item.id
 
                     fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+
                         if (it != null) {
+
                             when {
                                 viewModel.readLanguage() == "en" -> {
                                     structureItem.name =
@@ -387,6 +394,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
                                 }
                                 viewModel.readLanguage() == "fr" -> {
+                                    Log.d("aaaaaaaazz", it!!)
+
                                     val structureName =
                                         fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
                                             it!!.text == "NameFr"
@@ -396,6 +405,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
                                 }
                             }
+
+
 
                         }
                     }
@@ -419,6 +430,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 R.layout.support_simple_spinner_dropdown_item,
                 structuresArray,
                 viewModel.readLanguage()
+
             )
 
         actvTransferautocomplete.setAdapter(arrayAdapter)
@@ -435,6 +447,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                         R.layout.support_simple_spinner_dropdown_item,
                         structuresArray,
                         viewModel.readLanguage()
+
                     )
                 actvTransferautocomplete.setAdapter(arrayAdapterr)
                 actvTransferautocomplete.showDropDown()
@@ -493,8 +506,10 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         actvTransferautocomplete.doOnTextChanged { text, start, before, count ->
 
+            val structureIds = ArrayList<Int>()
+
             autoDispose.add(
-                viewModel.getAllStructures(text.toString())
+                viewModel.getAllStructures(text.toString(),structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -514,36 +529,44 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 if (it.users!!.size > 0) {
 
                                     for (item in it.users) {
-                                        if (item.id != viewModel.readUserinfo().id) {
+                                        if (item!!.id != viewModel.readUserinfo().id) {
                                             val structureItem = AllStructuresItem()
                                             structureItem.id = item.id
-                                            when {
-                                                viewModel.readLanguage() == "en" -> {
-                                                    structureItem.name =
-                                                        "${fullStructures!!.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
-                                                }
-                                                viewModel.readLanguage() == "ar" -> {
+                                            fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                                                if (it != null) {
 
-                                                    val structureName =
-                                                        fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                            it!!.text == "NameAr"
-                                                        }!!.value
-                                                    structureItem.name =
-                                                        "$structureName / ${item.fullName}"
+                                                    when {
+                                                        viewModel.readLanguage() == "en" -> {
+                                                            structureItem.name =
+                                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                        }
+                                                        viewModel.readLanguage() == "ar" -> {
 
-                                                }
-                                                viewModel.readLanguage() == "fr" -> {
-                                                    val structureName =
-                                                        fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                            it!!.text == "NameFr"
-                                                        }!!.value
-                                                    structureItem.name =
-                                                        "$structureName / ${item.fullName}"
+                                                            val structureName =
+                                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                    it!!.text == "NameAr"
+                                                                }!!.value
+                                                            structureItem.name =
+                                                                "$structureName / ${item.fullName}"
+
+                                                        }
+                                                        viewModel.readLanguage() == "fr" -> {
+                                                            Log.d("aaaaaaaazz", it!!)
+
+                                                            val structureName =
+                                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                    it!!.text == "NameFr"
+                                                                }!!.value
+                                                            structureItem.name =
+                                                                "$structureName / ${item.fullName}"
+
+                                                        }
+                                                    }
+
+
 
                                                 }
                                             }
-
-
                                             structureItem.attributes = item.attributes
                                             structureItem.structureIds = item.structureIds
                                             structureItem.itemType = "user"
@@ -564,6 +587,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                     R.layout.support_simple_spinner_dropdown_item,
                                     allUsersAndStructures,
                                     viewModel.readLanguage()
+
                                 )
                             actvTransferautocomplete.setAdapter(arrayAdapter)
                             if (actvTransferautocomplete.hasFocus()) {
@@ -654,32 +678,41 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 if (item.id != viewModel.readUserinfo().id) {
                     val structureItem = AllStructuresItem()
                     structureItem.id = item.id
-                    when {
-                        viewModel.readLanguage() == "en" -> {
-                            structureItem.name =
-                                "${fullStructures!!.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
-                        }
-                        viewModel.readLanguage() == "ar" -> {
+                    fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                        if (it != null) {
 
-                            val structureName =
-                                fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                    it!!.text == "NameAr"
-                                }!!.value
-                            structureItem.name =
-                                "$structureName / ${item.fullName}"
+                            when {
+                                viewModel.readLanguage() == "en" -> {
+                                    structureItem.name =
+                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                }
+                                viewModel.readLanguage() == "ar" -> {
 
-                        }
-                        viewModel.readLanguage() == "fr" -> {
-                            val structureName =
-                                fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                    it!!.text == "NameFr"
-                                }!!.value
-                            structureItem.name =
-                                "$structureName / ${item.fullName}"
+                                    val structureName =
+                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                            it!!.text == "NameAr"
+                                        }!!.value
+                                    structureItem.name =
+                                        "$structureName / ${item.fullName}"
+
+                                }
+                                viewModel.readLanguage() == "fr" -> {
+                                    Log.d("aaaaaaaazz", it!!)
+
+                                    val structureName =
+                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                            it!!.text == "NameFr"
+                                        }!!.value
+                                    structureItem.name =
+                                        "$structureName / ${item.fullName}"
+
+                                }
+                            }
+
+
 
                         }
                     }
-
                     structureItem.attributes = item.attributes
                     structureItem.structureIds = item.structureIds
                     structureItem.itemType = "user"
@@ -699,6 +732,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 R.layout.support_simple_spinner_dropdown_item,
                 structuresArray,
                 viewModel.readLanguage()
+
             )
 
         actvTransferautocomplete.setAdapter(arrayAdapter)
@@ -715,6 +749,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                         R.layout.support_simple_spinner_dropdown_item,
                         structuresArray,
                         viewModel.readLanguage()
+
                     )
                 actvTransferautocomplete.setAdapter(arrayAdapterr)
                 actvTransferautocomplete.showDropDown()
@@ -798,28 +833,38 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                         if (item.id != viewModel.readUserinfo().id) {
                                             val structureItem = AllStructuresItem()
                                             structureItem.id = item.id
-                                            when {
-                                                viewModel.readLanguage() == "en" -> {
-                                                    structureItem.name =
-                                                        "${fullStructures!!.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
-                                                }
-                                                viewModel.readLanguage() == "ar" -> {
+                                            fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                                                if (it != null) {
 
-                                                    val structureName =
-                                                        fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                            it!!.text == "NameAr"
-                                                        }!!.value
-                                                    structureItem.name =
-                                                        "$structureName / ${item.fullName}"
+                                                    when {
+                                                        viewModel.readLanguage() == "en" -> {
+                                                            structureItem.name =
+                                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                        }
+                                                        viewModel.readLanguage() == "ar" -> {
 
-                                                }
-                                                viewModel.readLanguage() == "fr" -> {
-                                                    val structureName =
-                                                        fullStructures!!.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                            it!!.text == "NameFr"
-                                                        }!!.value
-                                                    structureItem.name =
-                                                        "$structureName / ${item.fullName}"
+                                                            val structureName =
+                                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                    it!!.text == "NameAr"
+                                                                }!!.value
+                                                            structureItem.name =
+                                                                "$structureName / ${item.fullName}"
+
+                                                        }
+                                                        viewModel.readLanguage() == "fr" -> {
+                                                            Log.d("aaaaaaaazz", it!!)
+
+                                                            val structureName =
+                                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                    it!!.text == "NameFr"
+                                                                }!!.value
+                                                            structureItem.name =
+                                                                "$structureName / ${item.fullName}"
+
+                                                        }
+                                                    }
+
+
 
                                                 }
                                             }
@@ -841,6 +886,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                     R.layout.support_simple_spinner_dropdown_item,
                                     allUsersAndStructures,
                                     viewModel.readLanguage()
+
                                 )
                             actvTransferautocomplete.setAdapter(arrayAdapter)
                             if (actvTransferautocomplete.hasFocus()) {
@@ -928,7 +974,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
                     })
         )
-
+        Log.d("stresponsename", structureName)
 
         return structureName
     }
@@ -992,8 +1038,6 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-
-                        Log.d("aaaaaaccsss", it.toString())
 
 
                         initAvailableStructuresAutoComplete(it, structureIds)
@@ -1172,11 +1216,6 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         Transfers.add(addedModel)
         offlineId += 1
-        Log.d("purposeid", itemType)
-
-        Log.d("selecteddatatype", itemType)
-        Log.d("selecteddataname", structureSelectedName)
-        Log.d("selecteddatastruc", structureSelectedId.toString())
 
         purposeSelectedId = 0
         purposeSelectedName = ""
@@ -1189,11 +1228,49 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         etInstructions.setText("")
         etTransferDueDate.setText("")
 
-
     }
 
 
     private fun addUserTransfer(userPrivacyLevel: Int, docPrivacyLevel: Int) {
+        var NoUserWithSelectedPrivacy = ""
+        var ContinueConfirmation = ""
+        var yes = ""
+        var no = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                NoUserWithSelectedPrivacy =
+                    translator.find { it.keyword == "NoUserWithSelectedPrivacy" }!!.en!!
+                ContinueConfirmation =
+                    translator.find { it.keyword == "ContinueConfirmation" }!!.en!!
+                yes = translator.find { it.keyword == "Yes" }!!.en!!
+                no = translator.find { it.keyword == "No" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                NoUserWithSelectedPrivacy =
+                    translator.find { it.keyword == "NoUserWithSelectedPrivacy" }!!.ar!!
+                ContinueConfirmation =
+                    translator.find { it.keyword == "ContinueConfirmation" }!!.ar!!
+                yes = translator.find { it.keyword == "Yes" }!!.ar!!
+                no = translator.find { it.keyword == "No" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                NoUserWithSelectedPrivacy =
+                    translator.find { it.keyword == "NoUserWithSelectedPrivacy" }!!.fr!!
+                ContinueConfirmation =
+                    translator.find { it.keyword == "ContinueConfirmation" }!!.fr!!
+                yes = translator.find { it.keyword == "Yes" }!!.fr!!
+                no = translator.find { it.keyword == "No" }!!.fr!!
+
+            }
+        }
         if (userPrivacyLevel >= docPrivacyLevel) {
 
             val addedModel = TransferRequestModel()
@@ -1216,13 +1293,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
             Transfers.add(addedModel)
             offlineId += 1
-            Log.d("selecteddatatype", itemType)
-            Log.d("selecteddataid", userSelectedId.toString())
-            Log.d("selecteddataname", structureSelectedName)
-            Log.d("selecteddatastruc", structureSelectedId.toString())
 
-            Log.d("selecteddadoclevel", userPrivacyLevel.toString())
-            Log.d("selecteddastruclevel", userPrivacyLevel.toString())
 
             purposeSelectedId = 0
             purposeSelectedName = ""
@@ -1244,14 +1315,12 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             val alertDialog = AlertDialog.Builder(requireActivity())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setMessage(
-                    "${getString(R.string.users_donthave_privacy)} $structureSelectedName\n${
-                        getString(
-                            R.string.continue_confirm
-                        )
+                    "${NoUserWithSelectedPrivacy} $structureSelectedName\n${
+                        ContinueConfirmation
                     }"
                 )
                 .setPositiveButton(
-                    requireActivity().getString(R.string.yes),
+                    yes,
                     DialogInterface.OnClickListener { dialogg, i ->
                         dialogg.dismiss()
 
@@ -1301,7 +1370,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
                     })
                 .setNegativeButton(
-                    requireActivity().getString(R.string.no),
+                    no,
                     DialogInterface.OnClickListener { dialogInterface, i ->
                         dialogInterface.dismiss()
                         purposeSelectedId = 0
@@ -1326,6 +1395,36 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
 
     private fun checkStructure(structureSelectedId: Int, documentPrivacyId: Int?) {
+
+        var NoStructureReceivers = ""
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                NoStructureReceivers =
+                    translator.find { it.keyword == "NoStructureReceivers" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                NoStructureReceivers =
+                    translator.find { it.keyword == "NoStructureReceivers" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                NoStructureReceivers =
+                    translator.find { it.keyword == "NoStructureReceivers" }!!.fr!!
+
+            }
+        }
+        val SendWithoutStructureReceiverOrPrivacyLevel =
+            settings.find { it.keyword == "SendWithoutStructureReceiverOrPrivacyLevel" }!!.content
+
+
         val structureIds = arrayOf(structureSelectedId)
 
 
@@ -1344,6 +1443,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     val privacyList = ArrayList<Int>()
                     var responseRecieved: Any? = null
                     responseRecieved = response.body()!!.string()
+
+
                     val structuresItem = JSONObject(responseRecieved)
                     val userExistenceArray =
                         structuresItem.getJSONArray(structureSelectedId.toString())
@@ -1355,22 +1456,42 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                             if (userExistenceArray[item] as String != "") {
                                 privacyList.add((userExistenceArray[item] as String).toInt())
 
-                            } else {
-                                requireActivity().makeToast("${getString(R.string.structure_recievers_error)}${structureSelectedName}")
-
                             }
-
 
                         }
 
+                        if (privacyList.size > 0) {
+                            getStructurePrivacyLevel(
+                                privacyList.maxOrNull() ?: 0,
+                                documentPrivacyId
+                            )
 
-                        getStructurePrivacyLevel(privacyList.maxOrNull() ?: 0, documentPrivacyId)
+                        } else {
+                            if (SendWithoutStructureReceiverOrPrivacyLevel == "false") {
+                                requireActivity().makeToast("$NoStructureReceivers${structureSelectedName}")
+                                structurePrivacyLevel = 0
+
+
+                            } else {
+                                emptyStructureContinueConfirmDialog(
+                                    NoStructureReceivers
+                                )
+                            }
+                        }
 
 
                     } else {
-                        requireActivity().makeToast("${getString(R.string.structure_recievers_error)}${structureSelectedName}")
 
-                        structurePrivacyLevel = 0
+                        if (SendWithoutStructureReceiverOrPrivacyLevel == "false") {
+                            requireActivity().makeToast("$NoStructureReceivers${structureSelectedName}")
+                            structurePrivacyLevel = 0
+
+
+                        } else {
+                            emptyStructureContinueConfirmDialog(NoStructureReceivers)
+                        }
+
+
                     }
 
 
@@ -1395,6 +1516,35 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
 
     private fun getStructurePrivacyLevel(structurePrivacyId: Int, documentPrivacyId: Int?) {
+
+        var NoStructureReceiversWithSelectedPrivacy = ""
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                NoStructureReceiversWithSelectedPrivacy =
+                    translator.find { it.keyword == "NoStructureReceiversWithSelectedPrivacy" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                NoStructureReceiversWithSelectedPrivacy =
+                    translator.find { it.keyword == "NoStructureReceiversWithSelectedPrivacy" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                NoStructureReceiversWithSelectedPrivacy =
+                    translator.find { it.keyword == "NoStructureReceiversWithSelectedPrivacy" }!!.fr!!
+
+            }
+        }
+        val SendWithoutStructureReceiverOrPrivacyLevel =
+            settings.find { it.keyword == "SendWithoutStructureReceiverOrPrivacyLevel" }!!.content
+
         structurePrivacyLevel =
             viewModel.readprivacies().find { it.id == structurePrivacyId }!!.level!!
         val docLevel = viewModel.readprivacies().find { it.id == documentPrivacyId }!!.level!!
@@ -1402,10 +1552,88 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         if (structurePrivacyLevel >= docLevel) {
             addStructureTransfer()
         } else {
-            requireActivity().makeToast("${getString(R.string.structure_recievers_error)}${structureSelectedName}")
+
+            if (SendWithoutStructureReceiverOrPrivacyLevel == "false") {
+                requireActivity().makeToast("$NoStructureReceiversWithSelectedPrivacy${structureSelectedName}")
+                structurePrivacyLevel = 0
+
+
+            } else {
+                emptyStructureContinueConfirmDialog(NoStructureReceiversWithSelectedPrivacy)
+            }
         }
 
     }
 
 
+    private fun emptyStructureContinueConfirmDialog(message: String) {
+        var ContinueConfirmation = ""
+        var yes = ""
+        var no = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                ContinueConfirmation =
+                    translator.find { it.keyword == "ContinueConfirmation" }!!.en!!
+                yes = translator.find { it.keyword == "Yes" }!!.en!!
+                no = translator.find { it.keyword == "No" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                ContinueConfirmation =
+                    translator.find { it.keyword == "ContinueConfirmation" }!!.ar!!
+                yes = translator.find { it.keyword == "Yes" }!!.ar!!
+                no = translator.find { it.keyword == "No" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+                ContinueConfirmation =
+                    translator.find { it.keyword == "ContinueConfirmation" }!!.fr!!
+                yes = translator.find { it.keyword == "Yes" }!!.fr!!
+                no = translator.find { it.keyword == "No" }!!.fr!!
+
+            }
+        }
+
+        val width = (requireActivity().resources.displayMetrics.widthPixels * 0.99).toInt()
+        val alertDialog = AlertDialog.Builder(requireActivity())
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setMessage(
+                "${message} $structureSelectedName\n${
+                    ContinueConfirmation
+                }"
+            )
+            .setPositiveButton(
+                yes,
+                DialogInterface.OnClickListener { dialogg, i ->
+                    dialogg.dismiss()
+
+
+                    addStructureTransfer()
+                })
+            .setNegativeButton(
+                no,
+                DialogInterface.OnClickListener { dialogInterface, i ->
+                    dialogInterface.dismiss()
+                    purposeSelectedId = 0
+                    purposeSelectedName = ""
+                    structureSelectedId = 0
+                    structureSelectedName = ""
+                    isPurposeCCED = false
+                    userSelectedId = 0
+                    itemType = ""
+
+                    actvTransferautocomplete.setText("")
+                    actvPurposesautocomplete.setText("")
+                    etInstructions.setText("")
+                    etTransferDueDate.setText("")
+
+                }).show().window!!.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
+
+    }
 }
+

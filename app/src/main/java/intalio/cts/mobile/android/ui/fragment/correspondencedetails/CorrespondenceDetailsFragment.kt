@@ -1786,6 +1786,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         var completeConfirm = ""
         var yes = ""
         var no = ""
+        var completed = ""
 
 
         when {
@@ -1795,8 +1796,10 @@ class CorrespondenceDetailsFragment : Fragment() {
                 lockedbyUser = translator.find { it.keyword == "HasLockedAttachmentsByUser" }!!.en!!
                 mailCheckedOut = translator.find { it.keyword == "OriginalDocumentLockedByUser" }!!.en!!
                 completeConfirm = translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.en!!
+                completed = translator.find { it.keyword == "Completed" }!!.en!!
                 yes = translator.find { it.keyword == "Yes" }!!.en!!
                 no = translator.find { it.keyword == "No" }!!.en!!
+
 
             }
             viewModel.readLanguage() == "ar" -> {
@@ -1805,6 +1808,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                 lockedbyUser = translator.find { it.keyword == "HasLockedAttachmentsByUser" }!!.ar!!
                 mailCheckedOut = translator.find { it.keyword == "OriginalDocumentLockedByUser" }!!.ar!!
                 completeConfirm = translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.ar!!
+                completed = translator.find { it.keyword == "Completed" }!!.ar!!
                 yes = translator.find { it.keyword == "Yes" }!!.ar!!
                 no = translator.find { it.keyword == "No" }!!.ar!!
 
@@ -1818,6 +1822,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                 completeConfirm = translator.find { it.keyword == "CompleteOneTsfConfirmation" }!!.fr!!
                 yes = translator.find { it.keyword == "Yes" }!!.fr!!
                 no = translator.find { it.keyword == "No" }!!.fr!!
+                completed = translator.find { it.keyword == "Completed" }!!.fr!!
 
             }
         }
@@ -1839,7 +1844,7 @@ class CorrespondenceDetailsFragment : Fragment() {
                                     dialog!!.dismiss()
 
                                     if (it[0].updated == true) {
-                                        requireActivity().makeToast(getString(R.string.completed))
+                                        requireActivity().makeToast(completed)
                                         requireActivity().onBackPressed()
 
                                     } else if (it[0].updated == false &&

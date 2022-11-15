@@ -15,6 +15,7 @@
         android:layout_marginTop="30dp"
         android:paddingStart="25dp"
         android:paddingEnd="25dp"
+         android:visibility="gone"
         >
 
         <TextView
@@ -43,6 +44,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:visibility="gone"
         android:background="#EBEBEB" />
 
 
@@ -52,6 +54,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="25dp"
         android:paddingEnd="25dp"
+        android:layout_marginTop="25dp"
         >
 
         <TextView
@@ -88,7 +91,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="25dp"
         android:paddingEnd="25dp"
-        android:visibility="gone"
+        android:visibility="visible"
         >
 
         <TextView
