@@ -88,7 +88,7 @@ interface ApiClient {
         @Query("pageSize") pageSize: Int,
         @Query("language") language: Int
 
-    ): Observable<FullStructuresResponse>
+    ): Observable<FullStructuresResponseItem>
 
 
     @GET("Parameter/List")
@@ -514,6 +514,7 @@ interface ApiClient {
     @FormUrlEncoded
     @POST("Transfer/ListTransferHistory")
     fun transfersHistoryData(
+        @Header("Accept-Language") lang: String,
         @Header("Authorization") token: String,
         @Query("documentId") documentId: Int,
         @Field("start") start: Int,

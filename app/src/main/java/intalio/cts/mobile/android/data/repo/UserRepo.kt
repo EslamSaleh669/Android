@@ -383,17 +383,17 @@ class UserRepo @Inject constructor(
 
 
 
-    fun saveFullStructures(types: ArrayList<FullStructuresResponseItem>) {
+    fun saveFullStructures(types: ArrayList<ItemsItem>?) {
         shared.edit().putString(Constants.FULLSTRUCTURES_DATA, Gson().toJson(types)).apply()
     }
 
-    fun readFullStructures(): ArrayList<FullStructuresResponseItem>? {
+    fun readFullStructures(): ArrayList<ItemsItem>? {
         return try {
 
             val gson = Gson()
             val json = shared.getString(Constants.FULLSTRUCTURES_DATA, "")
             val type = object :
-                TypeToken<ArrayList<FullStructuresResponseItem>>() {}.type//converting the json to list
+                TypeToken<ArrayList<ItemsItem>>() {}.type//converting the json to list
             return gson.fromJson(json, type)
         } catch (e: Exception) {
 

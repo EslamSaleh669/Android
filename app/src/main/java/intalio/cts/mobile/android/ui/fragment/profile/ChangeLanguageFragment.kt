@@ -1,3 +1,4 @@
+
 package intalio.cts.mobile.android.ui.fragment.profile
 
 import android.content.Context
@@ -61,17 +62,16 @@ class ChangeLanguageFragment : Fragment() {
 
         editInterface()
         updateLanguage()
-        centered_txt.text = requireActivity().getText(R.string.change_language)
+
 
         back_icon.setOnClickListener {
             activity?.onBackPressed()
         }
-        requireActivity().findViewById<TextView>(R.id.centered_txt).text = getString(R.string.change_language)
 
 
     }
 
-    private fun updateLanguage(){
+    private fun updateLanguage() {
 
         arBtn.setOnClickListener {
             context?.getSharedPreferences(Constants.SHARED_NAME, Context.MODE_PRIVATE)?.edit {
@@ -103,21 +103,36 @@ class ChangeLanguageFragment : Fragment() {
     }
 
 
-
-    private fun editInterface(){
-
-        when {
+    private fun editInterface() {
+         when {
             viewModel.currentLanguage() == "ar" -> {
                 arabictxt.setTextColor(requireActivity().resources.getColor(R.color.appcolor))
                 arabicval.setTextColor(requireActivity().resources.getColor(R.color.appcolor))
+                requireActivity().findViewById<TextView>(R.id.centered_txt).text = "تغيير اللغة"
+                entxt.text = "الإنجليزية"
+                frtxt.text = "الفرنسية"
+                arabictxt.text = "العربية"
+
             }
             viewModel.currentLanguage() == "en" -> {
                 entxt.setTextColor(requireActivity().resources.getColor(R.color.appcolor))
                 enval.setTextColor(requireActivity().resources.getColor(R.color.appcolor))
+                requireActivity().findViewById<TextView>(R.id.centered_txt).text = "change language"
+                entxt.text = "English"
+                frtxt.text = "French"
+                arabictxt.text = "ِArabic"
+
+
             }
             viewModel.currentLanguage() == "fr" -> {
                 frtxt.setTextColor(requireActivity().resources.getColor(R.color.appcolor))
                 frval.setTextColor(requireActivity().resources.getColor(R.color.appcolor))
+                requireActivity().findViewById<TextView>(R.id.centered_txt).text = "changer de langue"
+                entxt.text = "L'Anglais"
+                frtxt.text = "Français"
+                arabictxt.text = "L'arabe"
+
+
             }
         }
     }

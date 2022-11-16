@@ -60,8 +60,7 @@ class SplashActivity : AppCompatActivity() {
         val lan = viewModel.readLanguage()
         Lingver.getInstance().setLocale(this, Locale(lan))
 
-        Log.d("localsplash", lan)
-        autoDispose.add(
+         autoDispose.add(
             Observable.fromCallable {
 
             }.subscribeOn(Schedulers.io()).delay(1000, TimeUnit.MILLISECONDS)

@@ -171,10 +171,10 @@ class HomeActivity : AppCompatActivity() {
         }
         findViewById<View>(R.id.menusignout).setOnClickListener {
 
+            val lan = viewModel.readLanguage()
             viewModel.logout()
 
             launchActivityFinishCurrent(SplashActivity::class.java)
-            val lan = viewModel.readLanguage()
             getSharedPreferences(Constants.SHARED_NAME, Context.MODE_PRIVATE)?.edit {
                 putString(Constants.LANG_KEY, lan)
             }

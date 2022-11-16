@@ -69,21 +69,25 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
 
 
         translator = viewModel.readDictionary()!!.data!!
+        var emptyTransfers = ""
 
         when {
             viewModel.readLanguage() == "en" -> {
                 centered_txt.text = translator.find { it.keyword == "MyTransfers" }!!.en
                 send_transfers.text = translator.find { it.keyword == "Transfer" }!!.en
+                emptyTransfers = "please save at least one transfer"
 
             }
             viewModel.readLanguage() == "ar" -> {
                 centered_txt.text = translator.find { it.keyword == "MyTransfers" }!!.ar
                 send_transfers.text = translator.find { it.keyword == "Transfer" }!!.ar
+                emptyTransfers = "الرجاء حفظ إحالة واحدة علي الأقل"
 
             }
             viewModel.readLanguage() == "fr" -> {
                 centered_txt.text = translator.find { it.keyword == "MyTransfers" }!!.fr
                 send_transfers.text = translator.find { it.keyword == "Transfer" }!!.fr
+                emptyTransfers = "veuillez enregistrer au moins un transfert"
 
             }
         }
@@ -114,7 +118,7 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
                 sendTransfer(delegationId)
 
             } else {
-                requireActivity().makeToast(getString(R.string.please_save_transfer))
+                requireActivity().makeToast(emptyTransfers)
 
             }
         }
@@ -124,7 +128,33 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
     private fun sendTransfer(delegationId: Int) {
 
 
-        dialog = requireActivity().launchLoadingDialog()
+            dialog = requireActivity().launchLoadingDialog()
+
+             var fileInUSe = ""
+            var originalDocumentInUse = ""
+
+            when {
+                viewModel.readLanguage() == "en" -> {
+
+                    fileInUSe = translator.find { it.keyword == "FileInUse" }!!.en!!
+                    originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.en!!
+
+
+                }
+                viewModel.readLanguage() == "ar" -> {
+
+                    fileInUSe = translator.find { it.keyword == "FileInUse" }!!.ar!!
+                    originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.ar!!
+
+                }
+                viewModel.readLanguage() == "fr" -> {
+
+
+                    fileInUSe = translator.find { it.keyword == "FileInUse" }!!.fr!!
+                    originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.fr!!
+
+                }
+            }
 
         autoDispose.add(
             viewModel.transferTransfer(transfers, delegationId)
@@ -148,10 +178,10 @@ class TransferListFragment : Fragment(), TransferList_Adapter.OnTransferClicked 
                                 )
                             }
                         } else if (it[0].updated == false && it[0].message == "OriginalFileInUse") {
-                            requireActivity().makeToast(getString(R.string.original_doc_checkedout))
+                            requireActivity().makeToast(originalDocumentInUse)
 
                         } else if (it[0].updated == false && it[0].message == "FileInUse") {
-                            requireActivity().makeToast(getString(R.string.there_is_file_checkedout))
+                            requireActivity().makeToast(fileInUSe)
                         }
 
                         dialog!!.dismiss()

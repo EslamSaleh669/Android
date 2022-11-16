@@ -17,13 +17,13 @@ class TransfersViewModel (private val userRepo: UserRepo, private val adminRepo:
         adminRepo.transferTransfer(list,delegationId)
 
 
-    fun getAllStructures(text: String,ids: ArrayList<Int>): Observable<AllStructuresResponse> = adminRepo.getAllStructures(text,ids)
+    fun getAllStructures(text: String, structureIds: ArrayList<Int>): Observable<AllStructuresResponse> = adminRepo.getAllStructures(text,structureIds)
     fun getAvailableStructures(text:String, ids: ArrayList<Int>): Observable<AllStructuresResponse> = adminRepo.getAvailableStructures(text,ids)
 
 
 
     fun readprivacies (): ArrayList<PrivaciesResponseItem> = userRepo.readPrivacies()!!
-    fun readFullStructures (): ArrayList<FullStructuresResponseItem> = userRepo.readFullStructures()!!
+    fun readFullStructures (): ArrayList<ItemsItem>? = userRepo.readFullStructures()!!
     fun readSettings (): ArrayList<ParamSettingsResponseItem> = userRepo.readSettings()!!
 
     fun listUserExistenceAttributeInStructure(ids:Array<Int>): Call<ResponseBody> = adminRepo.listUserExistenceAttributeInStructure(ids)
@@ -41,5 +41,4 @@ class TransfersViewModel (private val userRepo: UserRepo, private val adminRepo:
     fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
 
     fun readCurrentNode():String = userRepo.readCurrentNode()!!
-
 }

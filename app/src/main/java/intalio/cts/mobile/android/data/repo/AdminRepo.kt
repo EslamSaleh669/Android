@@ -63,8 +63,7 @@ class AdminRepo @Inject constructor(
         )
     }
 
-
-    fun getFullStructures(language: Int): Observable<FullStructuresResponse> {
+    fun getFullStructures(language: Int): Observable<FullStructuresResponseItem> {
 
         return apiClient.getFullStructures(
             "${Constants.BASE_URL2}/api/ListStructures",
@@ -74,6 +73,8 @@ class AdminRepo @Inject constructor(
             language
         ).subscribeOn(Schedulers.io())
     }
+
+
 
 
     fun getSettings(): Observable<ArrayList<ParamSettingsResponseItem>> {
@@ -495,6 +496,7 @@ class AdminRepo @Inject constructor(
         delegationId: Int
     ): Observable<TransferHistoryResponse> {
         return apiClient.transfersHistoryData(
+            userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             documentId,
             start,
