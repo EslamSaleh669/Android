@@ -96,8 +96,7 @@ class MetaDataFragment : Fragment() {
         requireArguments().getInt(Constants.TRANSFER_ID).let {
             TransferId = it
 
-            Log.d("pattthy",viewModel.readPath())
-            if (viewModel.readPath() == "node" ) {
+             if (viewModel.readPath() == "node" ) {
                 requireArguments().getString(Constants.NODE_INHERIT).let { nodeID ->
                     if (nodeID == "MyRequests") {
                         getRequestedDocumentInfo(TransferId)
@@ -418,7 +417,6 @@ class MetaDataFragment : Fragment() {
 
                         val valueText = jsonObject.getString(key)
                         val itemType = getItemType(customAttributesArray,key)
-                        Log.d("valuekeeyvalue", itemType)
 
                         // address condition
                         if (itemType == "address") {

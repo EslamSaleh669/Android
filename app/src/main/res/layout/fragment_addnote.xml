@@ -69,7 +69,6 @@
         android:padding="30dp"
         >
 
-
         <TextView
             android:id="@+id/btnCancelnote"
             android:layout_width="0dp"
@@ -78,23 +77,23 @@
             android:background="@drawable/reset_background"
             android:fontFamily="@font/myriadpro_simibold"
             android:gravity="center"
-            android:paddingStart="30dp"
+            android:paddingStart="5dp"
             android:paddingTop="5dp"
-            android:paddingEnd="30dp"
+            android:layout_gravity="center"
+            android:paddingEnd="5dp"
             android:layout_weight="1"
             android:paddingBottom="5dp"
             android:text="@string/cancel"
             android:textColor="@color/black2"
             android:textSize="15sp"
             />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="xx"
+            android:paddingBottom="5dp"
+            android:layout_gravity="center"
             android:visibility="invisible"/>
-
-
         <TextView
             android:id="@+id/btnaddnote"
             android:layout_width="0dp"
@@ -103,14 +102,15 @@
             android:background="@drawable/green_background"
             android:fontFamily="@font/myriadpro_simibold"
             android:gravity="center"
-            android:paddingStart="30dp"
+            android:paddingStart="5dp"
+            android:layout_gravity="center"
             android:paddingTop="5dp"
-            android:paddingEnd="30dp"
+            android:paddingEnd="5dp"
             android:layout_weight="1"
             android:paddingBottom="5dp"
             android:text="@string/add"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="15sp"
 
             />
 

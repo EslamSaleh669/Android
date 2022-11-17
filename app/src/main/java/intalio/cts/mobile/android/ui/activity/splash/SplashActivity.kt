@@ -49,8 +49,6 @@ class SplashActivity : AppCompatActivity() {
         with(window) {
             requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
             exitTransition = Fade()
-
-
         }
         setContentView(R.layout.activity_splash)
         (application as MyApplication).appComponent?.inject(this)

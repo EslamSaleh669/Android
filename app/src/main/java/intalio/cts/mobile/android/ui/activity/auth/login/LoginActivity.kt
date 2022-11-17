@@ -116,9 +116,8 @@ class LoginActivity : AppCompatActivity() {
                         }, {
                             dialog!!.dismiss()
                             Timber.e(it)
-                            Log.d("scannnnerror",it.toString())
 
-                            makeToast(getString(R.string.invalidLoginMessage))
+                            makeToast(getString(R.string.network_error))
 
                         })
                     )

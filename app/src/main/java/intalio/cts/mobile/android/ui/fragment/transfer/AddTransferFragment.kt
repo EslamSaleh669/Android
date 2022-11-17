@@ -130,7 +130,6 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         if (structureSender == "false") {
             val structureIds = ArrayList<Int>()
 
-            Log.d("structureIds", viewModel.readUserinfo().structureIds!!.toString())
             for (item in viewModel.readUserinfo().structureIds!!) {
                 structureIds.add(item)
             }
@@ -166,8 +165,10 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             }
         }
         btnsaveTransfer.setOnClickListener {
-            initStructuresAutoComplete()
+            dialog = requireContext().launchLoadingDialog()
+
             if (purposeSelectedId == 0 || structureSelectedId == 0) {
+                dialog!!.dismiss()
                 requireActivity().makeToast(requiredFields)
 
             } else {
@@ -178,12 +179,33 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                         viewModel.readprivacies().find { it.id == model.privacyId }!!.level!!
                     addUserTransfer(userPrivacyLevel, docPrivacyLevel)
 
-
                 } else {
 
                     checkStructure(structureSelectedId, model.privacyId)
 
                 }
+
+
+
+                if (structureSender == "false") {
+                    val structureIds = ArrayList<Int>()
+
+                    for (item in viewModel.readUserinfo().structureIds!!) {
+                        structureIds.add(item)
+                    }
+                    getAvailableStructures(structureIds)
+
+                } else {
+                    if (enableSendingRules == "true") {
+                        geStructureSendingRules(model.fromStructureId!!)
+
+                    } else {
+
+                        initStructuresAutoComplete()
+
+                    }
+                }
+
 
 
             }
@@ -1031,7 +1053,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
     }
 
     private fun getAvailableStructures(structureIds: ArrayList<Int>) {
-
+       dialog = requireContext().launchLoadingDialog()
         autoDispose.add(
             viewModel.getAvailableStructures("", structureIds)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1040,9 +1062,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
 
                         initAvailableStructuresAutoComplete(it, structureIds)
-
+                        dialog!!.dismiss()
                     }, {
-
+                        dialog!!.dismiss()
                         Timber.e(it)
 
 
@@ -1390,6 +1412,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         }
 
 
+        dialog!!.dismiss()
+
     }
 
 
@@ -1437,6 +1461,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                dialog!!.dismiss()
 
                 try {
                     val privacyList = ArrayList<Int>()
@@ -1495,15 +1520,16 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
 
                 } catch (e: Exception) {
+                    dialog!!.dismiss()
+
                     e.printStackTrace()
-                    Log.d("structureresponse", e.toString())
 
                 }
 
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.d("structureresponse", t.toString())
+                 dialog!!.dismiss()
 
                 requireActivity().makeToast(requireActivity().getString(R.string.network_error))
             }
@@ -1511,6 +1537,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         }
 
         )
+
     }
 
 

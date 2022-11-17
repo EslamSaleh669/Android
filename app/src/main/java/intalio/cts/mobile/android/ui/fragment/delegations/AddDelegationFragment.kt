@@ -116,6 +116,29 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
             activity?.onBackPressed()
         }
 
+        var requiredFields = ""
+        var edit = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.en!!
+                edit = translator.find { it.keyword == "Edit" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.ar!!
+                edit = translator.find { it.keyword == "Edit" }!!.ar!!
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.fr!!
+                edit = translator.find { it.keyword == "Edit" }!!.fr!!
+
+            }
+        }
+
 
 
         val result = arguments?.getSerializable(Constants.Delegation_Model)
@@ -128,7 +151,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
         }else{
             editedModel = (result as? DelegationDataItem)!!
-            centered_txt.text = requireActivity().getText(R.string.edit)
+            centered_txt.text = edit
             initEditedDates()
             initUserAutoComplete("edit")
             initCategoriesAutoComplete("edit")
@@ -136,24 +159,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
 
 
-        var requiredFields = ""
 
-        when {
-            viewModel.readLanguage() == "en" -> {
-
-                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.en!!
-
-            }
-            viewModel.readLanguage() == "ar" -> {
-                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.ar!!
-
-
-            }
-            viewModel.readLanguage() == "fr" -> {
-                requiredFields = translator.find { it.keyword == "RequiredFields" }!!.fr!!
-
-            }
-        }
 
 
         btnSaveDelegate.setOnClickListener {

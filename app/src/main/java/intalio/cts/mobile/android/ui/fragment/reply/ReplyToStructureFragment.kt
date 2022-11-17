@@ -385,7 +385,7 @@ class ReplyToStructureFragment : Fragment(){
                 etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.en
                 message_label.text = translator.find { it.keyword == "Instruction" }!!.en
                 btnSendReply.text = translator.find { it.keyword == "Reply" }!!.en
-                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.en
+                btnCancelreply.text = translator.find { it.keyword == "Close" }!!.en
                 centered_txt.text = translator.find { it.keyword == "ReplyToStructure" }!!.en
                 requiredpurpose_label.text = "(required)"
             }
@@ -398,7 +398,7 @@ class ReplyToStructureFragment : Fragment(){
                 etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.ar
                 message_label.text = translator.find { it.keyword == "Instruction" }!!.ar
                 btnSendReply.text = translator.find { it.keyword == "Reply" }!!.ar
-                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.ar
+                btnCancelreply.text = translator.find { it.keyword == "Close" }!!.ar
                 centered_txt.text = translator.find { it.keyword == "ReplyToStructure" }!!.ar
                 requiredpurpose_label.text = "(الزامي)"
             }
@@ -411,7 +411,7 @@ class ReplyToStructureFragment : Fragment(){
                 etreplyDueDate.hint = translator.find { it.keyword == "FromTransferDate" }!!.fr
                 message_label.text = translator.find { it.keyword == "Instruction" }!!.fr
                 btnSendReply.text = translator.find { it.keyword == "Reply" }!!.fr
-                btnCancelreply.text = translator.find { it.keyword == "Cancel" }!!.fr
+                btnCancelreply.text = translator.find { it.keyword == "Close" }!!.fr
                 centered_txt.text = translator.find { it.keyword == "ReplyToStructure" }!!.fr
                 requiredpurpose_label.text = "(requis)"
             }
