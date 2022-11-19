@@ -37,6 +37,17 @@ abstract class AbstractGraphAdapter<VH : RecyclerView.ViewHolder> : RecyclerView
         graph?.getNodeAtPosition(position)?.data!!.createdBy
 
 
+    open fun getCreatedByDelegatorID(position: Int): Any? =
+
+
+    if (graph?.getNodeAtPosition(position)?.data!!.ownerDelegatedUserId != null){
+        graph?.getNodeAtPosition(position)?.data!!.ownerDelegatedUserId
+
+    }else{
+        -1
+    }
+
+
     open fun getNodeUserID(position: Int): Int =
         if (graph?.getNodeAtPosition(position)?.data!!.userId != null){
             graph?.getNodeAtPosition(position)?.data!!.userId!!

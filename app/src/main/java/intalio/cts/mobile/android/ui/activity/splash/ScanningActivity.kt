@@ -54,15 +54,12 @@ class ScanningActivity : AppCompatActivity() {
 //
             val  scannerModel = ScanResponse()
 
-//            scannerModel.serviceUrl = "http://192.168.1.11:6969"
-//            scannerModel.url = "http://192.168.1.11:9949"
-//            scannerModel.clientId = "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc"
-//            scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
-
-            scannerModel.serviceUrl = "http://172.20.10.9:6969"
-            scannerModel.url = "http://172.20.10.9:9949"
+            scannerModel.serviceUrl = "http://192.168.1.11:6969"
+            scannerModel.url = "http://192.168.1.11:9949"
             scannerModel.clientId = "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc"
-            scannerModel.ViewerUrl = "http://172.20.10.9:8080/VIEWER"
+            scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
+
+
 
 //    makeToast("ServiceUrl:${scannerModel.serviceUrl} \n IAM : ${scannerModel.url} \n ClientID ${scannerModel.clientId}")
 

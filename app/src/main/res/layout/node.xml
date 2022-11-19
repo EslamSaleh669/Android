@@ -105,9 +105,8 @@
             android:textColor="@color/grey_font"
             android:textSize="15sp"
             android:layout_weight="1.8"
-            android:singleLine="true"
             android:ellipsize="end"
-            android:maxLength="20"
+            android:maxLines="2"
             android:fontFamily="@font/myriadpro_regular"
             tools:text="Node" />
     </LinearLayout>

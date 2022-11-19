@@ -19,6 +19,7 @@ import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
 import intalio.cts.mobile.android.data.network.response.TransferDetailsResponse
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_mytransfers.*
 import kotlinx.android.synthetic.main.fragment_mytransfers.receiving_entity
 import kotlinx.android.synthetic.main.fragment_mytransfers.sending_entity
@@ -143,7 +144,7 @@ class MyTransferFragment : Fragment() {
         autoDispose.add(viewModel.getMyTransfer(TransferId, delegationId)
             .observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    dialog!!.dismiss()
+//                    dialog!!.dismiss()
                     if (it.toString().isNotEmpty()) {
 
                         if (it.subject.isNullOrEmpty()) {
@@ -317,6 +318,7 @@ class MyTransferFragment : Fragment() {
 
     private fun getTransferDetails(TransferId: Int, delegationId: Int) {
 
+        val loggedUser = viewModel.readUserinfo().fullName
         var you = ""
         var onBehalfOf = ""
         when {
@@ -342,6 +344,7 @@ class MyTransferFragment : Fragment() {
 
             }
         }
+        Log.d("useid", viewModel.readUserinfo().id.toString())
 
         var transferDetailss = TransferDetailsResponse()
         autoDispose.add(viewModel.getTransferDetails(TransferId, delegationId)
@@ -350,31 +353,48 @@ class MyTransferFragment : Fragment() {
                     dialog!!.dismiss()
                     if (transferDetails.toString().isNotEmpty()) {
 
-                        Log.d("xcxcxcxcxc", transferDetails.toString())
-
-//                        transferDetails = it
-                        Log.d("xcxcxcxcxc", transferDetails.lockedBy.toString())
-                        Log.d("xcxcxcxcxc", transferDetails.lockedByDelegatedUser.toString())
-                        Log.d("xcxcxcxcxc", transferDetails.lockedDate.toString())
-                        Log.d("xcxcxcxcxc", transferDetails.isLocked.toString())
-
                         viewModel.readSavedDelegator().let {
 
+                            Log.d("lockedby", transferDetails.lockedBy!!)
+                            Log.d("lockedbyd", transferDetails.lockedByDelegatedUser!!)
                             if (it != null) {
 
+
+                                Log.d("fromuserid", it.fromUserId.toString())
+                                Log.d("fromusername", it.fromUser.toString())
+
                                 if (it.fromUserId == 0) {
-
                                     if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
-                                        if (transferDetails.lockedBy == viewModel.readUserinfo().fullName) {
+                                        if (loggedUser == transferDetails.lockedBy){
                                             lockedby.text = you
-
-                                        } else {
+                                        }else{
                                             lockedby.text = transferDetails.lockedBy
-
                                         }
+
+
                                     } else {
 
-                                        if (transferDetails.lockedByDelegatedUser == it.fromUser) {
+                                        if (loggedUser == transferDetails.lockedBy){
+
+                                            lockedby.text =
+                                                "${transferDetails.lockedByDelegatedUser} $onBehalfOf $you"
+                                        }else{
+
+                                            lockedby.text =
+                                                "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+                                        }
+
+                                    }
+                                }else {
+
+                                    if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+
+                                        lockedby.text = transferDetails.lockedBy
+
+
+                                    } else {
+
+                                        if (loggedUser == transferDetails.lockedByDelegatedUser) {
                                             lockedby.text =
                                                 "$you $onBehalfOf ${transferDetails.lockedBy}"
 
@@ -386,59 +406,45 @@ class MyTransferFragment : Fragment() {
 
                                     }
 
-                                } else {
-                                    if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
-                                        if (transferDetails.lockedBy == it.fromUser) {
-                                            lockedby.text = you
 
-                                        } else {
-                                            lockedby.text = transferDetails.lockedBy
-
-                                        }
-                                    } else {
-
-                                        if (transferDetails.lockedByDelegatedUser == it.fromUser) {
-                                            lockedby.text =
-                                                "$you $onBehalfOf ${transferDetails.lockedBy}"
-
-                                        } else {
-                                            lockedby.text =
-                                                "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
-
-                                        }
-
-                                    }
                                 }
 
                             } else {
+
+
                                 if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
-                                    if (transferDetails.lockedBy == viewModel.readUserinfo().fullName) {
+                                    if (loggedUser == transferDetails.lockedBy){
                                         lockedby.text = you
-
-                                    } else {
+                                    }else{
                                         lockedby.text = transferDetails.lockedBy
-
                                     }
+
+
                                 } else {
 
-                                    if (transferDetails.lockedByDelegatedUser == it?.fromUser) {
-                                        lockedby.text =
-                                            "$you $onBehalfOf ${transferDetails.lockedBy}"
+                                    if (loggedUser == transferDetails.lockedBy){
 
-                                    } else {
+                                        lockedby.text =
+                                            "${transferDetails.lockedByDelegatedUser} $onBehalfOf $you"
+                                    }else{
+
                                         lockedby.text =
                                             "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
-
                                     }
 
                                 }
+
                             }
                         }
 
+
+
+
+
+
+                        lockeddate.text = transferDetails.lockedDate
+
                     }
-                    lockeddate.text = transferDetails.lockedDate
-
-
                 }, {
                     dialog!!.dismiss()
                     Timber.e(it)

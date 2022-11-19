@@ -26,6 +26,7 @@ import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Node
 import intalio.cts.mobile.android.ui.fragment.visualtracking.layouts.AbstractGraphAdapter
 import intalio.cts.mobile.android.util.AutoDispose
 import intalio.cts.mobile.android.util.MyApplication
+import kotlinx.android.synthetic.main.fragment_mytransfers.*
 
 import java.util.*
 import javax.inject.Inject
@@ -96,23 +97,29 @@ abstract class GraphActivity : AppCompatActivity() {
 
                 val translator = viewModel.readDictionary()!!.data!!
                 var onBehalfOf = ""
+                var you = ""
                 var CreatedBy = ""
                 var TransferDate = ""
                 var CreatedDate = ""
                 when {
                     viewModel.readLanguage() == "en" -> {
+                        you = translator.find { it.keyword == "You" }!!.en!!
                         onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.en!!
                         TransferDate = translator.find { it.keyword == "TransferDate" }!!.en!!
                         CreatedBy = translator.find { it.keyword == "CreatedBy" }!!.en!!
                         CreatedDate = translator.find { it.keyword == "CreatedDate" }!!.en!!
+
                     }
                     viewModel.readLanguage() == "ar" -> {
+                        you = translator.find { it.keyword == "You" }!!.ar!!
+
                         onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.ar!!
                         TransferDate = translator.find { it.keyword == "TransferDate" }!!.ar!!
                         CreatedBy = translator.find { it.keyword == "CreatedBy" }!!.ar!!
                         CreatedDate = translator.find { it.keyword == "CreatedDate" }!!.ar!!
                     }
                     viewModel.readLanguage() == "fr" -> {
+                        you = translator.find { it.keyword == "You" }!!.fr!!
                         onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.fr!!
                         TransferDate = translator.find { it.keyword == "TransferDate" }!!.fr!!
                         CreatedBy = translator.find { it.keyword == "CreatedBy" }!!.fr!!
@@ -140,13 +147,13 @@ abstract class GraphActivity : AppCompatActivity() {
                             }
                         }
 
-                        holder.colorView.setBackgroundColor(resources.getColor(R.color.blue))
                         holder.Category.text = Objects.requireNonNull(getNodeCategory(position)).toString()
                         holder.CreatedDateTitle.text = TransferDate
                         holder.CreatedDate.text = Objects.requireNonNull(getNodeCreatedDate(position)).toString()
                         holder.CreatedByTitle.text = CreatedBy
                         holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
                     }else{
+                        holder.CreatedByTitle.visibility = View.GONE
                         var structures = ""
                         var user = ""
 
@@ -161,19 +168,110 @@ abstract class GraphActivity : AppCompatActivity() {
                                 user = item.fullName!!
                             }
                         }
-                        holder.colorView.setBackgroundColor(resources.getColor(R.color.orange))
                         holder.Category.text = Objects.requireNonNull(getNodeCategory(position)).toString()
                         if (user.isEmpty()){
+                            holder.colorView.setBackgroundColor(resources.getColor(R.color.blue))
                             holder.RefNumber.text = structures
                         }else{
+                            holder.colorView.setBackgroundColor(resources.getColor(R.color.orange))
+
                             holder.RefNumber.text = "${structures}/${user}"
 
                         }
-                        holder.CreatedDateTitle.text = getString(R.string.transfer_date)
+                        holder.CreatedDateTitle.text = TransferDate
                         holder.CreatedDate.text = Objects.requireNonNull(getNodeCreatedDate(position)).toString()
-                        holder.CreatedByTitle.text = getString(R.string.created_by)
-                        holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
+                        holder.CreatedByTitle.text = CreatedBy
 
+
+
+
+                       val created_By = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
+                       val ownerDelegatedID = Objects.requireNonNull(getCreatedByDelegatorID(position))
+                       val createdByLoggedUSer = "delegator"
+                       val loggedUser = viewModel.readUserinfo().fullName
+
+
+
+                      //  holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
+
+
+
+                        viewModel.readSavedDelegator().let {
+
+                            if (it != null) {
+
+//                                if (it.fromUserId == 0) {
+//                                    if (ownerID.toString().isNullOrEmpty()) {
+//                                        if (loggedUser == created_By){
+//                                            lockedby.text = you
+//                                        }else{
+//                                            lockedby.text = created_By
+//                                        }
+//
+//
+//                                    } else {
+//
+//                                        if (loggedUser == created_By){
+//
+//                                            lockedby.text =
+//                                                "${ownerID.toString()} $onBehalfOf $you"
+//                                        }else{
+//
+//                                            lockedby.text =
+//                                                "${ownerID.toString()} $onBehalfOf $created_By"
+//                                        }
+//
+//                                    }
+//                                }else {
+//
+//                                    if (ownerID.toString().isNullOrEmpty()) {
+//
+//                                        lockedby.text = created_By
+//
+//
+//                                    } else {
+//
+//                                        if (loggedUser == ownerID.toString()) {
+//                                            lockedby.text =
+//                                                "$you $onBehalfOf ${ownerID.toString()}"
+//
+//                                        } else {
+//                                            lockedby.text =
+//                                                "${ownerID.toString()} $onBehalfOf $created_By"
+//
+//                                        }
+//
+//                                    }
+//
+//
+//                                }
+
+                            } else {
+
+
+                                if (ownerDelegatedID == -1) {
+                                    if (loggedUser == created_By){
+                                        holder.CreatedBy.text  = you
+                                    }else{
+                                        holder.CreatedBy.text  = created_By
+                                    }
+
+                                } else {
+
+                                    if (loggedUser == created_By){
+
+                                        holder.CreatedBy.text  =
+                                            "${createdByLoggedUSer} $onBehalfOf $you"
+                                    }else{
+
+                                        holder.CreatedBy.text  =
+                                            "${createdByLoggedUSer} $onBehalfOf ${created_By}"
+                                    }
+
+                                }
+
+                            }
+                        }
                     }
 
                 }

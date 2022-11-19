@@ -63,7 +63,7 @@ data class VisualTrackingResponseItem(
 	val parentId: Any? = null,
 
 	@field:SerializedName("ownerDelegatedUserId")
-	val ownerDelegatedUserId: Any? = null,
+	val ownerDelegatedUserId: Int? = null,
 
 	@field:SerializedName("openedDate")
 	val openedDate: Any? = null,
@@ -84,7 +84,7 @@ data class VisualTrackingResponseItem(
 	val instruction: Any? = null,
 
 	@field:SerializedName("ownerUserId")
-	val ownerUserId: Any? = null,
+	val ownerUserId: Int? = null,
 
 	@field:SerializedName("category")
 	val category: String? = null
