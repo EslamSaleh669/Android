@@ -47,6 +47,10 @@ abstract class AbstractGraphAdapter<VH : RecyclerView.ViewHolder> : RecyclerView
         -1
     }
 
+    open fun getTransferId(position: Int): String? =
+        graph?.getNodeAtPosition(position)?.data!!.id
+
+
 
     open fun getNodeUserID(position: Int): Int =
         if (graph?.getNodeAtPosition(position)?.data!!.userId != null){

@@ -3,11 +3,12 @@ package intalio.cts.mobile.android.ui.activity.auth.login
 import androidx.lifecycle.ViewModel
 import intalio.cts.mobile.android.data.model.UserCredentials
 import intalio.cts.mobile.android.data.network.response.*
+import intalio.cts.mobile.android.data.repo.AdminRepo
 import intalio.cts.mobile.android.data.repo.UserRepo
 
 import io.reactivex.Observable
 
-class LoginViewModel(private val userRepo: UserRepo) : ViewModel() {
+class LoginViewModel(private val userRepo: UserRepo,private val adminRepo: AdminRepo) : ViewModel() {
 
     fun userLogin(clientId: String, GrantType: String,
                   email: String, password: String): Observable<TokenResponse> {
@@ -48,6 +49,13 @@ class LoginViewModel(private val userRepo: UserRepo) : ViewModel() {
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
     fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
     fun readUserinfo (): UserFullDataResponseItem = userRepo.readFullUserData()!!
+    fun fullUserName(userId :Int):Observable<UserFullDataResponseItem> = userRepo.getUserFullName(
+        userRepo.readTokenData()!!.accessToken!!,
+        userId,
+        userRepo.currentLang()
+    )
+    fun getTransferDetails(transferId: Int, delegationId: Int): Observable<TransferDetailsResponse> = adminRepo.getTransferDetails(transferId,delegationId)
+
 
 
     fun logout() {

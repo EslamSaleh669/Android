@@ -1,14 +1,10 @@
 package intalio.cts.mobile.android.ui.fragment.visualtracking.visualtrackingutil
 
-import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -18,15 +14,14 @@ import com.cts.mobile.android.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import intalio.cts.mobile.android.data.network.response.AllStructuresResponse
 import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
-import intalio.cts.mobile.android.data.network.response.DictionaryResponse
-import intalio.cts.mobile.android.data.network.response.VisualTrackingResponseItem
 import intalio.cts.mobile.android.ui.activity.auth.login.LoginViewModel
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Graph
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Node
 import intalio.cts.mobile.android.ui.fragment.visualtracking.layouts.AbstractGraphAdapter
 import intalio.cts.mobile.android.util.AutoDispose
 import intalio.cts.mobile.android.util.MyApplication
-import kotlinx.android.synthetic.main.fragment_mytransfers.*
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 import java.util.*
 import javax.inject.Inject
@@ -34,7 +29,9 @@ import javax.inject.Named
 
 abstract class GraphActivity : AppCompatActivity() {
 
-    private lateinit var translator:  ArrayList<DictionaryDataItem>
+    private lateinit var translator: ArrayList<DictionaryDataItem>
+    private lateinit var ownerFullName: String
+
     @Inject
     @field:Named("login")
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,7 +52,8 @@ abstract class GraphActivity : AppCompatActivity() {
     protected abstract fun setLayoutManager()
     protected abstract fun setEdgeDecoration()
     protected abstract fun getStructuresAndUsers(): AllStructuresResponse
-//    protected abstract fun getDictionary(): DictionaryResponse
+
+    //    protected abstract fun getDictionary(): DictionaryResponse
     protected abstract fun readLanguage(): String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,13 +70,223 @@ abstract class GraphActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recycler)
         setLayoutManager()
         setEdgeDecoration()
-        setupGraphView(graph,structure,language)
+        setupGraphView(graph, structure, language)
 
-      //  setupFab(graph)
+        //  setupFab(graph)
         setupToolbar()
-      //  translator = viewModel.readDictionary()!!.data!!
+        //  translator = viewModel.readDictionary()!!.data!!
 
     }
+
+
+    fun fullUserName(
+        userId: Int,
+        created_By: String,
+        loggedUser: String?,
+        holder: NodeViewHolder,
+        you: String,
+        onBehalfOf: String
+    ) {
+
+
+        viewModel.readSavedDelegator().let {
+
+
+            if (it != null) {
+
+
+                if (it.fromUserId == 0) {
+                    if (userId == -1) {
+                        if (loggedUser == created_By) {
+                            holder.CreatedBy.text = you
+                        } else {
+                            holder.CreatedBy.text = created_By
+                        }
+
+
+                    } else {
+
+                        autoDispose.add(
+                            viewModel.fullUserName(userId).observeOn(Schedulers.io()).subscribe({
+
+
+                                val delegatorFullName = it.fullName
+
+
+                                if (loggedUser == created_By) {
+
+                                    holder.CreatedBy.text =
+                                        "${delegatorFullName} $onBehalfOf $you"
+                                } else {
+
+                                    holder.CreatedBy.text =
+                                        "${delegatorFullName} $onBehalfOf ${created_By}"
+                                }
+
+
+                            }, {
+                                Timber.e(it)
+
+                            })
+                        )
+
+                    }
+                } else {
+
+                    if (userId == -1) {
+
+                        holder.CreatedBy.text = created_By
+
+
+                    } else {
+
+                        autoDispose.add(
+                            viewModel.fullUserName(userId).observeOn(Schedulers.io()).subscribe({
+                                val delegatorFullName = it.fullName
+
+                                if (loggedUser == delegatorFullName) {
+                                    holder.CreatedBy.text =
+                                        "$you $onBehalfOf ${created_By}"
+
+                                } else {
+                                    holder.CreatedBy.text =
+                                        "${delegatorFullName} $onBehalfOf ${created_By}"
+
+                                }
+
+
+                            }, {
+                                Timber.e(it)
+
+                            })
+                        )
+
+
+                    }
+
+
+                }
+
+            } else {
+
+
+                if (userId == -1) {
+                    if (loggedUser == created_By) {
+                        holder.CreatedBy.text = you
+                    } else {
+                        holder.CreatedBy.text = created_By
+                    }
+
+
+                } else {
+
+
+                    autoDispose.add(
+                        viewModel.fullUserName(userId).observeOn(Schedulers.io()).subscribe({
+                            val delegatorFullName = it.fullName
+
+
+                            if (loggedUser == created_By) {
+
+                                holder.CreatedBy.text =
+                                    "${delegatorFullName} $onBehalfOf $you"
+                            } else {
+
+                                holder.CreatedBy.text =
+                                    "${delegatorFullName} $onBehalfOf ${created_By}"
+                            }
+
+                        }, {
+                            Timber.e(it)
+
+                        })
+                    )
+                }
+
+            }
+        }
+
+
+//
+//        autoDispose.add(
+//            viewModel.fullUserName(userId).observeOn(Schedulers.io()).subscribe({
+//
+//
+//
+//            }, {
+//                Timber.e(it)
+//
+//            })
+//        )
+//
+
+
+    }
+
+    fun getTransferDetails(
+
+        transferId: Int,
+        holder: NodeViewHolder,
+        you: String,
+        onBehalfOf: String,
+        loggedUser: String?
+
+    ) {
+
+        var delegationId = 0
+
+
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
+
+                it.id!!
+
+            } else {
+                0
+            }
+        }
+
+
+        autoDispose.add(
+            viewModel.getTransferDetails(transferId, delegationId).observeOn(Schedulers.io())
+                .subscribe({
+
+
+                    Log.d("transferdee", it.toString())
+
+                    if (it.lockedByDelegatedUser.isNullOrEmpty()) {
+                        if (loggedUser == it.lockedBy) {
+                            holder.CreatedBy.text = you
+                        } else {
+                            holder.CreatedBy.text = it.lockedBy
+                        }
+
+                    } else {
+                        if (loggedUser == it.lockedByDelegatedUser) {
+                            holder.CreatedBy.text = "$you $onBehalfOf ${it.lockedBy}"
+
+                        }
+//                        else if (loggedUser == it.lockedBy) {
+//                            holder.CreatedBy.text = "${it.lockedByDelegatedUser} $onBehalfOf $you"
+//
+//                        }
+                        else {
+                            holder.CreatedBy.text =
+                                "${it.lockedByDelegatedUser} $onBehalfOf ${it.lockedBy}"
+
+                        }
+
+                    }
+
+                }, {
+                    Timber.e(it)
+
+                })
+        )
+
+
+    }
+
 
     private fun setupGraphView(
         graph: Graph,
@@ -86,7 +294,7 @@ abstract class GraphActivity : AppCompatActivity() {
         language: String
     ) {
 
-         adapter = object : AbstractGraphAdapter<NodeViewHolder>() {
+        adapter = object : AbstractGraphAdapter<NodeViewHolder>() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NodeViewHolder {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.node, parent, false)
@@ -128,155 +336,97 @@ abstract class GraphActivity : AppCompatActivity() {
                 }
 
 
-                if (position == 0){
+                if (position == 0) {
 
                     holder.colorView.setBackgroundColor(resources.getColor(R.color.appcolor))
-                    holder.Category.text = Objects.requireNonNull(getNodeCategory(position)).toString()
-                    holder.RefNumber.text = Objects.requireNonNull(getNodeRefNumber(position)).toString()
+                    holder.Category.text =
+                        Objects.requireNonNull(getNodeCategory(position)).toString()
+                    holder.RefNumber.text =
+                        Objects.requireNonNull(getNodeRefNumber(position)).toString()
                     holder.CreatedDateTitle.text = CreatedDate
-                    holder.CreatedDate.text = Objects.requireNonNull(getNodeCreatedDate(position)).toString()
+                    holder.CreatedDate.text =
+                        Objects.requireNonNull(getNodeCreatedDate(position)).toString()
                     holder.CreatedByTitle.text = CreatedBy
-                    holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
+                    holder.CreatedBy.text =
+                        Objects.requireNonNull(getNodeCreatedBy(position)).toString()
 
-                }else{
+                } else {
 
-                    if ((position) == 0){
-                         for (item in structure.structures!!){
-                            if (getNodeStructureID(position).toInt() == item!!.id){
+                    if ((position) == 0) {
+                        for (item in structure.structures!!) {
+                            if (getNodeStructureID(position).toInt() == item!!.id) {
                                 holder.RefNumber.text = item.name
                             }
                         }
 
-                        holder.Category.text = Objects.requireNonNull(getNodeCategory(position)).toString()
+                        holder.Category.text =
+                            Objects.requireNonNull(getNodeCategory(position)).toString()
                         holder.CreatedDateTitle.text = TransferDate
-                        holder.CreatedDate.text = Objects.requireNonNull(getNodeCreatedDate(position)).toString()
+                        holder.CreatedDate.text =
+                            Objects.requireNonNull(getNodeCreatedDate(position)).toString()
                         holder.CreatedByTitle.text = CreatedBy
-                        holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
-                    }else{
+                        holder.CreatedBy.text =
+                            Objects.requireNonNull(getNodeCreatedBy(position)).toString()
+                    } else {
                         holder.CreatedByTitle.visibility = View.GONE
                         var structures = ""
                         var user = ""
 
-                        for (item in structure.structures!!){
-                            if (getNodeStructureID(position).toInt() == item!!.id){
+                        for (item in structure.structures!!) {
+                            if (getNodeStructureID(position).toInt() == item!!.id) {
                                 structures = item.name!!
                             }
                         }
 
-                        for (item in structure.users!!){
-                            if (getNodeUserID(position).toInt() == item!!.id){
+                        for (item in structure.users!!) {
+                            if (getNodeUserID(position).toInt() == item!!.id) {
                                 user = item.fullName!!
                             }
                         }
-                        holder.Category.text = Objects.requireNonNull(getNodeCategory(position)).toString()
-                        if (user.isEmpty()){
+                        holder.Category.text =
+                            Objects.requireNonNull(getNodeCategory(position)).toString()
+                        if (user.isEmpty()) {
                             holder.colorView.setBackgroundColor(resources.getColor(R.color.blue))
                             holder.RefNumber.text = structures
-                        }else{
+                        } else {
                             holder.colorView.setBackgroundColor(resources.getColor(R.color.orange))
 
                             holder.RefNumber.text = "${structures}/${user}"
 
                         }
                         holder.CreatedDateTitle.text = TransferDate
-                        holder.CreatedDate.text = Objects.requireNonNull(getNodeCreatedDate(position)).toString()
+                        holder.CreatedDate.text =
+                            Objects.requireNonNull(getNodeCreatedDate(position)).toString()
                         holder.CreatedByTitle.text = CreatedBy
 
+                        val created_By =
+                            Objects.requireNonNull(getNodeCreatedBy(position)).toString()
+                        val ownerDelegatedID =
+                            Objects.requireNonNull(getCreatedByDelegatorID(position))
+
+                        val loggedUser = viewModel.readUserinfo().fullName
+
+                        val transferId = Objects.requireNonNull(getTransferId(position))
+//                        fullUserName(
+//                            ownerDelegatedID as Int,
+//                            created_By,
+//                            loggedUser,
+//                            holder,
+//                            you,
+//                            onBehalfOf
+//                        )
 
 
-
-                       val created_By = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
-                       val ownerDelegatedID = Objects.requireNonNull(getCreatedByDelegatorID(position))
-                       val createdByLoggedUSer = "delegator"
-                       val loggedUser = viewModel.readUserinfo().fullName
+                        val transferAsInt = transferId!!.substringAfter("_")?.toInt()
+                        getTransferDetails(transferAsInt, holder, you, onBehalfOf, loggedUser)
 
 
-
-                      //  holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
-
+                        //  holder.CreatedBy.text = Objects.requireNonNull(getNodeCreatedBy(position)).toString()
 
 
-                        viewModel.readSavedDelegator().let {
-
-                            if (it != null) {
-
-//                                if (it.fromUserId == 0) {
-//                                    if (ownerID.toString().isNullOrEmpty()) {
-//                                        if (loggedUser == created_By){
-//                                            lockedby.text = you
-//                                        }else{
-//                                            lockedby.text = created_By
-//                                        }
-//
-//
-//                                    } else {
-//
-//                                        if (loggedUser == created_By){
-//
-//                                            lockedby.text =
-//                                                "${ownerID.toString()} $onBehalfOf $you"
-//                                        }else{
-//
-//                                            lockedby.text =
-//                                                "${ownerID.toString()} $onBehalfOf $created_By"
-//                                        }
-//
-//                                    }
-//                                }else {
-//
-//                                    if (ownerID.toString().isNullOrEmpty()) {
-//
-//                                        lockedby.text = created_By
-//
-//
-//                                    } else {
-//
-//                                        if (loggedUser == ownerID.toString()) {
-//                                            lockedby.text =
-//                                                "$you $onBehalfOf ${ownerID.toString()}"
-//
-//                                        } else {
-//                                            lockedby.text =
-//                                                "${ownerID.toString()} $onBehalfOf $created_By"
-//
-//                                        }
-//
-//                                    }
-//
-//
-//                                }
-
-                            } else {
-
-
-                                if (ownerDelegatedID == -1) {
-                                    if (loggedUser == created_By){
-                                        holder.CreatedBy.text  = you
-                                    }else{
-                                        holder.CreatedBy.text  = created_By
-                                    }
-
-                                } else {
-
-                                    if (loggedUser == created_By){
-
-                                        holder.CreatedBy.text  =
-                                            "${createdByLoggedUSer} $onBehalfOf $you"
-                                    }else{
-
-                                        holder.CreatedBy.text  =
-                                            "${createdByLoggedUSer} $onBehalfOf ${created_By}"
-                                    }
-
-                                }
-
-                            }
-                        }
                     }
 
                 }
-
-
 
 
             }
@@ -286,8 +436,8 @@ abstract class GraphActivity : AppCompatActivity() {
 
         }
 
-    }
 
+    }
 
 
     private fun setupToolbar() {
@@ -307,7 +457,8 @@ abstract class GraphActivity : AppCompatActivity() {
         return true
     }
 
-    protected inner class NodeViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class NodeViewHolder internal constructor(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
         var Category: TextView = itemView.findViewById(R.id.category)
         var RefNumber: TextView = itemView.findViewById(R.id.refnum)
         var CreatedDate: TextView = itemView.findViewById(R.id.createddate)
@@ -316,19 +467,19 @@ abstract class GraphActivity : AppCompatActivity() {
         var CreatedBy: TextView = itemView.findViewById(R.id.createdby)
         var CreatedByTitle: TextView = itemView.findViewById(R.id.createdbytitle)
         var colorView: View = itemView.findViewById(R.id.colorview)
-        var nodeItem : LinearLayout = itemView.findViewById(R.id.nodeItem)
+        var nodeItem: LinearLayout = itemView.findViewById(R.id.nodeItem)
 
 
         init {
 
             nodeItem.setOnClickListener {
 
-              //  currentNode = adapter.getNode(bindingAdapterPosition)
+                //  currentNode = adapter.getNode(bindingAdapterPosition)
 //                Snackbar.make(itemView, "Clicked on " + adapter.getSelectedNode(bindingAdapterPosition)?.toString(),
 //                    Snackbar.LENGTH_SHORT).show()
                 val selectedNode = adapter.getSelectedNode(bindingAdapterPosition)
-                Log.d("selectedNode",selectedNode.toString())
-              //  showNoteDialog(bindingAdapterPosition,selectedNode)
+                Log.d("selectedNode", selectedNode.toString())
+                //  showNoteDialog(bindingAdapterPosition,selectedNode)
             }
 
         }

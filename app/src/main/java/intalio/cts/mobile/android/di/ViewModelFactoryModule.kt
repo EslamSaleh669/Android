@@ -32,10 +32,10 @@ class ViewModelFactoryModule  {
 
     @Provides
     @Named("login")
-    fun provideLoginViewModel(userRepo: UserRepo): Factory {
+    fun provideLoginViewModel(userRepo: UserRepo,adminRepo: AdminRepo): Factory {
         return object : Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return LoginViewModel(userRepo) as T
+                return LoginViewModel(userRepo,adminRepo) as T
             }
         }
     }

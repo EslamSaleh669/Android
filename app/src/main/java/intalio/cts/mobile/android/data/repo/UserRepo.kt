@@ -44,6 +44,16 @@ class UserRepo @Inject constructor(
     }
 
 
+    fun getUserFullName(token: String , userID:Int ,language: String  ): Observable<UserFullDataResponseItem> {
+
+        return apiClient.getUserFullData(
+            "${Constants.BASE_URL2}/api/GetUser",
+            "Bearer $token",
+            userID,
+            language
+        ).subscribeOn(Schedulers.io())
+    }
+
     fun getDictionary(token: String,baseUrl : String): Observable<DictionaryResponse> {
         return apiClient.getDictionary(
             "Bearer $token",
