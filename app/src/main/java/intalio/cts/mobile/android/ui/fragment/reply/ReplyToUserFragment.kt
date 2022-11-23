@@ -300,33 +300,6 @@ class ReplyToUserFragment : Fragment() {
     }
 
     private fun initDates() {
-
-
-        var cancel = ""
-        var ok = ""
-        when {
-            viewModel.readLanguage() == "en" -> {
-
-
-                cancel = translator.find { it.keyword == "Cancel" }!!.en.toString()
-                ok = translator.find { it.keyword == "OK" }!!.en.toString()
-            }
-            viewModel.readLanguage() == "ar" -> {
-
-
-                cancel = translator.find { it.keyword == "Cancel" }!!.ar.toString()
-                ok = translator.find { it.keyword == "OK" }!!.ar.toString()
-
-            }
-            viewModel.readLanguage() == "fr" -> {
-
-
-                cancel = translator.find { it.keyword == "Cancel" }!!.fr.toString()
-                ok = translator.find { it.keyword == "OK" }!!.fr.toString()
-
-            }
-        }
-
         val cal = Calendar.getInstance()
         val density = resources.displayMetrics.densityDpi.toFloat()
 
@@ -363,33 +336,25 @@ class ReplyToUserFragment : Fragment() {
                 cal[Calendar.YEAR], cal[Calendar.MONTH], cal[Calendar.DAY_OF_MONTH]
             )
         }
-//
-//        datePickerDialog!!.datePicker.minDate = cal.timeInMillis
-//        val dueDate = model.dueDate
-//
-//        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale(viewModel.readLanguage()))
-//
-//        if (model.dueDate != ""){
-//            val maxDate: Date = sdf.parse(dueDate)
-//            val maxCalendar = Calendar.getInstance()
-//            maxCalendar.time = maxDate
-//            datePickerDialog!!.datePicker.maxDate = maxCalendar.timeInMillis
-//
-//        }
 
-        datePickerDialog!!.setButton(DialogInterface.BUTTON_NEGATIVE, cancel,
+        datePickerDialog!!.datePicker.minDate = cal.timeInMillis
+        val dueDate = model.dueDate
+
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
+        if (model.dueDate != ""){
+            val maxDate: Date = sdf.parse(dueDate)
+            val maxCalendar = Calendar.getInstance()
+            maxCalendar.time = maxDate
+            datePickerDialog!!.datePicker.maxDate = maxCalendar.timeInMillis
+
+        }
+        datePickerDialog!!.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel),
             DialogInterface.OnClickListener { dialog, which ->
                 requireActivity().hideKeyboard(requireActivity())
                 etDateFrom!!.setText("")
 
             })
-
-//        datePickerDialog!!.setButton(DialogInterface.BUTTON_POSITIVE, ok,
-//            DialogInterface.OnClickListener { dialog, which ->
-//                requireActivity().hideKeyboard(requireActivity())
-//                etDateFrom!!.setText("")
-//
-//            })
 
 
         etDateFrom!!.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->

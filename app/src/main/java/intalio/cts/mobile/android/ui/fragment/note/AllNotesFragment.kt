@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.*
 import android.widget.CheckBox
 import android.widget.EditText

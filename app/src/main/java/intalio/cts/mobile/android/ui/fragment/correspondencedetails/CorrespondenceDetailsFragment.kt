@@ -81,6 +81,7 @@ class CorrespondenceDetailsFragment : Fragment() {
     private var pdfWidth = 0
     private var pdfHeight: Int = 0
     private var viewMode = false
+    private var CandoAction =false
     private var delegationId = 0
 
     lateinit var popupWindow: PopupWindow
@@ -175,6 +176,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         back_icon.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
 
         arguments?.getString(Constants.PATH)?.let {
 
@@ -271,11 +273,10 @@ class CorrespondenceDetailsFragment : Fragment() {
                     Latest_Path = latest_path!!
                 }
 
-//                requireArguments().getString(Constants.NODE_INHERIT).let {
-//                    Node_Inherit = it!!
-//                    Log.d("mypathnodeinherit",it)
-//
-//                }
+                requireArguments().getString(Constants.NODE_INHERIT).let {
+                    Node_Inherit = it!!
+
+                }
 
 
                 if (Latest_Path == "requested node" || Latest_Path == "closed node") {
@@ -295,7 +296,39 @@ class CorrespondenceDetailsFragment : Fragment() {
                         delegationId
                     )
                 }
+                else if (Latest_Path == "inbox node") {
+
+                    requireArguments().getBoolean(Constants.VIEWMODE).let { viewmode ->
+
+                        viewMode = viewmode
+                    }
+
+                    requireArguments().getBoolean(Constants.CANDOACTION).let { candoaction ->
+
+                        CandoAction = candoaction
+                    }
+
+
+                    correspondenceModel =
+                        arguments?.getSerializable(Constants.Correspondence_Model) as CorrespondenceDataItem
+                    title_new_viewer_activity.text = correspondenceModel.referenceNumber
+
+
+                    //viewDocument(correspondenceModel.id!!,delegationId)
+
+                    setPopUpWindow(correspondenceModel, delegationId,Latest_Path)
+                    getOriginalDocument(
+                        correspondenceModel.documentId!!,
+                        correspondenceModel.id!!.toString(),
+                        false,
+                        viewMode,
+                        delegationId
+                    )
+
+                }
                 else if (Latest_Path == "node") {
+                    Log.d("Latest_Path","I am at node condition")
+
                     requireArguments().getBoolean(Constants.VIEWMODE).let { viewmode ->
 
                         viewMode = viewmode
@@ -317,7 +350,12 @@ class CorrespondenceDetailsFragment : Fragment() {
                         delegationId
                     )
 
-                } else {
+                }
+
+                else {
+
+                    Log.d("Latest_Path","I am at else")
+
 
 //                    _menuLayout.visibility = View.INVISIBLE
 
@@ -781,6 +819,12 @@ class CorrespondenceDetailsFragment : Fragment() {
         setPopUpLabels(view)
 
 
+        Log.d("Noddesdet",Node_Inherit)
+        Log.d("Noddesdet",model.messageLock)
+        Log.d("Noddesdet",Latest_Path)
+        Log.d("Noddesdet",CandoAction.toString())
+
+
         if (Node_Inherit == "Inbox" && (model.messageLock == "lockedbyme" || model.messageLock == "notlocked")) {
 
             // Correspondence is not lock or locked by me
@@ -800,7 +844,10 @@ class CorrespondenceDetailsFragment : Fragment() {
             }
 
 
-        } else {
+
+
+        }
+        else {
 
 
             canDoAction = false
@@ -866,10 +913,20 @@ class CorrespondenceDetailsFragment : Fragment() {
                 }
         }
 
+
+        if (Latest_Path == "inbox node" && CandoAction){
+            canDoAction = true
+            view.findViewById<View>(R.id.unlock_btn).visibility = View.VISIBLE
+            view.findViewById<View>(R.id.complete_btn).visibility = View.VISIBLE
+            view.findViewById<View>(R.id.reply_user_btn).visibility = View.VISIBLE
+            view.findViewById<View>(R.id.reply_structure_btn).visibility = View.VISIBLE
+            view.findViewById<View>(R.id.transfer_btn).visibility = View.VISIBLE
+        }
+
         view.findViewById<View>(R.id.metadat_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     MetaDataFragment().apply {
 
                         arguments = bundleOf(
@@ -887,7 +944,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.link_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(
+                replace(
                     R.id.fragmentContainer,
                     LinkedCorrespondenceFragment().apply {
                         arguments = bundleOf(
@@ -907,7 +964,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.mytransfers_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     MyTransferFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.TRANSFER_ID, model.id),
@@ -926,7 +983,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.notes_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     AllNotesFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -959,7 +1016,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.reply_user_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     ReplyToUserFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -977,7 +1034,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.reply_structure_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     ReplyToStructureFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -995,7 +1052,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.transfer_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     AddTransferFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -1058,7 +1115,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.nonarchive_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     NonArchAttachmentsFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -1085,7 +1142,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.transferhistory_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     TransferHistoryFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -1287,7 +1344,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.metadat_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     MetaDataFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.TRANSFER_ID, model.id),
@@ -1306,7 +1363,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.link_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(
+                replace(
                     R.id.fragmentContainer,
                     LinkedCorrespondenceFragment().apply {
                         arguments = bundleOf(
@@ -1325,7 +1382,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.notes_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     AllNotesFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -1364,7 +1421,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.nonarchive_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     NonArchAttachmentsFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -1385,7 +1442,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.transferhistory_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     TransferHistoryFragment().apply {
                         arguments = bundleOf(
                             Pair(
@@ -1468,7 +1525,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.metadat_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     MetaDataFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.TRANSFER_ID, model.id),
@@ -1489,7 +1546,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.link_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(
+                replace(
                     R.id.fragmentContainer,
                     LinkedCorrespondenceFragment().apply {
                         arguments = bundleOf(
@@ -1508,7 +1565,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.notes_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     AllNotesFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -1547,7 +1604,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.nonarchive_attachs_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     NonArchAttachmentsFragment().apply {
                         arguments = bundleOf(
                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -1568,7 +1625,7 @@ class CorrespondenceDetailsFragment : Fragment() {
         view.findViewById<View>(R.id.transferhistory_btn).setOnClickListener {
             popupWindow.dismiss()
             (activity as AppCompatActivity).supportFragmentManager.commit {
-                add(R.id.fragmentContainer,
+                replace(R.id.fragmentContainer,
                     TransferHistoryFragment().apply {
                         arguments = bundleOf(
                             Pair(

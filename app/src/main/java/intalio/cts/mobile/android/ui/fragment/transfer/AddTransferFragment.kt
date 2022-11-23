@@ -46,7 +46,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
     private var purposeSelectedId = 0
     private var purposeSelectedName = ""
     private var isPurposeCCED = false
-
+    private var delegationId = 0
     private var structureSelectedId = 0
     private var structureSelectedName = ""
     private var userSelectedId = 0
@@ -111,6 +111,16 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         translator = viewModel.readDictionary()!!.data!!
         settings = viewModel.readSettings()
 
+        dialog = requireContext().launchLoadingDialog()
+        viewModel.readSavedDelegator().let {
+            delegationId = if (it != null) {
+
+                it.id!!
+
+            } else {
+                0
+            }
+        }
         setLabels()
 
         val result = arguments?.getSerializable(Constants.Correspondence_Model)
@@ -379,6 +389,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
 
 
+
         actvTransferautocomplete.threshold = 0
         val structuresArray = viewModel.readAllStructureData().structures
         val userArray = viewModel.readAllStructureData().users
@@ -391,53 +402,130 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
         if (transferToUser == "true") {
             for (item in userArray!!) {
 
-                if (item.id != viewModel.readUserinfo().id) {
-                    val structureItem = AllStructuresItem()
-                    structureItem.id = item.id
+                if (delegationId == 0){
+                    if (item.id != viewModel.readUserinfo().id) {
+                        val structureItem = AllStructuresItem()
+                        structureItem.id = item.id
 
-                    fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                        fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
 
-                        if (it != null) {
+                            if (it != null) {
 
-                            when {
-                                viewModel.readLanguage() == "en" -> {
-                                    structureItem.name =
-                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                when {
+                                    viewModel.readLanguage() == "en" -> {
+                                        structureItem.name =
+                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                    }
+                                    viewModel.readLanguage() == "ar" -> {
+
+                                        val structureName =
+                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                it!!.text == "NameAr"
+                                            }!!.value
+                                        if (structureName.isNullOrEmpty()){
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                        }else{
+                                            structureItem.name =
+                                                "$structureName / ${item.fullName}"
+                                        }
+
+                                    }
+                                    viewModel.readLanguage() == "fr" -> {
+                                        Log.d("aaaaaaaazz", it!!)
+
+                                        val structureName =
+                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                it!!.text == "NameFr"
+                                            }!!.value
+                                        if (structureName.isNullOrEmpty()){
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                        }else{
+                                            structureItem.name =
+                                                "$structureName / ${item.fullName}"
+                                        }
+                                    }
                                 }
-                                viewModel.readLanguage() == "ar" -> {
 
-                                    val structureName =
-                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                            it!!.text == "NameAr"
-                                        }!!.value
-                                    structureItem.name =
-                                        "$structureName / ${item.fullName}"
 
-                                }
-                                viewModel.readLanguage() == "fr" -> {
-                                    Log.d("aaaaaaaazz", it!!)
 
-                                    val structureName =
-                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                            it!!.text == "NameFr"
-                                        }!!.value
-                                    structureItem.name =
-                                        "$structureName / ${item.fullName}"
-
-                                }
                             }
-
-
-
                         }
+
+                        structureItem.attributes = item.attributes
+                        structureItem.structureIds = item.structureIds
+                        structureItem.itemType = "user"
+
+
+                        structuresArray!!.add(structureItem)
                     }
 
-                    structureItem.attributes = item.attributes
-                    structureItem.structureIds = item.structureIds
-                    structureItem.itemType = "user"
+                }else{
+                    val delegator = viewModel.readSavedDelegator()
+                    if (item.id != delegator!!.fromUserId && item.id != viewModel.readUserinfo().id) {
+                        val structureItem = AllStructuresItem()
+                        structureItem.id = item.id
+
+                        fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+
+                            if (it != null) {
+
+                                when {
+                                    viewModel.readLanguage() == "en" -> {
+                                        structureItem.name =
+                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                    }
+                                    viewModel.readLanguage() == "ar" -> {
 
 
-                    structuresArray!!.add(structureItem)
+                                        val structureName =
+                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                it!!.text == "NameAr"
+                                            }!!.value
+                                        if (structureName.isNullOrEmpty()){
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                        }else{
+                                            structureItem.name =
+                                                "$structureName / ${item.fullName}"
+                                        }
+
+                                    }
+                                    viewModel.readLanguage() == "fr" -> {
+
+                                        val structureName =
+                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                it!!.text == "NameFr"
+                                            }!!.value
+
+                                        if (structureName.isNullOrEmpty()){
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                        }else{
+                                            structureItem.name =
+                                                "$structureName / ${item.fullName}"
+                                        }
+                                    }
+                                }
+
+
+
+                            }
+                        }
+
+                        structureItem.attributes = item.attributes
+                        structureItem.structureIds = item.structureIds
+                        structureItem.itemType = "user"
+
+
+                        structuresArray!!.add(structureItem)
+                    }
+
                 }
 
             }
@@ -550,50 +638,122 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 if (it.users!!.size > 0) {
 
                                     for (item in it.users) {
-                                        if (item!!.id != viewModel.readUserinfo().id) {
-                                            val structureItem = AllStructuresItem()
-                                            structureItem.id = item.id
-                                            fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
-                                                if (it != null) {
+                                        if (delegationId == 0){
+                                            if (item.id != viewModel.readUserinfo().id) {
+                                                val structureItem = AllStructuresItem()
+                                                structureItem.id = item.id
+                                                fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                                                    if (it != null) {
 
-                                                    when {
-                                                        viewModel.readLanguage() == "en" -> {
-                                                            structureItem.name =
-                                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                        when {
+                                                            viewModel.readLanguage() == "en" -> {
+                                                                structureItem.name =
+                                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                            }
+                                                            viewModel.readLanguage() == "ar" -> {
+
+                                                                val structureName =
+                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                        it!!.text == "NameAr"
+                                                                    }!!.value
+                                                                if (structureName.isNullOrEmpty()){
+                                                                    structureItem.name =
+                                                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                }else{
+                                                                    structureItem.name =
+                                                                        "$structureName / ${item.fullName}"
+                                                                }
+                                                            }
+                                                            viewModel.readLanguage() == "fr" -> {
+                                                                Log.d("aaaaaaaazz", it!!)
+
+                                                                val structureName =
+                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                        it!!.text == "NameFr"
+                                                                    }!!.value
+                                                                if (structureName.isNullOrEmpty()){
+                                                                    structureItem.name =
+                                                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                }else{
+                                                                    structureItem.name =
+                                                                        "$structureName / ${item.fullName}"
+                                                                }
+                                                            }
                                                         }
-                                                        viewModel.readLanguage() == "ar" -> {
 
-                                                            val structureName =
-                                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                    it!!.text == "NameAr"
-                                                                }!!.value
-                                                            structureItem.name =
-                                                                "$structureName / ${item.fullName}"
 
-                                                        }
-                                                        viewModel.readLanguage() == "fr" -> {
-                                                            Log.d("aaaaaaaazz", it!!)
 
-                                                            val structureName =
-                                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                    it!!.text == "NameFr"
-                                                                }!!.value
-                                                            structureItem.name =
-                                                                "$structureName / ${item.fullName}"
-
-                                                        }
                                                     }
-
-
-
                                                 }
+                                                structureItem.attributes = item.attributes
+                                                structureItem.structureIds = item.structureIds
+                                                structureItem.itemType = "user"
+
+
+                                                allUsersAndStructures.add(structureItem)
                                             }
-                                            structureItem.attributes = item.attributes
-                                            structureItem.structureIds = item.structureIds
-                                            structureItem.itemType = "user"
+
+                                        }else{
+                                            val delegator = viewModel.readSavedDelegator()
+
+                                            if (item.id != delegator!!.fromUserId && item.id != viewModel.readUserinfo().id) {
+                                                val structureItem = AllStructuresItem()
+                                                structureItem.id = item.id
+                                                fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                                                    if (it != null) {
+
+                                                        when {
+                                                            viewModel.readLanguage() == "en" -> {
+                                                                structureItem.name =
+                                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                            }
+                                                            viewModel.readLanguage() == "ar" -> {
+
+                                                                val structureName =
+                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                        it!!.text == "NameAr"
+                                                                    }!!.value
+                                                                if (structureName.isNullOrEmpty()){
+                                                                    structureItem.name =
+                                                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                }else{
+                                                                    structureItem.name =
+                                                                        "$structureName / ${item.fullName}"
+                                                                }
+                                                            }
+                                                            viewModel.readLanguage() == "fr" -> {
+                                                                Log.d("aaaaaaaazz", it!!)
+
+                                                                val structureName =
+                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                        it!!.text == "NameFr"
+                                                                    }!!.value
+                                                                if (structureName.isNullOrEmpty()){
+                                                                    structureItem.name =
+                                                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                }else{
+                                                                    structureItem.name =
+                                                                        "$structureName / ${item.fullName}"
+                                                                }
+                                                            }
+                                                        }
 
 
-                                            allUsersAndStructures.add(structureItem)
+
+                                                    }
+                                                }
+                                                structureItem.attributes = item.attributes
+                                                structureItem.structureIds = item.structureIds
+                                                structureItem.itemType = "user"
+
+
+                                                allUsersAndStructures.add(structureItem)
+                                            }
+
                                         }
 
                                     }
@@ -675,6 +835,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 }
 
         }
+        dialog!!.dismiss()
 
     }
 
@@ -693,54 +854,132 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         val transferToUser = settings.find { it.keyword == "EnableTransferToUsers" }!!.content
 
+
         if (transferToUser == "true") {
             for (item in userArray!!) {
 
-                if (item.id != viewModel.readUserinfo().id) {
-                    val structureItem = AllStructuresItem()
-                    structureItem.id = item.id
-                    fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
-                        if (it != null) {
+                if (delegationId == 0){
 
-                            when {
-                                viewModel.readLanguage() == "en" -> {
-                                    structureItem.name =
-                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                    if (item.id != viewModel.readUserinfo().id) {
+                        val structureItem = AllStructuresItem()
+                        structureItem.id = item.id
+                        fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                            if (it != null) {
+
+                                when {
+                                    viewModel.readLanguage() == "en" -> {
+                                        structureItem.name =
+                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                    }
+                                    viewModel.readLanguage() == "ar" -> {
+
+                                        val structureName =
+                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                it!!.text == "NameAr"
+                                            }!!.value
+                                        if (structureName.isNullOrEmpty()){
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                        }else{
+                                            structureItem.name =
+                                                "$structureName / ${item.fullName}"
+                                        }
+                                    }
+                                    viewModel.readLanguage() == "fr" -> {
+                                        Log.d("aaaaaaaazz", it!!)
+
+                                        val structureName =
+                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                it!!.text == "NameFr"
+                                            }!!.value
+                                        if (structureName.isNullOrEmpty()){
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                        }else{
+                                            structureItem.name =
+                                                "$structureName / ${item.fullName}"
+                                        }
+                                    }
                                 }
-                                viewModel.readLanguage() == "ar" -> {
 
-                                    val structureName =
-                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                            it!!.text == "NameAr"
-                                        }!!.value
-                                    structureItem.name =
-                                        "$structureName / ${item.fullName}"
 
-                                }
-                                viewModel.readLanguage() == "fr" -> {
-                                    Log.d("aaaaaaaazz", it!!)
 
-                                    val structureName =
-                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                            it!!.text == "NameFr"
-                                        }!!.value
-                                    structureItem.name =
-                                        "$structureName / ${item.fullName}"
-
-                                }
                             }
-
-
-
                         }
+                        structureItem.attributes = item.attributes
+                        structureItem.structureIds = item.structureIds
+                        structureItem.itemType = "user"
+
+
+                        structuresArray!!.add(structureItem)
                     }
-                    structureItem.attributes = item.attributes
-                    structureItem.structureIds = item.structureIds
-                    structureItem.itemType = "user"
+
+                } else{
 
 
-                    structuresArray!!.add(structureItem)
+                    val delegator = viewModel.readSavedDelegator()
+
+                    if (item.id != delegator!!.fromUserId && item.id != viewModel.readUserinfo().id) {
+                        val structureItem = AllStructuresItem()
+                        structureItem.id = item.id
+                        fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                            if (it != null) {
+
+                                when {
+                                    viewModel.readLanguage() == "en" -> {
+                                        structureItem.name =
+                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                    }
+                                    viewModel.readLanguage() == "ar" -> {
+
+                                        val structureName =
+                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                it!!.text == "NameAr"
+                                            }!!.value
+                                        if (structureName.isNullOrEmpty()){
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                        }else{
+                                            structureItem.name =
+                                                "$structureName / ${item.fullName}"
+                                        }
+                                    }
+                                    viewModel.readLanguage() == "fr" -> {
+                                        Log.d("aaaaaaaazz", it!!)
+
+                                        val structureName =
+                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                it!!.text == "NameFr"
+                                            }!!.value
+                                        if (structureName.isNullOrEmpty()){
+                                            structureItem.name =
+                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                        }else{
+                                            structureItem.name =
+                                                "$structureName / ${item.fullName}"
+                                        }
+                                    }
+                                }
+
+
+
+                            }
+                        }
+                        structureItem.attributes = item.attributes
+                        structureItem.structureIds = item.structureIds
+                        structureItem.itemType = "user"
+
+
+                        structuresArray!!.add(structureItem)
+                    }
+
+
                 }
+
 
             }
 
@@ -851,51 +1090,124 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 if (it.users!!.size > 0) {
 
                                     for (item in it.users) {
-                                        if (item.id != viewModel.readUserinfo().id) {
-                                            val structureItem = AllStructuresItem()
-                                            structureItem.id = item.id
-                                            fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
-                                                if (it != null) {
+                                        if (delegationId == 0){
+                                            if (item.id != viewModel.readUserinfo().id) {
+                                                val structureItem = AllStructuresItem()
+                                                structureItem.id = item.id
+                                                fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                                                    if (it != null) {
 
-                                                    when {
-                                                        viewModel.readLanguage() == "en" -> {
-                                                            structureItem.name =
-                                                                "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                        when {
+                                                            viewModel.readLanguage() == "en" -> {
+                                                                structureItem.name =
+                                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                            }
+                                                            viewModel.readLanguage() == "ar" -> {
+
+                                                                val structureName =
+                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                        it!!.text == "NameAr"
+                                                                    }!!.value
+                                                                if (structureName.isNullOrEmpty()){
+                                                                    structureItem.name =
+                                                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                }else{
+                                                                    structureItem.name =
+                                                                        "$structureName / ${item.fullName}"
+                                                                }
+                                                            }
+                                                            viewModel.readLanguage() == "fr" -> {
+                                                                Log.d("aaaaaaaazz", it!!)
+
+                                                                val structureName =
+                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                        it!!.text == "NameFr"
+                                                                    }!!.value
+                                                                if (structureName.isNullOrEmpty()){
+                                                                    structureItem.name =
+                                                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                }else{
+                                                                    structureItem.name =
+                                                                        "$structureName / ${item.fullName}"
+                                                                }
+                                                            }
                                                         }
-                                                        viewModel.readLanguage() == "ar" -> {
 
-                                                            val structureName =
-                                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                    it!!.text == "NameAr"
-                                                                }!!.value
-                                                            structureItem.name =
-                                                                "$structureName / ${item.fullName}"
 
-                                                        }
-                                                        viewModel.readLanguage() == "fr" -> {
-                                                            Log.d("aaaaaaaazz", it!!)
 
-                                                            val structureName =
-                                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                    it!!.text == "NameFr"
-                                                                }!!.value
-                                                            structureItem.name =
-                                                                "$structureName / ${item.fullName}"
-
-                                                        }
                                                     }
-
-
-
                                                 }
+                                                structureItem.attributes = item.attributes
+                                                structureItem.structureIds = item.structureIds
+                                                structureItem.itemType = "user"
+
+
+                                                allUsersAndStructures.add(structureItem)
                                             }
-                                            structureItem.attributes = item.attributes
-                                            structureItem.structureIds = item.structureIds
-                                            structureItem.itemType = "user"
+
+                                        }else{
+                                            val delegator = viewModel.readSavedDelegator()
+
+                                            if (item.id != delegator!!.fromUserId && item.id != viewModel.readUserinfo().id) {
+                                                val structureItem = AllStructuresItem()
+                                                structureItem.id = item.id
+                                                fullStructures!!.find { it.id == item.structureIds?.get(0) }?.name.let {
+                                                    if (it != null) {
+
+                                                        when {
+                                                            viewModel.readLanguage() == "en" -> {
+                                                                structureItem.name =
+                                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+                                                            }
+                                                            viewModel.readLanguage() == "ar" -> {
+
+                                                                val structureName =
+                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                        it!!.text == "NameAr"
+                                                                    }!!.value
+                                                                if (structureName.isNullOrEmpty()){
+                                                                    structureItem.name =
+                                                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                }else{
+                                                                    structureItem.name =
+                                                                        "$structureName / ${item.fullName}"
+                                                                }
+                                                            }
+                                                            viewModel.readLanguage() == "fr" -> {
+                                                                Log.d("aaaaaaaazz", it!!)
+
+                                                                val structureName =
+                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                        it!!.text == "NameFr"
+                                                                    }!!.value
+                                                                if (structureName.isNullOrEmpty()){
+                                                                    structureItem.name =
+                                                                        "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                }else{
+                                                                    structureItem.name =
+                                                                        "$structureName / ${item.fullName}"
+                                                                }
+                                                            }
+                                                        }
 
 
-                                            allUsersAndStructures.add(structureItem)
+
+                                                    }
+                                                }
+                                                structureItem.attributes = item.attributes
+                                                structureItem.structureIds = item.structureIds
+                                                structureItem.itemType = "user"
+
+
+                                                allUsersAndStructures.add(structureItem)
+                                            }
+
                                         }
+
 
                                     }
                                 }
@@ -1015,6 +1327,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                dialog!!.dismiss()
 
                 try {
                     var responseRecieved: Any? = null
@@ -1035,12 +1348,14 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    dialog!!.dismiss()
 
                 }
 
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                dialog!!.dismiss()
 
                 requireActivity().makeToast(requireActivity().getString(R.string.network_error))
             }

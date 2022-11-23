@@ -50,26 +50,26 @@ class ScanningActivity : AppCompatActivity() {
         autoDispose.bindTo(this.lifecycle)
 
 
-        loginlogo.setOnClickListener {
+//        loginlogo.setOnClickListener {
+////
+//            val  scannerModel = ScanResponse()
 //
-            val  scannerModel = ScanResponse()
-
-            scannerModel.serviceUrl = "http://192.168.1.11:6969"
-            scannerModel.url = "http://192.168.1.11:9949"
-            scannerModel.clientId = "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc"
-            scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
-
-
-
-//    makeToast("ServiceUrl:${scannerModel.serviceUrl} \n IAM : ${scannerModel.url} \n ClientID ${scannerModel.clientId}")
-
-            val sharedPref = getSharedPreferences(Constants.SCANNER_PREF,Context.MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            editor.putString(Constants.SCANNER_MODEL, Gson().toJson(scannerModel))
-            editor.apply()
-
-            launchActivityFinishCurrent(LoginActivity::class.java)
-        }
+//            scannerModel.serviceUrl = "http://192.168.1.11:6969"
+//            scannerModel.url = "http://192.168.1.11:9949"
+//            scannerModel.clientId = "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc"
+//            scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
+//
+//
+//
+////    makeToast("ServiceUrl:${scannerModel.serviceUrl} \n IAM : ${scannerModel.url} \n ClientID ${scannerModel.clientId}")
+//
+//            val sharedPref = getSharedPreferences(Constants.SCANNER_PREF,Context.MODE_PRIVATE)
+//            val editor = sharedPref.edit()
+//            editor.putString(Constants.SCANNER_MODEL, Gson().toJson(scannerModel))
+//            editor.apply()
+//
+//            launchActivityFinishCurrent(LoginActivity::class.java)
+//        }
 
 
         if (ContextCompat.checkSelfPermission(this@ScanningActivity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {

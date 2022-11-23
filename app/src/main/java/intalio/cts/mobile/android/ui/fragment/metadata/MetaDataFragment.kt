@@ -117,6 +117,10 @@ class MetaDataFragment : Fragment() {
                             getMetaData(TransferId,delegationId)
 
                         }
+
+                        "inbox node" -> {
+                            getMetaData(TransferId,delegationId)
+                        }
                         "requested node" -> {
                             getRequestedDocumentInfo(TransferId)
 

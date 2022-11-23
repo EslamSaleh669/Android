@@ -62,6 +62,7 @@ class NotesViewModel (private val userRepo: UserRepo, private val adminRepo: Adm
 
     fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
 
+    fun readUserinfo(): UserFullDataResponseItem = userRepo.readFullUserData()!!
 
     override fun onCleared() {
         super.onCleared()

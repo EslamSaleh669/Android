@@ -438,6 +438,30 @@ class AttachmentsFragment : Fragment() {
 
                             }
                         }
+
+                        else if (Node_Inherit == "Inbox"){
+                            (activity as AppCompatActivity).supportFragmentManager.commit {
+                                add(R.id.fragmentContainer,
+                                    CorrespondenceDetailsFragment().apply {
+                                        arguments = bundleOf(
+                                            Pair(Constants.NODE_INHERIT, Node_Inherit),
+
+                                            Pair(Constants.Correspondence_Model, model),
+                                            Pair(Constants.FILE_ID, fileId.substringAfter("_")),
+                                            Pair(Constants.FILE_PARENT_ID, isOriginalFile),
+                                            Pair(Constants.VIEWMODE, viewMode),
+                                            Pair(Constants.PATH, "attachment"),
+                                            Pair(Constants.LATEST_PATH, "inbox node"),
+                                            Pair(Constants.CANDOACTION, canDoAction),
+
+                                        )
+
+                                    }
+                                ).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+
+                            }
+                        }
+
                         else {
                             (activity as AppCompatActivity).supportFragmentManager.commit {
                                 add(R.id.fragmentContainer,

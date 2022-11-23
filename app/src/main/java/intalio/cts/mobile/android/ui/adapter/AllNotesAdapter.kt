@@ -49,49 +49,53 @@ class AllNotesAdapter(
                 onBehalfOf = translator.find { it.keyword == "OnBehalfOf" }!!.fr!!
             }
         }
-        if (Node_Inherit != "Inbox" || !canDoAction) {
-            holder.noteDelete.visibility = View.INVISIBLE
-            holder.noteEdit.visibility = View.INVISIBLE
-        }
 
-
-
-        if (Notes[position].isEditable == false) {
-            holder.noteDelete.visibility = View.INVISIBLE
-            holder.noteEdit.visibility = View.INVISIBLE
-        }
-
-        if (Notes[position].createdByDelegatedUser.isNullOrEmpty()){
-            holder.createsBy.text = Notes[position].createdBy
-
+        if (Notes[position].isPrivate!! && Notes[position].createdBy != viewModel.readUserinfo().fullName){
+             val  x = "xx"
         }else{
-            holder.createsBy.text = "${Notes[position].createdBy} $onBehalfOf ${Notes[position].createdByDelegatedUser}"
-        }
-        holder.noteDate.text = Notes[position].createdDate
-        holder.noteDescription.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(Notes[position].notes, Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            Html.fromHtml(Notes[position].notes)
+            if (Node_Inherit != "Inbox" || !canDoAction) {
+                holder.noteDelete.visibility = View.INVISIBLE
+                holder.noteEdit.visibility = View.INVISIBLE
+            }
+
+            if (Notes[position].isEditable == false) {
+                holder.noteDelete.visibility = View.INVISIBLE
+                holder.noteEdit.visibility = View.INVISIBLE
+            }
+
+            if (Notes[position].createdByDelegatedUser.isNullOrEmpty()){
+                holder.createsBy.text = Notes[position].createdBy
+
+            }else{
+                holder.createsBy.text = "${Notes[position].createdBy} $onBehalfOf ${Notes[position].createdByDelegatedUser}"
+            }
+            holder.noteDate.text = Notes[position].createdDate
+            holder.noteDescription.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(Notes[position].notes, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml(Notes[position].notes)
+            }
+
+            if (position == Notes.size - 1) {
+                holder.vieww.visibility = View.GONE
+            }
+
+            if (Notes[position].isPrivate == true) {
+                holder.notePrivacy.visibility = View.VISIBLE
+            } else {
+                holder.notePrivacy.visibility = View.GONE
+
+            }
+
+            holder.noteDelete.setOnClickListener {
+                onDeleteCLickListener.onDeleteClicked(Notes[position].id!!)
+            }
+
+            holder.noteEdit.setOnClickListener {
+                onDeleteCLickListener.onEditClicked(position, Notes[position])
+            }
         }
 
-        if (position == Notes.size - 1) {
-            holder.vieww.visibility = View.GONE
-        }
-
-        if (Notes[position].isPrivate == true) {
-            holder.notePrivacy.visibility = View.VISIBLE
-        } else {
-            holder.notePrivacy.visibility = View.GONE
-
-        }
-
-        holder.noteDelete.setOnClickListener {
-            onDeleteCLickListener.onDeleteClicked(Notes[position].id!!)
-        }
-
-        holder.noteEdit.setOnClickListener {
-            onDeleteCLickListener.onEditClicked(position, Notes[position])
-        }
 
 
     }

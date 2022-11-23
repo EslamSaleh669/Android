@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -97,6 +98,11 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             linkrel.visibility = View.VISIBLE
         }
 
+        Log.d("resssilt",Node_Inherit)
+        Log.d("resssilt",canDoAction.toString())
+        Log.d("resssilt", DocumentId.toString())
+        Log.d("resssilt", TransferId.toString())
+
         viewModel.readSavedDelegator().let {
             delegationId = if (it != null) {
 
@@ -170,7 +176,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             }else{
 
                 linkedrecycler.adapter =
-                    LinkedCAdapter(it.data, requireActivity(),this,Node_Inherit,canDoAction)
+                    LinkedCAdapter(it.data, requireActivity(),this,Node_Inherit,canDoAction,DocumentId,TransferId)
                 linkedrecycler.layoutManager =
                     LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
@@ -189,12 +195,14 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
         }))
     }
 
-    override fun onDeleteClicked(linkcId: Int) {
 
-        showDialog(linkcId)
+
+    override fun onDeleteClicked(linkcId: Int, DOCUMENT_ID: Int, TransferId: Int) {
+        showDialog(linkcId,DOCUMENT_ID,TransferId)
     }
 
-    private fun showDialog(linkcId: Int) {
+
+    private fun showDialog(linkcId: Int, DOCUMENT_ID: Int, TransferId: Int) {
 
         var deleteConfirmation = ""
         var yes = ""
@@ -236,13 +244,30 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             .setPositiveButton(yes, DialogInterface.OnClickListener { dialog, i ->
                 dialog.dismiss()
 
-                autoDispose.add(viewModel.deleteLinkedC(linkcId,DocumentId,TransferId,delegationId).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                autoDispose.add(viewModel.deleteLinkedC(linkcId,DocumentId,
+                    this.TransferId,delegationId).observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
 
                         if (it.equals(true)){
 
                             (linkedrecycler.adapter as LinkedCAdapter).removeLinkedC(linkcId)
+                            (activity as AppCompatActivity).supportFragmentManager.commit {
+                                replace(
+                                    R.id.fragmentContainer,
+                                    LinkedCorrespondenceFragment().apply {
+                                        arguments = bundleOf(
+                                            Pair(Constants.NODE_INHERIT, "Inbox"),
+                                            Pair(Constants.DOCUMENT_ID, DOCUMENT_ID),
+                                            Pair(Constants.TRANSFER_ID,TransferId),
+                                            Pair(Constants.CANDOACTION, true)
+                                        )
 
+
+                                    }, "LinkedC"
+                                )
+
+
+                            }
                         }
 
                     },
@@ -260,6 +285,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
 
 
     }
+
 
     private fun setLabels() {
 
@@ -292,6 +318,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             }
         }
     }
+
 
 
 }

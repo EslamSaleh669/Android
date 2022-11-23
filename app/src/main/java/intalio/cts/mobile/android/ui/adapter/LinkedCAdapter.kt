@@ -17,7 +17,9 @@ class LinkedCAdapter(
     val activity: Activity,
     private val onDeleteCLickListener: OnDeleteLinkedCClicked,
     private val Node_Inherit: String,
-    private val canDoAction :Boolean
+    private val canDoAction: Boolean,
+    private val  DOCUMENT_ID: Int,
+    private val TransferId: Int
 
 
 ) : RecyclerView.Adapter<LinkedCAdapter.AllNewsVHolder>() {
@@ -31,8 +33,7 @@ class LinkedCAdapter(
 
 
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
-
-
+ 
         if (Node_Inherit != "Inbox" || !canDoAction || LinkedC[position].allowDelete == false){
             holder.LinkedDelete.visibility = View.INVISIBLE
         }
@@ -47,7 +48,7 @@ class LinkedCAdapter(
 
 
         holder.LinkedDelete.setOnClickListener {
-            onDeleteCLickListener.onDeleteClicked(LinkedC[position].id!!)
+            onDeleteCLickListener.onDeleteClicked(LinkedC[position].id!!,DOCUMENT_ID,TransferId)
         }
 
     }
@@ -74,7 +75,7 @@ class LinkedCAdapter(
     }
 
     public interface OnDeleteLinkedCClicked {
-        fun onDeleteClicked(linkcId: Int)
+        fun onDeleteClicked(linkcId: Int, DOCUMENT_ID: Int,TransferId: Int)
     }
 
 }

@@ -80,7 +80,13 @@ public class StructuresAdapter extends ArrayAdapter {
                     for (int i = 0; i < Objects.requireNonNull(attributes).size(); i++) {
                         if (Objects.equals(attributes.get(i).getText(), "NameAr")) {
                             String structureNameAr = attributes.get(i).getValue();
-                            strName.setText(structureNameAr);
+                            if (structureNameAr.isEmpty()){
+                                strName.setText(dataList.get(position).getName());
+
+                            }else {
+                                strName.setText(structureNameAr);
+
+                            }
 
                         }
                     }
@@ -92,7 +98,12 @@ public class StructuresAdapter extends ArrayAdapter {
                     for (int i = 0; i < Objects.requireNonNull(attributes2).size(); i++) {
                         if (Objects.equals(attributes2.get(i).getText(), "NameFr")) {
                             String structureNameFR = attributes2.get(i).getValue();
-                            strName.setText(structureNameFR);
+                            if (structureNameFR.isEmpty()){
+                                strName.setText(dataList.get(position).getName());
+
+                            }else {
+                                strName.setText(structureNameFR);
+                            }
 
                         }
                     }

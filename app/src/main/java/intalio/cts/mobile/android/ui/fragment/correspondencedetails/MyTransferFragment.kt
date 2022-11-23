@@ -177,7 +177,6 @@ class MyTransferFragment : Fragment() {
                             from_user.text = "-"
                         } else {
                             from_user.text = it.fromUser
-
                         }
                         if (it.purpose.isNullOrEmpty()) {
                             purpose.text = "-"
@@ -309,11 +308,8 @@ class MyTransferFragment : Fragment() {
                     dialog!!.dismiss()
                     Timber.e(it)
 
-
                 })
         )
-
-
     }
 
     private fun getTransferDetails(TransferId: Int, delegationId: Int) {
@@ -355,13 +351,9 @@ class MyTransferFragment : Fragment() {
 
                         viewModel.readSavedDelegator().let {
 
-                            Log.d("lockedby", transferDetails.lockedBy!!)
-                            Log.d("lockedbyd", transferDetails.lockedByDelegatedUser!!)
                             if (it != null) {
 
 
-                                Log.d("fromuserid", it.fromUserId.toString())
-                                Log.d("fromusername", it.fromUser.toString())
 
                                 if (it.fromUserId == 0) {
                                     if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
