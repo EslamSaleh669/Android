@@ -819,11 +819,6 @@ class CorrespondenceDetailsFragment : Fragment() {
         setPopUpLabels(view)
 
 
-        Log.d("Noddesdet",Node_Inherit)
-        Log.d("Noddesdet",model.messageLock)
-        Log.d("Noddesdet",Latest_Path)
-        Log.d("Noddesdet",CandoAction.toString())
-
 
         if (Node_Inherit == "Inbox" && (model.messageLock == "lockedbyme" || model.messageLock == "notlocked")) {
 

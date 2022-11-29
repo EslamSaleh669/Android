@@ -47,7 +47,7 @@ import kotlinx.android.synthetic.main.fragment_addtransfer.*
 import kotlinx.android.synthetic.main.toolbar_layout.centered_txt
 
 
-class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked {
+class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked {
 
     private var userSelectedId = 0
     private lateinit var editedModel: DelegationDataItem
@@ -68,9 +68,6 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
     private lateinit var translator: java.util.ArrayList<DictionaryDataItem>
 
 
-
-
-
     @Inject
     @field:Named("delegations")
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -83,12 +80,11 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
     var dialog: Dialog? = null
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         autoDispose.bindTo(this.lifecycle)
 
-       (activity?.application as MyApplication).appComponent?.inject(this)
+        (activity?.application as MyApplication).appComponent?.inject(this)
 
     }
 
@@ -140,16 +136,15 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         }
 
 
-
         val result = arguments?.getSerializable(Constants.Delegation_Model)
-        if (result.toString() == "null"){
+        if (result.toString() == "null") {
 
 
             initDates()
             initUserAutoComplete("add")
             initCategoriesAutoComplete("add")
 
-        }else{
+        } else {
             editedModel = (result as? DelegationDataItem)!!
             centered_txt.text = edit
             initEditedDates()
@@ -165,29 +160,42 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         btnSaveDelegate.setOnClickListener {
 
             if (userSelectedId == 0 || etDateFrom!!.text.toString() == ""
-                || etDateTo!!.text.toString() == "" || addedCategoriesIds.size == 0){
+                || etDateTo!!.text.toString() == "" || addedCategoriesIds.size == 0
+            ) {
 
                 requireActivity().makeToast(requiredFields)
 
-            }else{
+            } else {
                 dialog = requireContext().launchLoadingDialog()
 
-                if (result.toString() == "null"){
+                if (result.toString() == "null") {
                     saveDelegation("add")
 
-                }else{
+                } else {
                     saveDelegation("edit")
 
                 }
             }
         }
 
-}
+    }
 
 
     private fun initUserAutoComplete(state: String) {
         userautocomopletetextview.threshold = 0
-        val userAutoCompleteArray = viewModel.readUsersStructureData()!!
+        val autoCompleteArray = viewModel.readUsersStructureData()!!
+        val userAutoCompleteArray = ArrayList<UsersStructureItem>()
+
+        for (item in autoCompleteArray) {
+
+            userAutoCompleteArray.find { it.fullName == item.fullName }?.fullName.toString().let {
+                if (it == "null") {
+                    userAutoCompleteArray.add(item)
+
+                }
+            }
+
+        }
 
         val arrayAdapter =
             UsresStructureAdapter(
@@ -197,8 +205,11 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
             )
         userautocomopletetextview.setAdapter(arrayAdapter)
 
-        if (state == "edit"){
-            userautocomopletetextview!!.setText(editedModel.toUser.toString(), TextView.BufferType.EDITABLE)
+        if (state == "edit") {
+            userautocomopletetextview!!.setText(
+                editedModel.toUser.toString(),
+                TextView.BufferType.EDITABLE
+            )
             userSelectedId = editedModel.toUserValueText!!.id!!
 
         }
@@ -229,7 +240,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                 requireActivity().hideKeyboard(requireActivity())
                 userautocomopletetextview.clearFocus()
                 userautocomopletetextview.dismissDropDown()
-                val selectedObject= parent!!.getItemAtPosition(position) as UsersStructureItem
+                val selectedObject = parent!!.getItemAtPosition(position) as UsersStructureItem
                 userautocomopletetextview.setText(selectedObject.fullName.toString())
                 userSelectedId = selectedObject.id!!
 
@@ -244,7 +255,6 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         val editedCategories = ArrayList<CategoryResponseItem>()
 
 
-
         val arrayAdapter =
             CategoriesAdapter(
                 requireContext(),
@@ -255,22 +265,26 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
 
 
-        multiSelectedcategory.adapter =  AddedCategoriesAdapter(requireActivity(),
-            arrayListOf(),this)
+        multiSelectedcategory.adapter = AddedCategoriesAdapter(
+            requireActivity(),
+            arrayListOf(), this
+        )
         multiSelectedcategory.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        if (state == "edit"){
+        if (state == "edit") {
 
             editedModel.categoryIds.let {
 
-                for (id in it!!){
-                    for (obj in categoriesArray){
-                        if (id == obj.id){
+                for (id in it!!) {
+                    for (obj in categoriesArray) {
+                        if (id == obj.id) {
 
 
-                                (multiSelectedcategory.adapter as AddedCategoriesAdapter).addCategories(obj)
-                                 addedCategoriesIds.add(obj.id!!)
+                            (multiSelectedcategory.adapter as AddedCategoriesAdapter).addCategories(
+                                obj
+                            )
+                            addedCategoriesIds.add(obj.id!!)
 
                         }
                     }
@@ -307,12 +321,14 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                 requireActivity().hideKeyboard(requireActivity())
                 userautocomopletetextview.clearFocus()
                 userautocomopletetextview.dismissDropDown()
-                val selectedObject= parent!!.getItemAtPosition(position) as CategoryResponseItem
+                val selectedObject = parent!!.getItemAtPosition(position) as CategoryResponseItem
 
-                 autoCompletecategories.setText("")
-                (multiSelectedcategory.adapter as AddedCategoriesAdapter).addCategories(selectedObject)
+                autoCompletecategories.setText("")
+                (multiSelectedcategory.adapter as AddedCategoriesAdapter).addCategories(
+                    selectedObject
+                )
 
-                if (!addedCategoriesIds.contains(selectedObject.id)){
+                if (!addedCategoriesIds.contains(selectedObject.id)) {
                     addedCategoriesIds.add(selectedObject.id!!)
 
                 }
@@ -322,7 +338,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
     private fun initDates() {
 
         var wrongDateLess = ""
-        var wrongDateGreater= ""
+        var wrongDateGreater = ""
 
         when {
             viewModel.readLanguage() == "en" -> {
@@ -336,8 +352,10 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
             }
             viewModel.readLanguage() == "fr" -> {
-                wrongDateLess = "Impossible de sélectionner une date de début antérieure à aujourd'hui"
-                wrongDateGreater = "Impossible de sélectionner une date de début supérieure à la date de fin"
+                wrongDateLess =
+                    "Impossible de sélectionner une date de début antérieure à aujourd'hui"
+                wrongDateGreater =
+                    "Impossible de sélectionner une date de début supérieure à la date de fin"
             }
         }
 
@@ -380,7 +398,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                         if (fromfield != "") {
                             if (toDateSelectedInDays < fromDateSelectedInDays) {
                                 etDateTo!!.setText("")
-                               // Utility.dateForDialog = fromfield
+                                // Utility.dateForDialog = fromfield
                                 requireActivity().hideKeyboard(requireActivity())
                                 requireActivity().makeToast(wrongDateLess)
 
@@ -494,12 +512,13 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
 
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initEditedDates() {
 
 
         var wrongCashedDateLess = ""
-        var wrongCashedDateGreater= ""
+        var wrongCashedDateGreater = ""
 
         when {
             viewModel.readLanguage() == "en" -> {
@@ -513,8 +532,10 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
             }
             viewModel.readLanguage() == "fr" -> {
-                wrongCashedDateLess = "Impossible de sélectionner une date de début antérieure à l'ancienne sélectionnée"
-                wrongCashedDateGreater = "Impossible de sélectionner une date de début supérieure à la date de fin"
+                wrongCashedDateLess =
+                    "Impossible de sélectionner une date de début antérieure à l'ancienne sélectionnée"
+                wrongCashedDateGreater =
+                    "Impossible de sélectionner une date de début supérieure à la date de fin"
             }
         }
         val cal = Calendar.getInstance()
@@ -526,7 +547,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         etDateFrom!!.setText(editedModel.fromDate.toString(), TextView.BufferType.EDITABLE)
         etDateTo!!.setText(editedModel.toDate.toString(), TextView.BufferType.EDITABLE)
 
-        val cashedFromString:String =
+        val cashedFromString: String =
             changeDateFormat("mm/dd/yyyy", "dd/mm/yyyy", etDateFrom!!.text.toString())!!
 
 
@@ -624,7 +645,7 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
                 }
             })
 
-      //  datePickerDialog!!.datePicker.minDate = cal.timeInMillis
+        //  datePickerDialog!!.datePicker.minDate = cal.timeInMillis
 
 
         datePickerDialog!!.setButton(DialogInterface.BUTTON_NEGATIVE,
@@ -691,8 +712,8 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
     @Throws(Exception::class)
     fun changeDateFormat(input: String?, output: String?, dateString: String?): String? {
-        val inputDate: DateFormat = SimpleDateFormat(input,Locale.US)
-        val outputDate: DateFormat = SimpleDateFormat(output,Locale.US)
+        val inputDate: DateFormat = SimpleDateFormat(input, Locale.US)
+        val outputDate: DateFormat = SimpleDateFormat(output, Locale.US)
         val date = inputDate.parse(dateString!!)
         return outputDate.format(date!!)
     }
@@ -705,64 +726,74 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
         return thisDay + (thisMonth + 1) * 31 + thisYear * 12 * 31
     }
 
-    private fun saveDelegation(state:String){
+    private fun saveDelegation(state: String) {
 
-        if (state == "add"){
+        if (state == "add") {
 
-            autoDispose.add(viewModel.saveDelegation(userSelectedId,etDateFrom!!.text.toString()
-                ,etDateTo!!.text.toString(),addedCategoriesIds).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                {
-
-
-                    if (it.message.toString() == "null"){
-                        activity?.onBackPressed()
-
-                    }else{
-                        requireActivity().makeToast(it.message.toString())
-
-                    }
-
-                    dialog!!.dismiss()
-                },{
-                    dialog!!.dismiss()
-
-                    Timber.e(it)
-
-                }))
-        }else{
-
-
-            autoDispose.add(viewModel.saveEditedDelegation(userSelectedId,etDateFrom!!.text.toString()
-                ,etDateTo!!.text.toString(),addedCategoriesIds, editedModel.id!!
+            autoDispose.add(viewModel.saveDelegation(
+                userSelectedId,
+                etDateFrom!!.text.toString(),
+                etDateTo!!.text.toString(),
+                addedCategoriesIds
             ).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
 
 
-                    if (it.message.toString().equals("null")){
-
+                    if (it.message.toString() == "null") {
                         activity?.onBackPressed()
 
-                    }else{
+                    } else {
                         requireActivity().makeToast(it.message.toString())
 
                     }
 
                     dialog!!.dismiss()
-                },{
+                }, {
                     dialog!!.dismiss()
 
                     Timber.e(it)
 
-                }))
+                })
+            )
+        } else {
+
+
+            autoDispose.add(viewModel.saveEditedDelegation(
+                userSelectedId,
+                etDateFrom!!.text.toString(),
+                etDateTo!!.text.toString(),
+                addedCategoriesIds,
+                editedModel.id!!
+            ).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+
+
+                    if (it.message.toString().equals("null")) {
+
+                        activity?.onBackPressed()
+
+                    } else {
+                        requireActivity().makeToast(it.message.toString())
+
+                    }
+
+                    dialog!!.dismiss()
+                }, {
+                    dialog!!.dismiss()
+
+                    Timber.e(it)
+
+                })
+            )
         }
     }
 
-    private fun isDateValid(selectedDate: String, cashedDate: String) : Boolean {
+    private fun isDateValid(selectedDate: String, cashedDate: String): Boolean {
         try {
             val selectDate = SimpleDateFormat("dd/mm/yyyy").parse(selectedDate)
             val cashDate = SimpleDateFormat("dd/mm/yyyy").parse(cashedDate)
             return cashDate.before(selectDate)
-        } catch(ignored: java.text.ParseException) {
+        } catch (ignored: java.text.ParseException) {
             return false
         }
     }
@@ -850,7 +881,6 @@ class AddDelegationFragment : Fragment(),AddedCategoriesAdapter.OnDeleteClicked 
 
 
                 centered_txt.text = translator.find { it.keyword == "Delegation" }!!.fr
-
 
 
             }
