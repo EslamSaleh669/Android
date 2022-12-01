@@ -7,6 +7,8 @@
     android:background="@drawable/graphbg"
     android:layoutDirection="ltr"
     android:textDirection="ltr"
+    android:clickable="true"
+    android:focusable="true"
     tools:context="intalio.cts.mobile.android.ui.fragment.visualtracking.visualtrackingutil.GraphActivity">
 
     <com.google.android.material.appbar.AppBarLayout

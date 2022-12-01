@@ -145,7 +145,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         } else {
             if (enableSendingRules == "true") {
-                geStructureSendingRules(model.fromStructureId!!)
+                geStructureSendingRules(model.toStructureId!!)
 
             } else {
 

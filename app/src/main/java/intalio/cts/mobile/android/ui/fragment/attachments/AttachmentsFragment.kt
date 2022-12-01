@@ -152,7 +152,6 @@ class AttachmentsFragment : Fragment() {
 
         arguments?.getSerializable(Constants.Correspondence_Model).let {
 
-            Log.d("mypath",viewModel.readPath())
             if (viewModel.readPath() == "search") {
                 searchModel = it as AdvancedSearchResponseDataItem
                 attachmentsData(searchModel.id!!)
@@ -379,7 +378,7 @@ class AttachmentsFragment : Fragment() {
 
                     if (viewModel.readPath() == "search") {
                         (activity as AppCompatActivity).supportFragmentManager.commit {
-                            add(R.id.fragmentContainer,
+                            replace(R.id.fragmentContainer,
                                 CorrespondenceDetailsFragment().apply {
                                     arguments = bundleOf(
                                         Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -400,7 +399,7 @@ class AttachmentsFragment : Fragment() {
                     } else if (viewModel.readPath() == "node" || viewModel.readPath() == "attachment"){
                         if (Node_Inherit == "MyRequests") {
                             (activity as AppCompatActivity).supportFragmentManager.commit {
-                                add(R.id.fragmentContainer,
+                                replace(R.id.fragmentContainer,
                                     CorrespondenceDetailsFragment().apply {
                                         arguments = bundleOf(
                                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -420,7 +419,7 @@ class AttachmentsFragment : Fragment() {
                         }
                         else if (Node_Inherit == "Closed"){
                             (activity as AppCompatActivity).supportFragmentManager.commit {
-                                add(R.id.fragmentContainer,
+                                replace(R.id.fragmentContainer,
                                     CorrespondenceDetailsFragment().apply {
                                         arguments = bundleOf(
                                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -441,7 +440,7 @@ class AttachmentsFragment : Fragment() {
 
                         else if (Node_Inherit == "Inbox"){
                             (activity as AppCompatActivity).supportFragmentManager.commit {
-                                add(R.id.fragmentContainer,
+                                replace(R.id.fragmentContainer,
                                     CorrespondenceDetailsFragment().apply {
                                         arguments = bundleOf(
                                             Pair(Constants.NODE_INHERIT, Node_Inherit),
@@ -464,7 +463,7 @@ class AttachmentsFragment : Fragment() {
 
                         else {
                             (activity as AppCompatActivity).supportFragmentManager.commit {
-                                add(R.id.fragmentContainer,
+                                replace(R.id.fragmentContainer,
                                     CorrespondenceDetailsFragment().apply {
                                         arguments = bundleOf(
                                             Pair(Constants.NODE_INHERIT, Node_Inherit),

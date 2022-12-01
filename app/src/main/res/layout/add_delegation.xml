@@ -5,6 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/grey"
+    android:clickable="true"
+    android:focusable="true"
     android:layout_height="match_parent">
 
     <include layout="@layout/toolbar_layout"
