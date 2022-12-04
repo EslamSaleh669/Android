@@ -822,8 +822,8 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 requiredtodate_label.text = "(required)"
                 requiredcategories_label.text = "(required)"
 
-                btnSaveDelegate.text = translator.find { it.keyword == "Save" }!!.en
-                btnCancelDelegate.text = translator.find { it.keyword == "Cancel" }!!.en
+                btnSaveDelegate.text = translator.find { it.keyword == "Submit" }!!.en
+                btnCancelDelegate.text = translator.find { it.keyword == "Close" }!!.en
 
                 userautocomopletetextview.hint = translator.find { it.keyword == "FullName" }!!.en
                 delegateFrom.hint = translator.find { it.keyword == "FromDate" }!!.en
@@ -831,7 +831,7 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 autoCompletecategories.hint = translator.find { it.keyword == "Categories" }!!.en
 
 
-                centered_txt.text = translator.find { it.keyword == "Delegation" }!!.en
+                centered_txt.text = translator.find { it.keyword == "New" }!!.en
 
             }
             viewModel.readLanguage() == "ar" -> {
@@ -846,8 +846,8 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 requiredtodate_label.text = "(الزامي)"
                 requiredcategories_label.text = "(الزامي)"
 
-                btnSaveDelegate.text = translator.find { it.keyword == "Save" }!!.ar
-                btnCancelDelegate.text = translator.find { it.keyword == "Cancel" }!!.ar
+                btnSaveDelegate.text = translator.find { it.keyword == "Submit" }!!.ar
+                btnCancelDelegate.text = translator.find { it.keyword == "Close" }!!.ar
 
                 userautocomopletetextview.hint = translator.find { it.keyword == "FullName" }!!.ar
                 delegateFrom.hint = translator.find { it.keyword == "FromDate" }!!.ar
@@ -855,7 +855,7 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 autoCompletecategories.hint = translator.find { it.keyword == "Categories" }!!.ar
 
 
-                centered_txt.text = translator.find { it.keyword == "Delegation" }!!.ar
+                centered_txt.text = translator.find { it.keyword == "New" }!!.ar
 
             }
             viewModel.readLanguage() == "fr" -> {
@@ -871,8 +871,8 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 requiredtodate_label.text = "(requis)"
                 requiredcategories_label.text = "(requis)"
 
-                btnSaveDelegate.text = translator.find { it.keyword == "Save" }!!.fr
-                btnCancelDelegate.text = translator.find { it.keyword == "Cancel" }!!.fr
+                btnSaveDelegate.text = translator.find { it.keyword == "Submit" }!!.fr
+                btnCancelDelegate.text = translator.find { it.keyword == "Close" }!!.fr
 
                 userautocomopletetextview.hint = translator.find { it.keyword == "FullName" }!!.fr
                 delegateFrom.hint = translator.find { it.keyword == "FromDate" }!!.fr
@@ -880,7 +880,7 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 autoCompletecategories.hint = translator.find { it.keyword == "Categories" }!!.fr
 
 
-                centered_txt.text = translator.find { it.keyword == "Delegation" }!!.fr
+                centered_txt.text = translator.find { it.keyword == "New" }!!.fr
 
 
             }

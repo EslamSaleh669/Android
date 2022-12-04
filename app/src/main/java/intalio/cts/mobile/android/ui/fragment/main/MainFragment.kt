@@ -231,6 +231,7 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 requiredNodes.removeIf { it.inherit == "Draft" }
+                requiredNodes.removeIf { it.inherit == "MyRequests" }
             }
             requiredNodes.sortBy { it -> it.order }
             getNodesAsATree(requiredNodes)
@@ -910,10 +911,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                         responseRecieved = response.body()
 
 
-                        if (response.body()!!.size > 0) {
                             showDelegatorsDialog(response.body(), currentDelegator)
 
-                        }
+
 
 
                     } catch (e: Exception) {
@@ -965,16 +965,15 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
         val delegatorsRecycler =
             dialogg!!.findViewById(R.id.delegators_recycler) as RecyclerView
 
-        if (model!!.size > 0) {
+
             val originalUser = DelegationRequestsResponseItem()
             originalUser.id = 0
             originalUser.fromUser = myCorrespondence
             originalUser.fromUserId = 0
             originalUser.fromUserRoleId = 0
 
-            model.add(originalUser)
+            model!!.add(originalUser)
             model.sortBy { it.fromUserId }
-        }
 
 
         delegatorsRecycler.adapter =

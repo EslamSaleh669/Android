@@ -137,10 +137,49 @@
 
 
         </LinearLayout>
+
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/datelin"
+            android:layout_marginTop="12dp"
+            android:id="@+id/duedatelin"
+            android:layoutDirection="locale"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_simibold"
+                android:text="@string/due_date"
+                android:id="@+id/duedatetxt"
+                android:textColor="@color/black2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="start"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:fontFamily="@font/myriadpro_regular"
+                android:textColor="@color/ApplicationDarkColor"
+                android:id="@+id/duedateval"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/duedatelin"
             android:layout_marginTop="12dp"
             android:id="@+id/closed_date"
             android:layoutDirection="locale"

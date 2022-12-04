@@ -49,7 +49,6 @@ class ScanningActivity : AppCompatActivity() {
         (application as MyApplication).appComponent?.inject(this)
         autoDispose.bindTo(this.lifecycle)
 
-
 //        loginlogo.setOnClickListener {
 ////
 //            val  scannerModel = ScanResponse()

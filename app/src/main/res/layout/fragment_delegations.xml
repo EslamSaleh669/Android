@@ -29,7 +29,6 @@
             android:textColor="@color/black2"
             android:textSize="18sp" />
 
-
         <TextView
             android:id="@+id/delegate"
             android:layout_width="wrap_content"
@@ -45,8 +44,8 @@
             android:text="@string/add"
             android:textColor="@color/white"
             android:textSize="17sp"
-            app:drawableStartCompat="@drawable/ic_white_delegations" />
-
+            app:drawableStartCompat="@drawable/ic_addnew"
+            />
         <View
             android:id="@+id/vieww"
             android:layout_width="match_parent"

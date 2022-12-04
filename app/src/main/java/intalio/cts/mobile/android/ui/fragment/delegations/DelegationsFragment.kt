@@ -100,18 +100,18 @@ class DelegationsFragment : Fragment(), DelegationsAdapter.OnDeleteDelegationCli
             viewModel.readLanguage() == "en" -> {
                 centered_txt.text = translator.find { it.keyword == "Delegation" }!!.en
                 delegationtxt.text = translator.find { it.keyword == "Delegation" }!!.en
-                delegate.text = translator.find { it.keyword == "Add" }!!.en
+                delegate.text = translator.find { it.keyword == "New" }!!.en
 
             }
             viewModel.readLanguage() == "ar" -> {
                 centered_txt.text = translator.find { it.keyword == "Delegation" }!!.ar
                 delegationtxt.text = translator.find { it.keyword == "Delegation" }!!.ar
-                delegate.text = translator.find { it.keyword == "Add" }!!.ar
+                delegate.text = translator.find { it.keyword == "New" }!!.ar
             }
             viewModel.readLanguage() == "fr" -> {
                 centered_txt.text = translator.find { it.keyword == "Delegation" }!!.fr
                 delegationtxt.text = translator.find { it.keyword == "Delegation" }!!.fr
-                delegate.text = translator.find { it.keyword == "Add" }!!.fr
+                delegate.text = translator.find { it.keyword == "New" }!!.fr
             }
         }
 

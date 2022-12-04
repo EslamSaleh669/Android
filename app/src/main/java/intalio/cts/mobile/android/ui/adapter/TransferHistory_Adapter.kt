@@ -48,6 +48,7 @@ class TransferHistory_Adapter(
                 holder.transferDateTxt.text = "${translator.find { it.keyword == "TransferDate" }!!.en}: "
                 holder.instructionTxt.text = "${translator.find { it.keyword == "Instruction" }!!.en}: "
                 holder.closedDateTxt.text = "${translator.find { it.keyword == "ClosedDate" }!!.en}: "
+                holder.dueDateTxt.text = "${translator.find { it.keyword == "DueDate" }!!.en}: "
 
             }
             viewModel.readLanguage() == "ar" -> {
@@ -56,6 +57,8 @@ class TransferHistory_Adapter(
                 holder.transferDateTxt.text = "${translator.find { it.keyword == "TransferDate" }!!.ar}: "
                 holder.instructionTxt.text = "${translator.find { it.keyword == "Instruction" }!!.ar}: "
                 holder.closedDateTxt.text = "${translator.find { it.keyword == "ClosedDate" }!!.ar}: "
+                holder.dueDateTxt.text = "${translator.find { it.keyword == "DueDate" }!!.ar}: "
+
             }
             viewModel.readLanguage() == "fr" -> {
                 holder.fromTxt.text = "${translator.find { it.keyword == "From" }!!.fr}: "
@@ -63,6 +66,7 @@ class TransferHistory_Adapter(
                 holder.transferDateTxt.text = "${translator.find { it.keyword == "TransferDate" }!!.fr}: "
                 holder.instructionTxt.text = "${translator.find { it.keyword == "Instruction" }!!.fr}: "
                 holder.closedDateTxt.text = "${translator.find { it.keyword == "ClosedDate" }!!.fr}: "
+                holder.dueDateTxt.text = "${translator.find { it.keyword == "DueDate" }!!.fr}: "
 
             }
         }
@@ -101,6 +105,7 @@ class TransferHistory_Adapter(
             }
         }
         holder.TransferDate.text = Transfers[position].transferDate
+        holder.dueDate.text = Transfers[position].dueDate
         holder.closedDate.text = Transfers[position].closedDate
 
         if (!Transfers[position].instruction.isNullOrEmpty()) {
@@ -117,12 +122,14 @@ class TransferHistory_Adapter(
             holder.TransferSender.typeface = normalTypeface
             holder.TransferReciever.typeface = normalTypeface
             holder.TransferDate.typeface = normalTypeface
+            holder.dueDate.typeface = normalTypeface
             holder.Instructions.typeface = normalTypeface
             holder.closedDate.typeface = normalTypeface
 
             holder.fromTxt.typeface = normalTypeface
             holder.toTxt.typeface = normalTypeface
             holder.transferDateTxt.typeface = normalTypeface
+            holder.dueDateTxt.typeface = normalTypeface
             holder.instructionTxt.typeface = normalTypeface
             holder.closedDateTxt.typeface = normalTypeface
 
@@ -133,6 +140,7 @@ class TransferHistory_Adapter(
             holder.TransferSender.typeface = boldTypeface
             holder.TransferReciever.typeface = boldTypeface
             holder.TransferDate.typeface = boldTypeface
+            holder.dueDate.typeface = boldTypeface
             holder.Instructions.typeface = boldTypeface
             holder.closedDate.typeface = boldTypeface
 
@@ -140,6 +148,7 @@ class TransferHistory_Adapter(
             holder.toTxt.typeface = boldTypeface
             holder.transferDateTxt.typeface = boldTypeface
             holder.instructionTxt.typeface = boldTypeface
+            holder.dueDateTxt.typeface = boldTypeface
             holder.closedDateTxt.typeface = boldTypeface
         }
 
@@ -174,6 +183,7 @@ class TransferHistory_Adapter(
         val TransferSender: TextView = itemView.findViewById(R.id.attchsender)
         val TransferReciever: TextView = itemView.findViewById(R.id.attchreciever)
         val TransferDate: TextView = itemView.findViewById(R.id.attchdate)
+        val dueDate: TextView = itemView.findViewById(R.id.duedateval)
         val Instructions: ReadMoreTextView = itemView.findViewById(R.id.attachinstructions)
         val transferSentTo: ImageView = itemView.findViewById(R.id.transfer_sentto)
         val closedDate: TextView = itemView.findViewById(R.id.attchcloseddate)
@@ -184,6 +194,7 @@ class TransferHistory_Adapter(
         val transferDateTxt: TextView = itemView.findViewById(R.id.transferdatetxt)
         val instructionTxt: TextView = itemView.findViewById(R.id.instructionstxt)
         val closedDateTxt: TextView = itemView.findViewById(R.id.closeddatetxt)
+        val dueDateTxt: TextView = itemView.findViewById(R.id.duedatetxt)
         val transferOverdue: ImageView = itemView.findViewById(R.id.transfer_overdue)
 
 
