@@ -86,6 +86,7 @@ class LoginActivity : AppCompatActivity() {
             val emailStr = username.text.toString().trim()
             val passwordStr = password.text.toString().trim()
 
+
             when {
                 emailStr.isEmpty() -> {
                     makeToast(getString(R.string.requiredField))

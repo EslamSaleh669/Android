@@ -154,6 +154,8 @@ class TransferHistory_Adapter(
 
 
 
+
+
         if (Transfers[position].sentToStructure == true) {
             holder.transferSentTo.setImageResource(R.drawable.ic_bulding)
 

@@ -59,6 +59,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         (application as MyApplication).appComponent?.inject(this)
 
+
         autoDispose.bindTo(this.lifecycle)
 
         val lan = viewModel.readLanguage()
