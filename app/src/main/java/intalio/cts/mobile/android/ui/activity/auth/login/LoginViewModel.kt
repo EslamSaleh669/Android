@@ -7,11 +7,13 @@ import intalio.cts.mobile.android.data.repo.AdminRepo
 import intalio.cts.mobile.android.data.repo.UserRepo
 
 import io.reactivex.Observable
+import okhttp3.ResponseBody
+import retrofit2.Call
 
 class LoginViewModel(private val userRepo: UserRepo,private val adminRepo: AdminRepo) : ViewModel() {
 
     fun userLogin(clientId: String, GrantType: String,
-                  email: String, password: String): Observable<TokenResponse> {
+                  email: String, password: String): Call<ResponseBody> {
         return userRepo.userLogin(clientId,GrantType,email,password)
     }
 

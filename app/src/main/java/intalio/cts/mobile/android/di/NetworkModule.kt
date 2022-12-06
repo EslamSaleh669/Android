@@ -29,9 +29,9 @@ class NetworkModule (val context:Context) {
     fun provideOkHttpClient(): OkHttpClient =
         OkHttpClient()
             .newBuilder()
-            .writeTimeout(1, TimeUnit.MINUTES)
-            .readTimeout(1, TimeUnit.MINUTES)
-            .connectTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(ErrorInterceptor())
             .build()
 

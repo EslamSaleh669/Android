@@ -18,6 +18,8 @@ import com.yariksoffice.lingver.Lingver
 import intalio.cts.mobile.android.data.model.ScanResponse
 import intalio.cts.mobile.android.data.model.UserCredentials
 import intalio.cts.mobile.android.data.model.viewer.TokenManager
+import intalio.cts.mobile.android.data.network.response.LoginResponseError
+import intalio.cts.mobile.android.data.network.response.TokenResponse
 import intalio.cts.mobile.android.ui.HomeActivity
 import intalio.cts.mobile.android.ui.activity.auth.login.LoginActivity
 import intalio.cts.mobile.android.util.*
@@ -25,6 +27,10 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_splash.*
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -58,7 +64,7 @@ class SplashActivity : AppCompatActivity() {
         val lan = viewModel.readLanguage()
         Lingver.getInstance().setLocale(this, Locale(lan))
 
-         autoDispose.add(
+        autoDispose.add(
             Observable.fromCallable {
 
             }.subscribeOn(Schedulers.io()).delay(1000, TimeUnit.MILLISECONDS)
@@ -79,17 +85,23 @@ class SplashActivity : AppCompatActivity() {
 
                         val userCredentials = viewModel.readUserCredentials()
                         if (userCredentials.toString().isNotEmpty()) {
-                            Log.d("splashloggs","user Credentials not empty")
+                            Log.d("splashloggs", "user Credentials not empty")
                             if (viewModel.readTokenData()!!.expiresIn!! > getToday()) {
-                                Log.d("splashloggs","token expiration ${viewModel.readTokenData()!!.expiresIn}" +
-                                        " is bigger than get today ${getToday()}")
+                                Log.d(
+                                    "splashloggs",
+                                    "token expiration ${viewModel.readTokenData()!!.expiresIn}" +
+                                            " is bigger than get today ${getToday()}"
+                                )
 
                                 launchActivity(HomeActivity::class.java)
                                 finish()
                             } else {
 
-                                Log.d("splashloggs","token expiration ${viewModel.readTokenData()!!.expiresIn}" +
-                                        " is less than get today ${getToday()}")
+                                Log.d(
+                                    "splashloggs",
+                                    "token expiration ${viewModel.readTokenData()!!.expiresIn}" +
+                                            " is less than get today ${getToday()}"
+                                )
 
                                 refreshToken(
                                     userCredentials.clientId!!,
@@ -158,39 +170,96 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun refreshToken(clientId: String, emailStr: String, passwordStr: String) {
-        autoDispose.add(
-            viewModel.userLogin(
-                clientId,
-                Constants.GRANT_TYPE, emailStr, passwordStr
-            ).observeOn(AndroidSchedulers.mainThread()).subscribe({
+//        autoDispose.add(
+//            viewModel.userLogin(
+//                clientId,
+//                Constants.GRANT_TYPE, emailStr, passwordStr
+//            ).observeOn(AndroidSchedulers.mainThread()).subscribe({
+//
+//                if (it.accessToken.isNullOrEmpty()) {
+//                    makeToast(getString(R.string.invalidLoginMessage))
+//
+//                } else {
+//                    val userCredentials = UserCredentials()
+//                    userCredentials.clientId = clientId
+//                    userCredentials.userName = emailStr
+//                    userCredentials.password = passwordStr
+//                    viewModel.saveUserCredentials(userCredentials)
+//                    viewModel.saveUserToken(it)
+//                    TokenManager.accessToken = it.accessToken
+//
+//                    Log.d("splashloggs", "now we have a new token ${it.accessToken}")
+//                    Log.d("splashloggs", "now we have a new expiration date ${it.expiresIn}")
+//
+//                    launchActivity(HomeActivity::class.java)
+//                    finish()
+//                }
+//
+//            }, {
+//
+//                Timber.e(it)
+//
+//                makeToast(getString(R.string.invalidLoginMessage))
+//
+//            })
+//        )
 
-                if (it.accessToken.isNullOrEmpty()) {
-                    makeToast(getString(R.string.invalidLoginMessage))
+        viewModel.userLogin(
+            Constants.CLIENT_ID,
+            Constants.GRANT_TYPE, emailStr, passwordStr
+        ).enqueue(object :
+            Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
 
-                } else {
+                if (response.code() == 200) {
+
+
                     val userCredentials = UserCredentials()
                     userCredentials.clientId = clientId
                     userCredentials.userName = emailStr
                     userCredentials.password = passwordStr
                     viewModel.saveUserCredentials(userCredentials)
-                    viewModel.saveUserToken(it)
-                    TokenManager.accessToken = it.accessToken
 
-                    Log.d("splashloggs", "now we have a new token ${it.accessToken}")
-                    Log.d("splashloggs", "now we have a new expiration date ${it.expiresIn}")
+
+                    val tokeResponse = Gson().fromJson(
+                        response.body().toString(), TokenResponse::class.java
+                    )
+                    viewModel.saveUserToken(tokeResponse)
+                    TokenManager.accessToken = tokeResponse.accessToken
 
                     launchActivity(HomeActivity::class.java)
                     finish()
+
+                }
+                else if (response.code() == 400) {
+
+                    var responseRecieved: Any? = null
+                    responseRecieved = response.errorBody()!!.string()
+
+                    val loginError = Gson().fromJson(
+                        responseRecieved, LoginResponseError::class.java
+                    )
+                    if (loginError.error == "unauthorized_client") {
+                        makeToast(getString(R.string.invalidLoginMessage))
+                    } else {
+                        makeToast(loginError.error.toString())
+                    }
                 }
 
-            }, {
+            }
 
-                Timber.e(it)
 
-                makeToast(getString(R.string.invalidLoginMessage))
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                 if (t.message.toString().contains("failed to connect to")){
+                    makeToast("check your current connected Wifi network")
 
-            })
-        )
+                }else{
+                    makeToast(getString(R.string.network_error))
+
+                }
+
+            }
+        })
     }
 
 }

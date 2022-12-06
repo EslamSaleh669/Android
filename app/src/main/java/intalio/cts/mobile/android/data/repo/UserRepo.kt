@@ -12,6 +12,8 @@ import intalio.cts.mobile.android.data.network.response.*
 import intalio.cts.mobile.android.util.Constants
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.ResponseBody
+import retrofit2.Call
 
 import javax.inject.Inject
 
@@ -25,7 +27,7 @@ class UserRepo @Inject constructor(
     fun userLogin(
         clientId: String, GrantType: String,
         email: String, password: String
-    ): Observable<TokenResponse> {
+    ): Call<ResponseBody> {
         return apiClient.userLogin(
             "${Constants.BASE_URL2}/connect/token",
             clientId,
@@ -33,7 +35,7 @@ class UserRepo @Inject constructor(
             email,
             password,
             "IdentityServerApi openid profile"
-        ).subscribeOn(Schedulers.io())
+        )
     }
 
     fun userBasicInfo(token: String): Observable<UserInfoResponse> {

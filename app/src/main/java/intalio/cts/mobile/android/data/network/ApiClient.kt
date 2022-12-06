@@ -26,7 +26,7 @@ interface ApiClient {
         @Field("username") email: String,
         @Field("password") password: String,
         @Field("scope") scope: String
-    ): Observable<TokenResponse>
+    ): Call<ResponseBody>
 
     // https://iamp.intalio.com/connect/token
     @GET()

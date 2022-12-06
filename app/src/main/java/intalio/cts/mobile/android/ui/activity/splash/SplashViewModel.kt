@@ -5,6 +5,8 @@ import intalio.cts.mobile.android.data.model.UserCredentials
 import intalio.cts.mobile.android.data.network.response.TokenResponse
 import intalio.cts.mobile.android.data.repo.UserRepo
 import io.reactivex.Observable
+import okhttp3.ResponseBody
+import retrofit2.Call
 
 
 class SplashViewModel(private val userRepo: UserRepo) : ViewModel() {
@@ -18,7 +20,7 @@ class SplashViewModel(private val userRepo: UserRepo) : ViewModel() {
     fun readTokenData(): TokenResponse? = userRepo.readTokenData()
 
     fun userLogin(clientId: String, GrantType: String,
-                  email: String, password: String): Observable<TokenResponse> {
+                  email: String, password: String): Call<ResponseBody> {
         return userRepo.userLogin(clientId,GrantType,email,password)
     }
 

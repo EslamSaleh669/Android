@@ -10,6 +10,9 @@ data class TokenResponse(
 	@field:SerializedName("refresh_token")
 	val refreshToken: String? = null,
 
+	@field:SerializedName("error")
+	val error: String? = null,
+
 	@field:SerializedName("scope")
 	val scope: String? = null,
 
