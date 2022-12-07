@@ -295,6 +295,12 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
 
         }
 
+        addallcategories.setOnClickListener {
+            (multiSelectedcategory.adapter as AddedCategoriesAdapter).removeAllCategory()
+            (multiSelectedcategory.adapter as AddedCategoriesAdapter).addAllCategories(categoriesArray)
+        }
+
+
 
 
 

@@ -189,7 +189,7 @@ class LinkedCorrespondenceResultFragment : Fragment(),
         viewModel.Items = ReplaySubject.create()
 
         linkedrecyclersres.adapter =
-            LinkedSearchResultAdapter(arrayListOf(), requireActivity(), this,DocumentId)
+            LinkedSearchResultAdapter(arrayListOf(), requireActivity(), this,DocumentId,viewModel)
         linkedrecyclersres.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 

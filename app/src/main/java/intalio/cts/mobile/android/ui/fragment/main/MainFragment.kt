@@ -588,13 +588,15 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                     p1 as? ChildNodeBinder.ChildViewHolder
 
                 if (fileViewHolder != null) {
-                    val fileInherit = fileViewHolder.inherit
+                    val nodeInherit = fileViewHolder.inherit
+                    val nodeId = fileViewHolder.inherit
 
                     (activity as AppCompatActivity).supportFragmentManager.commit {
                         replace(R.id.fragmentContainer,
                             CorrespondenceFragment().apply {
                                 arguments = bundleOf(
-                                    Pair(Constants.NODE_INHERIT, fileInherit),
+                                    Pair(Constants.NODE_INHERIT, nodeInherit),
+                                    Pair(Constants.NODE_ID, nodeId),
                                 )
                             }
                         )

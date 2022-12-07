@@ -54,6 +54,7 @@ class Constants {
 
         const val LANG_KEY = "lang"
         const val NODE_INHERIT = "node_inherit"
+        const val NODE_ID = "node_id"
         const val NODES_MODEL = "nodes_model"
         const val NODE_NAME = "node_name"
         const val TRANSFER_ID = "transferid"

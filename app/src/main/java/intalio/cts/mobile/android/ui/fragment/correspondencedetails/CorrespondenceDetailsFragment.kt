@@ -1973,8 +1973,13 @@ class CorrespondenceDetailsFragment : Fragment() {
                                     dialog!!.dismiss()
 
                                     if (it[0].updated == true) {
-                                        requireActivity().makeToast(completed)
-                                        requireActivity().onBackPressed()
+                                        if (it[0].uncompletedDocumentReferenceNumber.isNullOrEmpty()){
+                                            requireActivity().makeToast(completed)
+                                            requireActivity().onBackPressed()
+                                        }else{
+                                            completeConfirmation()
+                                        }
+
 
                                     } else if (it[0].updated == false &&
                                         it[0].documentAttachmentIdHasValue == false &&
@@ -2087,6 +2092,50 @@ class CorrespondenceDetailsFragment : Fragment() {
 
     }
 
+    private fun completeConfirmation() {
+        val customDialog = Dialog(requireContext(), R.style.ConfirmationStyle)
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        customDialog.setCancelable(false)
+        customDialog.setContentView(R.layout.transferr_confirem)
+
+
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                customDialog.findViewById<Button>(R.id.complete_confirm_button).text =
+                    translator.find { it.keyword == "OK" }!!.en
+                customDialog.findViewById<TextView>(R.id.completemessage).text =
+                    translator.find { it.keyword == "TransferWasCompletedNotLastOpenTransfer" }!!.en
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+
+                customDialog.findViewById<Button>(R.id.complete_confirm_button).text =
+                    translator.find { it.keyword == "OK" }!!.ar
+                customDialog.findViewById<TextView>(R.id.completemessage).text =
+                    translator.find { it.keyword == "TransferWasCompletedNotLastOpenTransfer" }!!.ar
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                customDialog.findViewById<Button>(R.id.complete_confirm_button).text =
+                    translator.find { it.keyword == "OK" }!!.fr
+                customDialog.findViewById<TextView>(R.id.completemessage).text =
+                    translator.find { it.keyword == "TransferWasCompletedNotLastOpenTransfer" }!!.fr
+
+            }
+        }
+        customDialog.findViewById<Button>(R.id.complete_confirm_button).setOnClickListener {
+            customDialog.dismiss()
+            requireActivity().onBackPressed()
+
+
+        }
+        customDialog.show()
+
+    }
 
     fun editAnnotationPDF(annotation: ViewerAnnotationModel, index: Int) {
 //        try {

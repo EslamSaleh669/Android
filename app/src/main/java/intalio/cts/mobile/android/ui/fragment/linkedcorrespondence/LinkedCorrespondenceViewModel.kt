@@ -56,6 +56,8 @@ class LinkedCorrespondenceViewModel (private val userRepo: UserRepo, private val
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
 
     fun readLanguage (): String = userRepo.currentLang()
+    fun readStatuses (): ArrayList<StatusesResponseItem> = userRepo.readStatuses()!!
+    fun readCategoriesData():ArrayList<CategoryResponseItem> = userRepo.readCategoriesData()!!
 
 
     fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()

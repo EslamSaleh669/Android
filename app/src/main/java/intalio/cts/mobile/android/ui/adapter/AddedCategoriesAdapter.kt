@@ -52,12 +52,27 @@ class AddedCategoriesAdapter(
 
     }
 
+    fun addAllCategories(allCategories: ArrayList<CategoryResponseItem>){
+        this.Categories.addAll(allCategories)
+        notifyDataSetChanged()
+
+    }
+
     fun removeCategory(catid: Int) {
         for (cat in Categories) {
             if (cat.id == catid) {
                 Categories.remove(cat)
                 break
             }
+        }
+        notifyDataSetChanged()
+    }
+
+
+    fun removeAllCategory() {
+
+        if (Categories.size>0){
+            Categories.clear()
         }
         notifyDataSetChanged()
     }

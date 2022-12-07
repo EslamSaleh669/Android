@@ -57,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
         val lan = viewModel.readLanguage()
         Lingver.getInstance().setLocale(this, Locale(lan))
 
-        Log.d("locallogin", lan)
 
 
         val sharedPref = getSharedPreferences(Constants.SCANNER_PREF, Context.MODE_PRIVATE)
@@ -80,9 +79,6 @@ class LoginActivity : AppCompatActivity() {
             //   makeToast("ServiceUrl:${Constants.BASE_URL} \n Url : ${Constants.BASE_URL2} \n ClientID ${Constants.CLIENT_ID }")
 
 
-            Log.d("dataaaa", Constants.BASE_URL)
-            Log.d("dataaaa", Constants.BASE_URL2)
-            Log.d("dataaaa", Constants.CLIENT_ID)
             val emailStr = username.text.toString().trim()
             val passwordStr = password.text.toString().trim()
 

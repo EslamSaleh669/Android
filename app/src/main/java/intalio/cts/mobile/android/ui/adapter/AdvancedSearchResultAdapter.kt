@@ -1,6 +1,7 @@
 package intalio.cts.mobile.android.ui.adapter
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,20 +12,23 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.AdvancedSearchResponseDataItem
 import intalio.cts.mobile.android.data.network.response.CategoryResponseItem
+import intalio.cts.mobile.android.ui.fragment.advancedsearch.AdvanceSearchViewModel
 import intalio.cts.mobile.android.ui.fragment.correspondencedetails.CorrespondenceDetailsFragment
 import intalio.cts.mobile.android.util.Constants
-import intalio.cts.mobile.android.util.makeToast
+import kotlinx.android.synthetic.main.fragment_metadata.*
 
 class AdvancedSearchResultAdapter(
     private val Messages: ArrayList<AdvancedSearchResponseDataItem>,
     val activity: Activity,
-    val categories: ArrayList<CategoryResponseItem>
+    val categories: ArrayList<CategoryResponseItem>,
+    val viewModel: AdvanceSearchViewModel
 ) : RecyclerView.Adapter<AdvancedSearchResultAdapter.AllNewsVHolder>() {
 
 
@@ -37,13 +41,19 @@ class AdvancedSearchResultAdapter(
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
+        val statuses = viewModel.readStatuses()
 
+        for (item in statuses) {
+            if (item.id == Messages[position].statusId) {
+               holder.messageStatus.text = item.text
+               holder.messageCard.setCardBackgroundColor(Color.parseColor(item.color))
+            }
+        }
 
         if (Messages[position].subject!!.length > 20) {
             holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
         } else {
             holder.messageSub.text = Messages[position].subject
-
         }
 
 
@@ -113,6 +123,8 @@ class AdvancedSearchResultAdapter(
         val messageSub: TextView = itemView.findViewById(R.id.message_subject)
         val messageRefNumber: TextView = itemView.findViewById(R.id.message_refnumber)
         val messageTime: TextView = itemView.findViewById(R.id.message_time)
+        val messageStatus: TextView = itemView.findViewById(R.id.message_status)
+        val messageCard: CardView = itemView.findViewById(R.id.message_card)
 
         //        val messageImportance : ImageView =itemView.findViewById(R.id.message_importance)
 //        val messageOverdue : ImageView =itemView.findViewById(R.id.message_overdue)

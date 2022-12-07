@@ -3,7 +3,6 @@ package intalio.cts.mobile.android.ui.fragment.advancedsearch
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +16,7 @@ import intalio.cts.mobile.android.ui.adapter.AdvancedSearchResultAdapter
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.ReplaySubject
-import kotlinx.android.synthetic.main.fragment_advancedsearch.*
 import kotlinx.android.synthetic.main.fragment_searchresult.*
-import kotlinx.android.synthetic.main.node.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import kotlinx.android.synthetic.main.viewer_layout.back_icon
 import timber.log.Timber
@@ -136,7 +133,7 @@ class AdvancedSearchResultFragment : Fragment() {
         viewModel.Items = ReplaySubject.create()
         val categories = viewModel.readCategoriesData()
         result_ecyclerview.adapter =
-            AdvancedSearchResultAdapter(arrayListOf(), requireActivity(),categories)
+            AdvancedSearchResultAdapter(arrayListOf(), requireActivity(),categories,viewModel)
         result_ecyclerview.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 

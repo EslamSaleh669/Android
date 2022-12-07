@@ -294,7 +294,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             viewModel.readLanguage() == "en" -> {
 
                 linkedc_label.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.en
-                addlinked.text = translator.find { it.keyword == "Add" }!!.en
+                addlinked.text = translator.find { it.keyword == "New" }!!.en
                 centered_txt.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.en
 
 
@@ -302,7 +302,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             }
             viewModel.readLanguage() == "ar" -> {
                 linkedc_label.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.ar
-                addlinked.text = translator.find { it.keyword == "Add" }!!.ar
+                addlinked.text = translator.find { it.keyword == "New" }!!.ar
                 centered_txt.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.ar
 
 
@@ -311,7 +311,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
 
 
                 linkedc_label.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.fr
-                addlinked.text = translator.find { it.keyword == "Add" }!!.fr
+                addlinked.text = translator.find { it.keyword == "New" }!!.fr
                 centered_txt.text = translator.find { it.keyword == "LinkedCorrespondences" }!!.fr
 
 

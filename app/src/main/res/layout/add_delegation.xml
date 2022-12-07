@@ -183,22 +183,46 @@
 
             </LinearLayout>
 
-            <intalio.cts.mobile.android.ui.InstantAutoComplete
-                android:id="@+id/autoCompletecategories"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/ic_addrec_background"
-                android:drawableEnd="@drawable/ic_arrow_down"
-                android:drawablePadding="10dp"
-                android:dropDownHeight="wrap_content"
-                android:focusableInTouchMode="false"
-                android:hint="@string/category"
-                android:imeOptions="actionDone"
-                android:lines="1"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textSize="15sp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <intalio.cts.mobile.android.ui.InstantAutoComplete
+                    android:id="@+id/autoCompletecategories"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/ic_addrec_background"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:drawablePadding="10dp"
+                    android:dropDownHeight="wrap_content"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/category"
+                    android:imeOptions="actionDone"
+                    android:lines="1"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textSize="15sp" />
+
+
+                <TextView
+                    android:id="@+id/addallcategories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@drawable/orange_background"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:fontFamily="@font/myriadpro_simibold"
+                    android:maxLength="20"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
+                    android:layout_marginStart="15dp"
+                    app:drawableStartCompat="@drawable/ic_addnew" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/multiSelectedcategory"

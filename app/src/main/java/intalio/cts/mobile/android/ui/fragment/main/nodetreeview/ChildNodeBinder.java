@@ -60,6 +60,7 @@ public class ChildNodeBinder extends TreeViewBinder<ChildNodeBinder.ChildViewHol
 
         holder.tvName.setText(fileNode.fileName);
         holder.nodeInherit.setText(fileNode.inherit);
+        holder.nodeId.setText(String.valueOf(fileNode.id));
 
 
         if (fileNode.location.equals("outsideParent")) {
@@ -241,7 +242,7 @@ public class ChildNodeBinder extends TreeViewBinder<ChildNodeBinder.ChildViewHol
 
     public static class ChildViewHolder extends TreeViewBinder.ViewHolder {
         public TextView tvName;
-        public TextView nodeInherit;
+        public TextView nodeInherit, nodeId;
         public CardView cardView;
         public ImageView childIcon;
         public TextView nodeCounter, totalNodeCounter;
@@ -252,6 +253,7 @@ public class ChildNodeBinder extends TreeViewBinder<ChildNodeBinder.ChildViewHol
             super(rootView);
             this.tvName = (TextView) rootView.findViewById(R.id.nodetitle);
             this.nodeInherit = (TextView) rootView.findViewById(R.id.nodeinherit);
+            this.nodeId = (TextView) rootView.findViewById(R.id.nodeId);
             this.cardView = (CardView) rootView.findViewById(R.id.childcard);
             this.childIcon = (ImageView) rootView.findViewById(R.id.childnodeImage);
             nodeCounter = (TextView) rootView.findViewById(R.id.nodeCount);
@@ -268,6 +270,9 @@ public class ChildNodeBinder extends TreeViewBinder<ChildNodeBinder.ChildViewHol
 
         public String getInherit() {
             return nodeInherit.getText().toString();
+        }
+        public String getNodeID() {
+            return nodeId.getText().toString();
         }
     }
 

@@ -101,6 +101,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setUpNavMenu() {
         val lang = findViewById<TextView>(R.id.currentlanguage)
+
         lang.text = viewModel.readLanguage()
         when {
             viewModel.readLanguage() == "en" -> {
@@ -110,6 +111,7 @@ class HomeActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.en
                 findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.en
                 findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.en
+                lang.text = "English"
             }
             viewModel.readLanguage() == "ar" -> {
 //                findViewById<TextView>(R.id.menuhometxt).text = translator.find { it.keyword == "Home" }!!.ar
@@ -118,6 +120,7 @@ class HomeActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.ar
                 findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.ar
                 findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.ar
+                lang.text = "العربية"
 
             }
             viewModel.readLanguage() == "fr" -> {
@@ -127,6 +130,7 @@ class HomeActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.fr
                 findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.fr
                 findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.fr
+                lang.text = "Français"
 
             }
         }
