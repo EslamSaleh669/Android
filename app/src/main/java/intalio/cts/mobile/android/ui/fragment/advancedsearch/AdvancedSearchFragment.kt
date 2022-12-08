@@ -5,7 +5,6 @@ import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnFocusChangeListener
@@ -16,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.cts.mobile.android.R
@@ -30,6 +28,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 
 import kotlinx.android.synthetic.main.fragment_advancedsearch.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
 import java.lang.Exception
 import java.text.DateFormat
@@ -50,6 +51,7 @@ class AdvancedSearchFragment : Fragment() {
     private var prioritySelectedId = 0
     private var statusSelectedId = 0
     private var categorySelectedId = 0
+    private var delegatorSelectedId = 0
     private var transferFromStructureSelectedId = 0
     private var transferToStructureSelectedId = 0
 
@@ -84,6 +86,7 @@ class AdvancedSearchFragment : Fragment() {
 
 
     private lateinit var translator: ArrayList<DictionaryDataItem>
+    private lateinit var settings: java.util.ArrayList<ParamSettingsResponseItem>
 
 
     @Inject
@@ -128,6 +131,7 @@ class AdvancedSearchFragment : Fragment() {
 
 
         translator = viewModel.readDictionary()!!.data!!
+        settings = viewModel.readSettings()
 
         arguments?.getInt(Constants.SEARCH_TYPE).let {
             typeOfSearch = it!!
@@ -202,6 +206,7 @@ class AdvancedSearchFragment : Fragment() {
                 searchDateFrom.text.toString().trim() == "" &&
                 searchDateTo.text.toString().trim() == "" &&
                 searchKeyword.text.toString().trim() == "" &&
+                searchocr.text.toString().trim() == "" &&
                 !OverdueCheckbox.isChecked
             ) {
 
@@ -217,6 +222,52 @@ class AdvancedSearchFragment : Fragment() {
     }
 
     private fun setLabels() {
+
+        viewModel.delegationRequests()
+            .enqueue(object : Callback<ArrayList<DelegationRequestsResponseItem>> {
+
+                override fun onResponse(
+                    call: Call<ArrayList<DelegationRequestsResponseItem>>,
+                    response: Response<ArrayList<DelegationRequestsResponseItem>>
+                ) {
+                    try {
+
+
+                        if (response.body()!!.size == 0) {
+                            inboxof_label.visibility = View.GONE
+                            searchinboxof.visibility = View.GONE
+                        } else {
+                            initDelegatorsAutoComplete(response.body()!!)
+                        }
+
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+
+
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<ArrayList<DelegationRequestsResponseItem>>,
+                    t: Throwable
+                ) {
+
+                }
+
+
+            })
+
+        val enableOCR =
+            settings.find { it.keyword == "EnableOCR" }!!.content
+
+
+        if (enableOCR == "false") {
+            ocr_label.visibility = View.GONE
+            searchocr.visibility = View.GONE
+        }
+
+
         when {
             viewModel.readLanguage() == "en" -> {
 
@@ -243,6 +294,8 @@ class AdvancedSearchFragment : Fragment() {
                 transfer_to_date_label.text =
                     translator.find { it.keyword == "TransferToDate" }!!.en
                 keyword_label.text = translator.find { it.keyword == "Keyword" }!!.en
+                ocr_label.text = translator.find { it.keyword == "OCRContent" }!!.en
+                inboxof_label.text = translator.find { it.keyword == "SearchInInboxOf" }!!.en
                 OverdueCheckbox.text = translator.find { it.keyword == "OverDue" }!!.en
 
 
@@ -268,6 +321,8 @@ class AdvancedSearchFragment : Fragment() {
                 searchDateFrom.hint = translator.find { it.keyword == "TransferFromDate" }!!.en
                 searchDateTo.hint = translator.find { it.keyword == "TransferToDate" }!!.en
                 searchKeyword.hint = translator.find { it.keyword == "Keyword" }!!.en
+                searchocr.hint = translator.find { it.keyword == "OCRContent" }!!.en
+                searchinboxof.hint = translator.find { it.keyword == "SearchInInboxOf" }!!.en
 
 
                 btnReset
@@ -301,6 +356,8 @@ class AdvancedSearchFragment : Fragment() {
                 transfer_to_date_label.text =
                     translator.find { it.keyword == "TransferToDate" }!!.ar
                 keyword_label.text = translator.find { it.keyword == "Keyword" }!!.ar
+                ocr_label.text = translator.find { it.keyword == "OCRContent" }!!.ar
+                inboxof_label.text = translator.find { it.keyword == "SearchInInboxOf" }!!.ar
                 OverdueCheckbox.text = translator.find { it.keyword == "OverDue" }!!.ar
 
 
@@ -326,6 +383,8 @@ class AdvancedSearchFragment : Fragment() {
                 searchDateFrom.hint = translator.find { it.keyword == "TransferFromDate" }!!.ar
                 searchDateTo.hint = translator.find { it.keyword == "TransferToDate" }!!.ar
                 searchKeyword.hint = translator.find { it.keyword == "Keyword" }!!.ar
+                searchocr.hint = translator.find { it.keyword == "OCRContent" }!!.ar
+                searchinboxof.hint = translator.find { it.keyword == "SearchInInboxOf" }!!.ar
 
 
                 btnReset
@@ -358,6 +417,8 @@ class AdvancedSearchFragment : Fragment() {
                 transfer_to_date_label.text =
                     translator.find { it.keyword == "TransferToDate" }!!.fr
                 keyword_label.text = translator.find { it.keyword == "Keyword" }!!.fr
+                ocr_label.text = translator.find { it.keyword == "OCRContent" }!!.fr
+                inboxof_label.text = translator.find { it.keyword == "SearchInInboxOf" }!!.fr
                 OverdueCheckbox.text = translator.find { it.keyword == "OverDue" }!!.fr
 
 
@@ -383,6 +444,9 @@ class AdvancedSearchFragment : Fragment() {
                 searchDateFrom.hint = translator.find { it.keyword == "TransferFromDate" }!!.fr
                 searchDateTo.hint = translator.find { it.keyword == "TransferToDate" }!!.fr
                 searchKeyword.hint = translator.find { it.keyword == "Keyword" }!!.fr
+                searchocr.hint = translator.find { it.keyword == "OCRContent" }!!.fr
+                searchinboxof.hint = translator.find { it.keyword == "SearchInInboxOf" }!!.fr
+
 
 
                 btnReset
@@ -545,15 +609,14 @@ class AdvancedSearchFragment : Fragment() {
         val usersArray = viewModel.readAllStructureData().users
 
 
-        for (item in usersArray!!){
+        for (item in usersArray!!) {
 
-          val result = filteredUserArray.find { it.fullName == item.fullName }
-          if (result.toString() == "null"){
-              filteredUserArray.add(item)
-          }
+            val result = filteredUserArray.find { it.fullName == item.fullName }
+            if (result.toString() == "null") {
+                filteredUserArray.add(item)
+            }
 
         }
-
 
 
         var arrayAdapter =
@@ -606,7 +669,7 @@ class AdvancedSearchFragment : Fragment() {
             val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString(),structureIds)
+                viewModel.getAllStructures(text.toString(), structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -617,10 +680,10 @@ class AdvancedSearchFragment : Fragment() {
                             }
                             val allUsersFiltered = ArrayList<AllStructuresUsersItem>()
 
-                            for (item in allUsers){
+                            for (item in allUsers) {
 
                                 val result = allUsersFiltered.find { it.fullName == item.fullName }
-                                if (result.toString() == "null"){
+                                if (result.toString() == "null") {
                                     allUsersFiltered.add(item)
                                 }
 
@@ -686,10 +749,10 @@ class AdvancedSearchFragment : Fragment() {
         val usersArray = viewModel.readAllStructureData().users
         val filteredUserArray = ArrayList<AllStructuresUsersItem>()
 
-        for (item in usersArray!!){
+        for (item in usersArray!!) {
 
             val result = filteredUserArray.find { it.fullName == item.fullName }
-            if (result.toString() == "null"){
+            if (result.toString() == "null") {
                 filteredUserArray.add(item)
             }
 
@@ -745,7 +808,7 @@ class AdvancedSearchFragment : Fragment() {
             val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString(),structureIds)
+                viewModel.getAllStructures(text.toString(), structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -757,10 +820,10 @@ class AdvancedSearchFragment : Fragment() {
 
                             val allUsersFiltered = ArrayList<AllStructuresUsersItem>()
 
-                            for (item in allUsers){
+                            for (item in allUsers) {
 
                                 val result = allUsersFiltered.find { it.fullName == item.fullName }
-                                if (result.toString() == "null"){
+                                if (result.toString() == "null") {
                                     allUsersFiltered.add(item)
                                 }
 
@@ -1000,7 +1063,7 @@ class AdvancedSearchFragment : Fragment() {
             val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString(),structureIds)
+                viewModel.getAllStructures(text.toString(), structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -1133,7 +1196,7 @@ class AdvancedSearchFragment : Fragment() {
             val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString(),structureIds)
+                viewModel.getAllStructures(text.toString(), structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -1259,7 +1322,7 @@ class AdvancedSearchFragment : Fragment() {
             val structureIds = ArrayList<Int>()
 
             autoDispose.add(
-                viewModel.getAllStructures(text.toString(),structureIds)
+                viewModel.getAllStructures(text.toString(), structureIds)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
@@ -1280,6 +1343,8 @@ class AdvancedSearchFragment : Fragment() {
                                     viewModel.readLanguage()
 
                                 )
+
+
                             receivingEntityAutoComplete.setAdapter(arrayAdapter)
                             if (receivingEntityAutoComplete.hasFocus()) {
                                 receivingEntityAutoComplete.showDropDown()
@@ -1614,6 +1679,81 @@ class AdvancedSearchFragment : Fragment() {
     }
 
 
+    private fun initDelegatorsAutoComplete(delegators: ArrayList<DelegationRequestsResponseItem>) {
+        searchinboxof.threshold = 0
+
+        var myInbox = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                myInbox = translator.find { it.keyword == "MyInbox" }!!.en!!
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+                myInbox = translator.find { it.keyword == "MyInbox" }!!.ar!!
+
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+                myInbox = translator.find { it.keyword == "MyInbox" }!!.fr!!
+
+            }
+        }
+
+        searchinboxof.setText(myInbox)
+        val originalUser = DelegationRequestsResponseItem()
+        originalUser.id = 0
+        originalUser.fromUser = myInbox
+        originalUser.fromUserId = 0
+        originalUser.fromUserRoleId = 0
+
+        delegators.add(originalUser)
+        delegators.sortBy { it.fromUserId }
+
+
+        val arrayAdapter =
+            delegatorsAdapter(
+                requireContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                delegators
+            )
+        searchinboxof.setAdapter(arrayAdapter)
+
+        searchinboxof.setOnClickListener {
+            searchinboxof.showDropDown()
+
+        }
+
+
+        searchinboxof.setOnFocusChangeListener { v, hasFocus ->
+
+            if (hasFocus) {
+                requireActivity().hideKeyboard(requireActivity())
+                searchinboxof.showDropDown()
+
+            } else {
+                searchinboxof.setText("")
+            }
+
+        }
+
+
+
+        searchinboxof.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, view, position, id ->
+                requireActivity().hideKeyboard(requireActivity())
+                searchinboxof.clearFocus()
+                searchinboxof.dismissDropDown()
+                val selectedObject = parent!!.getItemAtPosition(position) as DelegationRequestsResponseItem
+                searchinboxof.setText(selectedObject.fromUser)
+                delegatorSelectedId = selectedObject.id!!
+
+            }
+
+    }
+
+
     private fun emptyForm() {
 //        typeOfSearch = 0
 
@@ -1628,6 +1768,7 @@ class AdvancedSearchFragment : Fragment() {
 
         sendingEntitySelectedId = 0
         receivingEntitySelectedId = 0
+        delegatorSelectedId = 0
 
         categoryAutoComplete.clearFocus()
         statusAutoComplete.clearFocus()
@@ -1656,6 +1797,7 @@ class AdvancedSearchFragment : Fragment() {
         searchDateFrom.setText("")
         searchDateTo.setText("")
         searchKeyword.setText("")
+        searchocr.setText("")
         OverdueCheckbox.isChecked = false
 
 
@@ -1664,9 +1806,11 @@ class AdvancedSearchFragment : Fragment() {
     private fun prepareModel() {
 
 
+
         if (categorySelectedId != 0) {
             addedModel.category = categorySelectedId.toString()
         }
+
         if (etRefNumber.text.toString().isNotEmpty()) {
             addedModel.referenceNumber = etRefNumber.text.toString()
         }
@@ -1723,10 +1867,15 @@ class AdvancedSearchFragment : Fragment() {
         if (searchKeyword.text.toString().isNotEmpty()) {
             addedModel.keyword = searchKeyword.text.toString().trim()
         }
+        if (searchocr.text.toString().isNotEmpty()) {
+            addedModel.ocrContent = searchocr.text.toString().trim()
+        }
 
         if (OverdueCheckbox.isChecked) {
             addedModel.isOverdue = true
         }
+
+        addedModel.delegationId = delegatorSelectedId.toString()
 
 
         val bundle = Bundle()
@@ -1764,7 +1913,7 @@ class AdvancedSearchFragment : Fragment() {
 
             }
         }
-         //   .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        //   .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         emptyForm()
 
     }

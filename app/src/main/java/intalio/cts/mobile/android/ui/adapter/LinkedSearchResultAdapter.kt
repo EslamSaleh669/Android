@@ -54,6 +54,7 @@ class LinkedSearchResultAdapter(
 
         holder.linkedCRefNum.text = Messages[position].referenceNumber
         holder.linkedDate.text = Messages[position].createdDate
+        holder.linkedSubject.text = Messages[position].subject
 
         holder.linkedSwitch.setOnClickListener {
 
@@ -77,6 +78,7 @@ class LinkedSearchResultAdapter(
         val linkedCRefNum : TextView =itemView.findViewById(R.id.linkedc_refnum)
         val linkedDate : TextView =itemView.findViewById(R.id.linkedc_date)
         val linkedStatus : TextView =itemView.findViewById(R.id.linked_status)
+        val linkedSubject : TextView =itemView.findViewById(R.id.linkedc_subject)
         val linkedCard : CardView =itemView.findViewById(R.id.linked_card)
         val linkedSwitch: CheckBox =itemView.findViewById(R.id.linkedattach)
 

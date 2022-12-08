@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/myriadpro_regular"
-            android:maxLength="30"
+            android:maxLength="40"
             android:maxLines="1"
             android:text="subject goes here"
             android:textColor="@color/black"

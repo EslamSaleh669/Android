@@ -16,36 +16,65 @@
 
         >
 
-        <CheckBox
-            android:id="@+id/linkedattach"
+
+        <TextView
+            android:id="@+id/linkedc_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" />
+            android:fontFamily="@font/myriadpro_simibold"
+            android:text="3:45 PM"
+            android:textColor="@color/appcolor3"
+            android:textSize="14sp" />
 
-        <androidx.cardview.widget.CardView
+
+
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/important"
+            android:orientation="horizontal"
             android:layout_alignParentEnd="true"
-            app:cardCornerRadius="2dp"
-            android:id="@+id/linked_card">
+            android:layout_centerVertical="true"
+            android:paddingTop="5dp"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            >
 
 
-
-            <TextView
-                android:id="@+id/linked_status"
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/myriadpro_regular"
-                android:text="done"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
-        </androidx.cardview.widget.CardView>
+                app:cardBackgroundColor="@color/important"
+                app:cardCornerRadius="2dp"
+                android:layout_marginEnd="5dp"
+                android:id="@+id/linked_card">
+
+
+
+                <TextView
+                    android:id="@+id/linked_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/myriadpro_regular"
+                    android:text="done"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </androidx.cardview.widget.CardView>
+
+            <CheckBox
+                android:id="@+id/linkedattach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
 
 
 
@@ -83,10 +112,13 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/dark_gray"
                 android:text="in/01000000000/2021"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:fontFamily="@font/myriadpro_bold"
                 android:layout_marginTop="10dp"
-                android:id="@+id/linkedc_date"/>
+                android:maxLength="40"
+                android:id="@+id/linkedc_subject"/>
+
+
 
         </LinearLayout>
 

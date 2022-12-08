@@ -242,52 +242,57 @@ class AdminRepo @Inject constructor(
         ).subscribeOn(Schedulers.io())
     }
 
-    fun getInboxes(start: Int, delegationId: Int): Observable<CorrespondenceResponse> {
+    fun getInboxes(start: Int, delegationId: Int, nodeId: Int): Observable<CorrespondenceResponse> {
         return apiClient.inboxData(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             start,
             10,
+            nodeId,
             delegationId
         ).subscribeOn(Schedulers.io())
     }
 
-    fun getSent(start: Int, delegationId: Int): Observable<CorrespondenceResponse> {
+    fun getSent(start: Int, delegationId: Int, nodeID: Int): Observable<CorrespondenceResponse> {
         return apiClient.sentData(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             start,
             10,
+            nodeID,
             delegationId
         ).subscribeOn(Schedulers.io())
     }
 
-    fun getCompleted(start: Int, delegationId: Int): Observable<CorrespondenceResponse> {
+    fun getCompleted(start: Int, delegationId: Int, nodeID: Int): Observable<CorrespondenceResponse> {
         return apiClient.completedData(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             start,
             10,
+            nodeID,
             delegationId
         ).subscribeOn(Schedulers.io())
     }
 
-    fun getClosed(start: Int, delegationId: Int): Observable<CorrespondenceResponse> {
+    fun getClosed(start: Int, delegationId: Int, nodeID: Int): Observable<CorrespondenceResponse> {
         return apiClient.closedData(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             start,
             10,
+            nodeID,
             delegationId
         ).subscribeOn(Schedulers.io())
     }
 
-    fun getRequested(start: Int, delegationId: Int): Observable<CorrespondenceResponse> {
+    fun getRequested(start: Int, delegationId: Int, nodeID: Int): Observable<CorrespondenceResponse> {
         return apiClient.requestedData(
             userRepo.currentLang(),
             "Bearer ${userRepo.readTokenData()!!.accessToken}",
             start,
             10,
+            nodeID,
             delegationId
         ).subscribeOn(Schedulers.io())
     }

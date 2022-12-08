@@ -140,7 +140,7 @@ class NodesAdapter(
             }
         }
 
- 
+
 
 
         if (Nodes[position].enableTodayCount == false && Nodes[position].enableTotalCount == false) {
@@ -161,6 +161,7 @@ class NodesAdapter(
 
         holder.nodeTitle.text = Nodes[position].name
         holder.nodeLin.setOnClickListener {
+            viewModel.saveNodeID(Nodes[position].id!!)
 
             if (Nodes[position].id != 96 && Nodes[position].id != 97) {
                 (activity as AppCompatActivity).supportFragmentManager.commit {

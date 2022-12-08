@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.ReplaySubject
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_correspondence.*
-import kotlinx.android.synthetic.main.fragment_main.*
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -38,6 +36,7 @@ class CorrespondenceFragment : Fragment(), CorrespondenceAdapter.InterfacePositi
     private var CatNode_Inherit: String = ""
     private var popupWindow = PopupWindow()
     private var delegationId = 0
+    private var nodeID = 0
     private lateinit var Nodes: java.util.ArrayList<NodeResponseItem>
 
     private lateinit var translator: ArrayList<DictionaryDataItem>
@@ -98,6 +97,7 @@ class CorrespondenceFragment : Fragment(), CorrespondenceAdapter.InterfacePositi
         setLabels()
 
         Nodes = viewModel.readNodes()
+        nodeID = viewModel.readNodeID()!!
         viewModel.readSavedDelegator().let {
             delegationId = if (it != null) {
 
@@ -367,6 +367,7 @@ class CorrespondenceFragment : Fragment(), CorrespondenceAdapter.InterfacePositi
 
 private fun getInbox(delegationId: Int) {
 
+
     var noMoreData = ""
     when {
         viewModel.readLanguage() == "en" -> {
@@ -447,12 +448,12 @@ private fun getInbox(delegationId: Int) {
 
             val lastPosition: Int =
                 (correspondence_recyclerview.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-            viewModel.checkForInboxLoading(lastPosition, delegationId)
+            viewModel.checkForInboxLoading(lastPosition, delegationId,nodeID)
 
         }
     }
 
-    viewModel.loadMoreInboxes(delegationId)
+    viewModel.loadMoreInboxes(delegationId,nodeID)
 
 }
 
@@ -532,12 +533,12 @@ private fun getSent(delegationId: Int) {
 
             val lastPosition: Int =
                 (correspondence_recyclerview.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-            viewModel.checkForSentLoading(lastPosition, delegationId)
+            viewModel.checkForSentLoading(lastPosition, delegationId,nodeID)
 
         }
     }
 
-    viewModel.loadMoreSent(delegationId)
+    viewModel.loadMoreSent(delegationId,nodeID)
 
 }
 
@@ -619,12 +620,12 @@ private fun getICompleted(delegationId: Int) {
 
             val lastPosition: Int =
                 (correspondence_recyclerview.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-            viewModel.checkForCompletedLoading(lastPosition, delegationId)
+            viewModel.checkForCompletedLoading(lastPosition, delegationId,nodeID)
 
         }
     }
 
-    viewModel.loadMoreCompleted(delegationId)
+    viewModel.loadMoreCompleted(delegationId,nodeID)
 
 }
 
@@ -705,12 +706,12 @@ private fun getRequested(delegationId: Int) {
 
             val lastPosition: Int =
                 (correspondence_recyclerview.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-            viewModel.checkForRequestedLoading(lastPosition, delegationId)
+            viewModel.checkForRequestedLoading(lastPosition, delegationId,nodeID)
 
         }
     }
 
-    viewModel.loadMoreRequested(delegationId)
+    viewModel.loadMoreRequested(delegationId,nodeID)
 
 }
 
@@ -790,12 +791,12 @@ private fun getClosed(delegationId: Int) {
 
             val lastPosition: Int =
                 (correspondence_recyclerview.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-            viewModel.checkForClosedLoading(lastPosition, delegationId)
+            viewModel.checkForClosedLoading(lastPosition, delegationId,nodeID)
 
         }
     }
 
-    viewModel.loadMoreClosed(delegationId)
+    viewModel.loadMoreClosed(delegationId,nodeID)
 
 }
 

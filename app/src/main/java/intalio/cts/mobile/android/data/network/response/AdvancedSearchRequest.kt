@@ -56,9 +56,14 @@ data class AdvancedSearchRequest(
 	@field:SerializedName("keyword")
 	var keyword: String? = "",
 
+	@field:SerializedName("ocrContent")
+	var ocrContent: String? = "",
+
+	@field:SerializedName("delegationId")
+	var delegationId: String? = "",
+
+
 	@field:SerializedName("documentId")
 	val documentId: Any? = null
-
-
 
 	) : Serializable

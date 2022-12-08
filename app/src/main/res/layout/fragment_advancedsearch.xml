@@ -478,6 +478,66 @@
                 android:textSize="15sp" />
 
 
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="OCR Content"
+                android:textColor="@color/black2"
+                android:id="@+id/ocr_label"
+                android:textSize="16sp"
+                />
+
+            <EditText
+                android:id="@+id/searchocr"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:fontFamily="@font/myriadpro_regular"
+                android:hint="OCR Content"
+                android:inputType="text"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColor="@color/black2"
+                android:textSize="15sp"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/myriadpro_regular"
+                android:text="search in inbox of"
+                android:textColor="@color/black2"
+                android:id="@+id/inboxof_label"
+                android:textSize="16sp" />
+
+
+            <AutoCompleteTextView
+                android:id="@+id/searchinboxof"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/edittext_background"
+                android:dropDownHeight="wrap_content"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawablePadding="10dp"
+                android:hint="search in inbox of"
+                android:imeOptions="actionDone"
+                android:lines="1"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:gravity="center_vertical"
+                android:paddingEnd="10dp"
+                android:textSize="15sp" />
+
             <CheckBox
                 android:id="@+id/OverdueCheckbox"
                 android:layout_width="wrap_content"

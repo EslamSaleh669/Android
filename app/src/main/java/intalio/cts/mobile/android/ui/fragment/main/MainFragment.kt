@@ -148,7 +148,6 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
             }
 
 
-
         }
 
 
@@ -253,8 +252,6 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
         }))
     }
-
-
 
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -589,7 +586,9 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
 
                 if (fileViewHolder != null) {
                     val nodeInherit = fileViewHolder.inherit
-                    val nodeId = fileViewHolder.inherit
+                    val nodeId = fileViewHolder.nodeID
+                    Log.d("nideiddd",nodeId)
+                    viewModel.saveNodeID(nodeId.toInt())
 
                     (activity as AppCompatActivity).supportFragmentManager.commit {
                         replace(R.id.fragmentContainer,
@@ -854,7 +853,6 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
             viewModel.getAllStructures(structureIds).observeOn(Schedulers.io()).subscribe({
 
 
-
                 viewModel.saveAllStructures(it)
 
 
@@ -911,13 +909,8 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
                 ) {
                     try {
 
-                        var responseRecieved: Any? = null
-                        responseRecieved = response.body()
 
-
-                            showDelegatorsDialog(response.body(), currentDelegator)
-
-
+                        showDelegatorsDialog(response.body(), currentDelegator)
 
 
                     } catch (e: Exception) {
@@ -970,14 +963,14 @@ class MainFragment : Fragment(), Delegators_Adapter.OnDelegatorClicked {
             dialogg!!.findViewById(R.id.delegators_recycler) as RecyclerView
 
 
-            val originalUser = DelegationRequestsResponseItem()
-            originalUser.id = 0
-            originalUser.fromUser = myCorrespondence
-            originalUser.fromUserId = 0
-            originalUser.fromUserRoleId = 0
+        val originalUser = DelegationRequestsResponseItem()
+        originalUser.id = 0
+        originalUser.fromUser = myCorrespondence
+        originalUser.fromUserId = 0
+        originalUser.fromUserRoleId = 0
 
-            model!!.add(originalUser)
-            model.sortBy { it.fromUserId }
+        model!!.add(originalUser)
+        model.sortBy { it.fromUserId }
 
 
         delegatorsRecycler.adapter =

@@ -8,6 +8,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.ReplaySubject
 import org.json.JSONObject
+import retrofit2.Call
 
 class AdvanceSearchViewModel (private val userRepo: UserRepo, private val adminRepo: AdminRepo) : ViewModel() {
 
@@ -52,8 +53,9 @@ class AdvanceSearchViewModel (private val userRepo: UserRepo, private val adminR
 
     fun readLanguage() : String = userRepo.currentLang()
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
+    fun delegationRequests(): Call<ArrayList<DelegationRequestsResponseItem>> = adminRepo.delegationRequests()
 
-
+    fun readSettings (): ArrayList<ParamSettingsResponseItem> = userRepo.readSettings()!!
     fun getAllStructures(text: String,ids:ArrayList<Int>): Observable<AllStructuresResponse> = adminRepo.getAllStructures(text,ids)
 
 }

@@ -32,6 +32,7 @@ class Constants {
         const val USER_BASIC_INFO = "userbasicinfo"
         const val CATEGORY_KEY = "category"
         const val SETTINGS_KEY = "settingskey"
+        const val DELEGATIONS_KEY = "delegationsrequests"
         const val USER_STRUCTURE_KEY = "usersstructure"
         const val USER_FULL_DATA = "userfulldata"
         const val DELEGATOR_DATA = "delegatordata"

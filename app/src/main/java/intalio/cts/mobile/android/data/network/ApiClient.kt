@@ -269,6 +269,7 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Field("start") start: Int,
         @Field("length") length: Int,
+        @Field("NodeId") NodeId: Int,
         @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>
@@ -281,6 +282,7 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Field("start") start: Int,
         @Field("length") length: Int,
+        @Field("NodeId") NodeId: Int,
         @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>
@@ -293,6 +295,7 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Field("start") start: Int,
         @Field("length") length: Int,
+        @Field("NodeId") NodeId: Int,
         @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>
@@ -305,6 +308,7 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Field("start") start: Int,
         @Field("length") length: Int,
+        @Field("NodeId") NodeId: Int,
         @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>
@@ -316,6 +320,7 @@ interface ApiClient {
         @Header("Authorization") token: String,
         @Field("start") start: Int,
         @Field("length") length: Int,
+        @Field("NodeId") NodeId: Int,
         @Field("DelegationId") delegationId: Int
 
     ): Observable<CorrespondenceResponse>

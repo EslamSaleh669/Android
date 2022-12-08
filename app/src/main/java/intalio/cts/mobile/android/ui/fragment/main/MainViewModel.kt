@@ -115,12 +115,15 @@ class MainViewModel(private val userRepo: UserRepo, private val adminRepo: Admin
         userRepo.saveSettings(settings)
     }
 
+    fun saveNodeID(nodeId:Int) = userRepo.saveNodeID(nodeId)
+
 
 
 
     fun getUserBasicInfo () = userRepo.readUserBasicInfo()
 
     fun delegationRequests(): Call<ArrayList<DelegationRequestsResponseItem>> = adminRepo.delegationRequests()
+
     fun saveDelegatorData(delegator : DelegationRequestsResponseItem){
         userRepo.saveDelegatorData(delegator)
     }

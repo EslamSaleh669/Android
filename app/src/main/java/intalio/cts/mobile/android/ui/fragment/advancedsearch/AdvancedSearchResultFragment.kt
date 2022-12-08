@@ -3,6 +3,7 @@ package intalio.cts.mobile.android.ui.fragment.advancedsearch
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,7 +94,11 @@ class AdvancedSearchResultFragment : Fragment() {
             searchObject.put("isOverdue", searchModel.isOverdue)
             searchObject.put("documentId", searchModel.documentId)
             searchObject.put("keyword", searchModel.keyword)
+            searchObject.put("ocrContent", searchModel.ocrContent)
+            searchObject.put("delegationId", searchModel.delegationId)
             searchObject.put("status", searchModel.status)
+
+            Log.d("searchobject", searchModel.toString())
 
             getResult(searchObject)
         }
@@ -212,6 +217,8 @@ class AdvancedSearchResultFragment : Fragment() {
         searchModel.fromTransferDate = ""
         searchModel.toTransferDate = ""
         searchModel.keyword = ""
+        searchModel.ocrContent = ""
+        searchModel.delegationId = ""
         searchModel.isOverdue = false
 
 

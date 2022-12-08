@@ -40,18 +40,18 @@ class CorrespondenceViewModel(private val userRepo: UserRepo, private val adminR
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
 
 
-    fun checkForInboxLoading(lastPosition: Int,delegationId : Int) {
+    fun checkForInboxLoading(lastPosition: Int,delegationId : Int, nodeId : Int) {
         var currentItemsCount = 0
         for (item in inboxMessages.values) {
             currentItemsCount += (item as ArrayList<*>).size
         }
         if (currentItemsCount - 1 == lastPosition) {
-            loadMoreInboxes(delegationId)
+            loadMoreInboxes(delegationId,nodeId)
         }
     }
 
-    fun loadMoreInboxes(delegationId : Int) {
-        disposable = adminRepo.getInboxes(inboxStart,delegationId).subscribe({
+    fun loadMoreInboxes(delegationId : Int, nodeId : Int) {
+        disposable = adminRepo.getInboxes(inboxStart,delegationId,nodeId).subscribe({
             inboxStart = inboxStart + it.data!!.size
             inboxLimit += it.data.size
             inboxMessages.onNext(it.data)
@@ -61,18 +61,18 @@ class CorrespondenceViewModel(private val userRepo: UserRepo, private val adminR
     }
 
     /////
-    fun checkForSentLoading(lastPosition: Int,delegationId : Int) {
+    fun checkForSentLoading(lastPosition: Int, delegationId: Int, nodeID: Int) {
         var currentItemsCount = 0
         for (item in sentMessages.values) {
             currentItemsCount += (item as ArrayList<*>).size
         }
         if (currentItemsCount - 1 == lastPosition) {
-            loadMoreSent(delegationId)
+            loadMoreSent(delegationId, nodeID)
         }
     }
 
-    fun loadMoreSent(delegationId : Int) {
-        disposable = adminRepo.getSent(sentStart,delegationId).subscribe({
+    fun loadMoreSent(delegationId: Int, nodeID: Int) {
+        disposable = adminRepo.getSent(sentStart,delegationId,nodeID).subscribe({
             sentStart += it.data!!.size
             sentLimit += it.data.size
             sentMessages.onNext(it.data)
@@ -83,18 +83,18 @@ class CorrespondenceViewModel(private val userRepo: UserRepo, private val adminR
     /////
 
 
-    fun checkForCompletedLoading(lastPosition: Int,delegationId : Int) {
+    fun checkForCompletedLoading(lastPosition: Int, delegationId: Int, nodeID: Int) {
         var currentItemsCount = 0
         for (item in completedMessages.values) {
             currentItemsCount += (item as ArrayList<*>).size
         }
         if (currentItemsCount - 1 == lastPosition) {
-            loadMoreCompleted(delegationId)
+            loadMoreCompleted(delegationId, nodeID)
         }
     }
 
-    fun loadMoreCompleted(delegationId : Int) {
-        disposable = adminRepo.getCompleted(completedStart,delegationId).subscribe({
+    fun loadMoreCompleted(delegationId: Int, nodeID: Int) {
+        disposable = adminRepo.getCompleted(completedStart,delegationId,nodeID).subscribe({
             completedStart = completedStart + it.data!!.size
             completedLimit += it.data.size
             completedMessages.onNext(it.data)
@@ -104,18 +104,18 @@ class CorrespondenceViewModel(private val userRepo: UserRepo, private val adminR
     }
 
     /////
-    fun checkForClosedLoading(lastPosition: Int,delegationId : Int) {
+    fun checkForClosedLoading(lastPosition: Int, delegationId: Int, nodeID: Int) {
         var currentItemsCount = 0
         for (item in closedMessages.values) {
             currentItemsCount += (item as ArrayList<*>).size
         }
         if (currentItemsCount - 1 == lastPosition) {
-            loadMoreClosed(delegationId)
+            loadMoreClosed(delegationId, nodeID)
         }
     }
 
-    fun loadMoreClosed(delegationId : Int) {
-        disposable = adminRepo.getClosed(closedStart,delegationId).subscribe({
+    fun loadMoreClosed(delegationId: Int, nodeID: Int) {
+        disposable = adminRepo.getClosed(closedStart,delegationId,nodeID).subscribe({
             closedStart += it.data!!.size
             closedLimit += it.data.size
             closedMessages.onNext(it.data)
@@ -126,18 +126,18 @@ class CorrespondenceViewModel(private val userRepo: UserRepo, private val adminR
 
 
     /////
-    fun checkForRequestedLoading(lastPosition: Int,delegationId : Int) {
+    fun checkForRequestedLoading(lastPosition: Int, delegationId: Int, nodeID: Int) {
         var currentItemsCount = 0
         for (item in requestedMessages.values) {
             currentItemsCount += (item as ArrayList<*>).size
         }
         if (currentItemsCount - 1 == lastPosition) {
-            loadMoreRequested(delegationId)
+            loadMoreRequested(delegationId, nodeID)
         }
     }
 
-    fun loadMoreRequested(delegationId : Int) {
-        disposable = adminRepo.getRequested(requestedStart,delegationId).subscribe({
+    fun loadMoreRequested(delegationId: Int, nodeID: Int) {
+        disposable = adminRepo.getRequested(requestedStart,delegationId,nodeID).subscribe({
             requestedStart = requestedStart + it.data!!.size
             requestedLimit += it.data.size
             requestedMessages.onNext(it.data)
@@ -166,6 +166,7 @@ class CorrespondenceViewModel(private val userRepo: UserRepo, private val adminR
         userRepo.readNodes()!!
 
     fun readSavedDelegator(): DelegationRequestsResponseItem? = userRepo.readDelegatorData()
+    fun readNodeID(): Int? = userRepo.readNodeID()
 
     override fun onCleared() {
         super.onCleared()

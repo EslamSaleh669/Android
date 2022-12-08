@@ -152,6 +152,19 @@ class UserRepo @Inject constructor(
         }
     }
 
+
+    fun saveNodeID(nodeId: Int) {
+        shared.edit().putInt(Constants.NODE_ID, nodeId).apply()
+    }
+
+    fun readNodeID(): Int? {
+        return try {
+            shared.getInt(Constants.NODE_ID, 0)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     fun savePath(path: String) {
         shared.edit().putString(Constants.PATH, path).apply()
     }
@@ -431,6 +444,9 @@ class UserRepo @Inject constructor(
             null
         }
     }
+
+
+
 
     fun saveDelegatorData(delegator: DelegationRequestsResponseItem) {
         shared.edit().putString(Constants.DELEGATOR_DATA, Gson().toJson(delegator)).apply()
