@@ -136,6 +136,7 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
         }
 
 
+
         val result = arguments?.getSerializable(Constants.Delegation_Model)
         if (result.toString() == "null") {
 
@@ -155,6 +156,18 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
 
 
 
+        delgatetomanagercheckbox.setOnClickListener {
+
+            if (delgatetomanagercheckbox.isChecked){
+                fullnamelin.visibility = View.GONE
+                userautocomopletetextview.visibility = View.GONE
+                userSelectedId = viewModel.readUserinfo().managerId!!
+            }else{
+                fullnamelin.visibility = View.VISIBLE
+                userautocomopletetextview.visibility = View.VISIBLE
+                userSelectedId = 0
+            }
+        }
 
 
         btnSaveDelegate.setOnClickListener {
@@ -298,11 +311,12 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
         addallcategories.setOnClickListener {
             (multiSelectedcategory.adapter as AddedCategoriesAdapter).removeAllCategory()
             (multiSelectedcategory.adapter as AddedCategoriesAdapter).addAllCategories(categoriesArray)
+            for (item in categoriesArray){
+                addedCategoriesIds.add(item.id!!)
+
+            }
+
         }
-
-
-
-
 
         autoCompletecategories.setOnClickListener {
             autoCompletecategories.showDropDown()
@@ -815,13 +829,19 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
 
     private fun setLabels() {
 
-        when {
+        val managerId = viewModel.readUserinfo().managerId.toString()
+        if (managerId == "null"){
+            delgatetomanagercheckboxlin.visibility = View.GONE
+        }
+
+         when {
             viewModel.readLanguage() == "en" -> {
 
                 fullname_label.text = translator.find { it.keyword == "FullName" }!!.en
                 delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.en
                 delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.en
                 categories_label.text = translator.find { it.keyword == "Categories" }!!.en
+                delgatetomanagercheckbox.text = translator.find { it.keyword == "DelegateToManager" }!!.en
 
                 requiredfullname_label.text = "(required)"
                 requredfromdate_label.text = "(required)"
@@ -846,6 +866,7 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.ar
                 delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.ar
                 categories_label.text = translator.find { it.keyword == "Categories" }!!.ar
+                delgatetomanagercheckbox.text = translator.find { it.keyword == "DelegateToManager" }!!.ar
 
                 requiredfullname_label.text = "(الزامي)"
                 requredfromdate_label.text = "(الزامي)"
@@ -871,6 +892,7 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.fr
                 delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.fr
                 categories_label.text = translator.find { it.keyword == "Categories" }!!.fr
+                delgatetomanagercheckbox.text = translator.find { it.keyword == "DelegateToManager" }!!.fr
 
                 requiredfullname_label.text = "(requis)"
                 requredfromdate_label.text = "(requis)"

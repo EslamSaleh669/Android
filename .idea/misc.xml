@@ -73,7 +73,7 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/activity_main.xml" value="0.21467391304347827" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/activity_main3.xml" value="0.2" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/activity_splash.xml" value="0.12360688956433637" />
-        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/add_delegation.xml" value="0.45569620253164556" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/add_delegation.xml" value="0.2" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/allnotes_fragment.xml" value="0.2" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/app_bar_viewer.xml" value="0.2164855072463768" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/categories_viewshape.xml" value="0.4013840830449827" />
@@ -81,6 +81,7 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/child_dir.xml" value="0.18297101449275363" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/child_dire_inside_parent.xml" value="0.18297101449275363" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/corresponence_menu.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/datepicker_layout.xml" value="0.4" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/delegation_viewshape.xml" value="0.264" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/delegator_item.xml" value="0.1947463768115942" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/delegators_list.xml" value="0.1947463768115942" />

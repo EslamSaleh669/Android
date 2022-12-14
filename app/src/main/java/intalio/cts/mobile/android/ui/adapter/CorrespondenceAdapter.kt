@@ -64,7 +64,6 @@ class CorrespondenceAdapter(
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
 
-
         if (position == Messages.size - 1) {
             holder.correspondenceView.visibility = View.GONE
         }
@@ -91,6 +90,7 @@ class CorrespondenceAdapter(
         if (NodeInherit == "Inbox") {
 
 
+
             if (Messages[position].fromUser.isNullOrEmpty()) {
                 holder.messageSentFrom.text = Messages[position].fromStructure
 
@@ -106,14 +106,24 @@ class CorrespondenceAdapter(
                 }
             }
 
-            if (Messages[position].subject!!.length > 20) {
-                holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
-            } else {
-                holder.messageSub.text = Messages[position].subject
+            if (Messages[position].subject != null){
+                if (Messages[position].subject!!.length > 20) {
+                    holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
+                } else {
+                    holder.messageSub.text = Messages[position].subject
+
+                }
+            }
+
+
+            if (Messages[position].referenceNumber != null){
+                holder.messageRefNumber.text = Messages[position].referenceNumber
+            }
+
+            if (Messages[position].transferDate != null){
+                holder.messageTime.text = Messages[position].transferDate
 
             }
-            holder.messageRefNumber.text = Messages[position].referenceNumber
-            holder.messageTime.text = Messages[position].transferDate
 
 
             if (Messages[position].isRead!!) {
@@ -381,7 +391,9 @@ class CorrespondenceAdapter(
             }
 
 
-        } else if (NodeInherit == "MyRequests") {
+        }
+
+        else if (NodeInherit == "MyRequests") {
             holder.messageSentTo.visibility = View.INVISIBLE
 
             holder.messageImportance.visibility = View.INVISIBLE
@@ -395,17 +407,29 @@ class CorrespondenceAdapter(
                 holder.messageOverdue.visibility = View.INVISIBLE
 
             }
-            if (Messages[position].subject!!.length > 20) {
-                holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
-            } else {
-                holder.messageSub.text = Messages[position].subject
+
+            if (Messages[position].subject != null){
+                if (Messages[position].subject!!.length > 20) {
+                    holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
+                } else {
+                    holder.messageSub.text = Messages[position].subject
+
+                }
+            }
+
+
+            if (Messages[position].referenceNumber != null){
+                holder.messageRefNumber.text = Messages[position].referenceNumber
 
             }
-            holder.messageRefNumber.text = Messages[position].referenceNumber
-            holder.messageTime.text = Messages[position].createdDate
+            if (Messages[position].createdDate != null){
+                holder.messageTime.text = Messages[position].createdDate
+
+            }
 
 
-        } else if (NodeInherit == "Closed") {
+        }
+        else if (NodeInherit == "Closed") {
             holder.messageSentTo.visibility = View.INVISIBLE
 
             holder.messageImportance.visibility = View.INVISIBLE
@@ -419,17 +443,31 @@ class CorrespondenceAdapter(
                 holder.messageOverdue.visibility = View.INVISIBLE
 
             }
-            if (Messages[position].subject!!.length > 20) {
-                holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
-            } else {
-                holder.messageSub.text = Messages[position].subject
+
+            if (Messages[position].subject != null){
+                if (Messages[position].subject!!.length > 20) {
+                    holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
+                } else {
+                    holder.messageSub.text = Messages[position].subject
+
+                }
+            }
+
+
+            if (Messages[position].referenceNumber != null){
+                holder.messageRefNumber.text = Messages[position].referenceNumber
 
             }
-            holder.messageRefNumber.text = Messages[position].referenceNumber
-            holder.messageTime.text = Messages[position].createdDate
+
+            if (Messages[position].createdDate != null){
+                holder.messageTime.text = Messages[position].createdDate
+
+            }
 
 
-        } else if (NodeInherit == "Sent") {
+
+        }
+        else if (NodeInherit == "Sent") {
 
             holder.messageSentTo.visibility = View.INVISIBLE
             holder.messageImportance.visibility = View.INVISIBLE
@@ -453,13 +491,25 @@ class CorrespondenceAdapter(
                 }
             }
 
+            if (Messages[position].subject != null){
+                if (Messages[position].subject!!.length > 20) {
+                    holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
+                } else {
+                    holder.messageSub.text = Messages[position].subject
 
-            if (Messages[position].subject!!.length > 20) {
-                holder.messageSub.text = "${Messages[position].subject!!.substring(0, 20)}..."
-            } else {
-                holder.messageSub.text = Messages[position].subject
+                }
+            }
+
+            if (Messages[position].referenceNumber != null){
+                holder.messageRefNumber.text = Messages[position].referenceNumber
 
             }
+            if (Messages[position].transferDate != null){
+                holder.messageTime.text = Messages[position].transferDate
+
+            }
+
+
 
             if (Messages[position].isRead == false) {
                 holder.messageRecall.visibility = View.VISIBLE
@@ -474,10 +524,9 @@ class CorrespondenceAdapter(
             }
 
 
-            holder.messageRefNumber.text = Messages[position].referenceNumber
-            holder.messageTime.text = Messages[position].transferDate
+        }
 
-        } else {
+        else {
             holder.messageSentTo.visibility = View.INVISIBLE
             holder.messageImportance.visibility = View.INVISIBLE
             holder.messageOverdue.visibility = View.INVISIBLE
@@ -1302,6 +1351,8 @@ class CorrespondenceAdapter(
                 }
             }
         }
+
+
 
         //   }
     }

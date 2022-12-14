@@ -1,57 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/grey"
     android:clickable="true"
     android:focusable="true"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
-    <include layout="@layout/toolbar_layout"
+    <include
         android:id="@+id/includedtoolbar"
-        />
+        layout="@layout/toolbar_layout" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/includedtoolbar"
-        >
+        android:layout_below="@id/includedtoolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical"
             android:padding="5dp"
             android:paddingStart="30dp"
-            android:paddingEnd="30dp"
-            android:focusableInTouchMode="true">
+            android:paddingEnd="30dp">
+
 
             <LinearLayout
+                android:id="@+id/delgatetomanagercheckboxlin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:orientation="horizontal">
-                <TextView
+
+                <CheckBox
+                    android:id="@+id/delgatetomanagercheckbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/myriadpro_regular"
+                    android:text="delegate to manager"
+                    android:textColor="@color/black2"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fullnamelin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/fullname_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="3dp"
+                    android:fontFamily="@font/myriadpro_regular"
                     android:text="@string/delegate_person"
                     android:textColor="@color/black2"
-                    android:fontFamily="@font/myriadpro_regular"
-                    android:layout_marginEnd="3dp"
-                    android:id="@+id/fullname_label"
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/requiredfullname_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="italic"
                     android:text="@string/required"
-                    android:id="@+id/requiredfullname_label"
                     android:textColor="@color/dark_gray"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
 
             </LinearLayout>
 
@@ -68,8 +86,8 @@
                 android:dropDownHeight="wrap_content"
                 android:hint="@string/delegate_person"
                 android:imeOptions="actionDone"
-                android:lines="1"
                 android:inputType="textPersonName"
+                android:lines="1"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:textSize="15sp" />
@@ -79,24 +97,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:orientation="horizontal">
+
                 <TextView
+                    android:id="@+id/delgationfromdatedate_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/from_date"
-                    android:id="@+id/delgationfromdatedate_label"
-                    android:textColor="@color/black2"
-                    android:fontFamily="@font/myriadpro_regular"
                     android:layout_marginEnd="3dp"
+                    android:fontFamily="@font/myriadpro_regular"
+                    android:text="@string/from_date"
+                    android:textColor="@color/black2"
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/requredfromdate_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="italic"
                     android:text="@string/required"
-                    android:id="@+id/requredfromdate_label"
                     android:textColor="@color/dark_gray"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
 
             </LinearLayout>
 
@@ -120,41 +139,41 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:orientation="horizontal">
+
                 <TextView
+                    android:id="@+id/delegationtodate_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="3dp"
+                    android:fontFamily="@font/myriadpro_regular"
                     android:text="@string/to_date"
                     android:textColor="@color/black2"
-                    android:id="@+id/delegationtodate_label"
-                    android:fontFamily="@font/myriadpro_regular"
-                    android:layout_marginEnd="3dp"
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/requiredtodate_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="italic"
                     android:text="@string/required"
-                    android:id="@+id/requiredtodate_label"
                     android:textColor="@color/dark_gray"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
 
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/delegateTo"
                 android:layout_width="match_parent"
-                android:focusableInTouchMode="false"
-                android:inputType="date"
                 android:layout_height="47dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/edittext_background"
-                android:textSize="15sp"
+                android:drawableEnd="@drawable/ic_select_date"
+                android:focusableInTouchMode="false"
+                android:hint="@string/to_transfer_date"
+                android:inputType="date"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:hint="@string/to_transfer_date"
-                android:drawableEnd="@drawable/ic_select_date"
-                />
+                android:textSize="15sp" />
 
 
             <LinearLayout
@@ -162,24 +181,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:orientation="horizontal">
+
                 <TextView
+                    android:id="@+id/categories_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="3dp"
+                    android:fontFamily="@font/myriadpro_regular"
                     android:text="@string/categories"
                     android:textColor="@color/black2"
-                    android:id="@+id/categories_label"
-                    android:fontFamily="@font/myriadpro_regular"
-                    android:layout_marginEnd="3dp"
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/requiredcategories_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="italic"
                     android:text="@string/required"
-                    android:id="@+id/requiredcategories_label"
                     android:textColor="@color/dark_gray"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
 
             </LinearLayout>
 
@@ -193,6 +213,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="6dp"
+                    android:layout_weight="1"
                     android:background="@drawable/ic_addrec_background"
                     android:drawableEnd="@drawable/ic_arrow_down"
                     android:drawablePadding="10dp"
@@ -201,7 +222,6 @@
                     android:hint="@string/category"
                     android:imeOptions="actionDone"
                     android:lines="1"
-                    android:layout_weight="1"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:textSize="15sp" />
@@ -211,16 +231,16 @@
                     android:id="@+id/addallcategories"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="15dp"
                     android:background="@drawable/orange_background"
+                    android:fontFamily="@font/myriadpro_simibold"
+                    android:gravity="center"
+                    android:maxLength="20"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:fontFamily="@font/myriadpro_simibold"
-                    android:maxLength="20"
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    android:layout_gravity="bottom"
-                    android:gravity="center"
-                    android:layout_marginStart="15dp"
                     app:drawableStartCompat="@drawable/ic_addnew" />
             </LinearLayout>
 
@@ -229,11 +249,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginTop="10dp"
-                android:layoutDirection="locale"
-                android:textDirection="locale"
                 android:background="@drawable/ic_recivers_background"
+                android:layoutDirection="locale"
                 android:nestedScrollingEnabled="true"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:textDirection="locale" />
 
 
         </LinearLayout>
@@ -243,51 +263,51 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edittext_background"
-        android:padding="30dp"
         android:layout_alignParentBottom="true"
+        android:background="@drawable/edittext_background"
         android:orientation="horizontal"
-        >
+        android:padding="30dp">
 
 
         <TextView
             android:id="@+id/btnCancelDelegate"
             android:layout_width="0dp"
             android:layout_height="44dp"
+            android:layout_gravity="center"
             android:layout_marginStart="10dp"
+            android:layout_weight="1"
             android:background="@drawable/reset_background"
             android:fontFamily="@font/myriadpro_simibold"
             android:gravity="center"
             android:paddingStart="5dp"
             android:paddingTop="5dp"
-            android:layout_gravity="center"
             android:paddingEnd="5dp"
-            android:layout_weight="1"
             android:paddingBottom="5dp"
             android:text="@string/cancel"
             android:textColor="@color/black2"
-            android:textSize="15sp"
-            />
+            android:textSize="15sp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="xx"
-            android:paddingBottom="5dp"
             android:layout_gravity="center"
-            android:visibility="invisible"/>
+            android:paddingBottom="5dp"
+            android:text="xx"
+            android:visibility="invisible" />
+
         <TextView
             android:id="@+id/btnSaveDelegate"
             android:layout_width="0dp"
             android:layout_height="44dp"
+            android:layout_gravity="center"
             android:layout_marginEnd="10dp"
+            android:layout_weight="1"
             android:background="@drawable/green_background"
             android:fontFamily="@font/myriadpro_simibold"
             android:gravity="center"
             android:paddingStart="5dp"
-            android:layout_gravity="center"
             android:paddingTop="5dp"
             android:paddingEnd="5dp"
-            android:layout_weight="1"
             android:paddingBottom="5dp"
             android:text="@string/save"
             android:textColor="@color/white"

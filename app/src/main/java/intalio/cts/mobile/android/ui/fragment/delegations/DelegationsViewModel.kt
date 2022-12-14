@@ -49,7 +49,6 @@ class DelegationsViewModel (private val userRepo: UserRepo, private val adminRep
 
     fun readCategoriesData (): ArrayList<CategoryResponseItem>? = userRepo.readCategoriesData()
 
-
     fun saveDelegation(toUserId:Int,fromDate:String,toDate:String,categories:ArrayList<Int>): Observable<SaveDelegationResponse> =
         adminRepo.saveDelegations(toUserId,fromDate,toDate,categories)
 
@@ -61,6 +60,7 @@ class DelegationsViewModel (private val userRepo: UserRepo, private val adminRep
 
     fun readLanguage() : String = userRepo.currentLang()
     fun readDictionary(): DictionaryResponse? = userRepo.readDictionary()
+    fun readUserinfo (): UserFullDataResponseItem = userRepo.readFullUserData()!!
 
 
     override fun onCleared() {

@@ -79,6 +79,11 @@ class LoginActivity : AppCompatActivity() {
             //   makeToast("ServiceUrl:${Constants.BASE_URL} \n Url : ${Constants.BASE_URL2} \n ClientID ${Constants.CLIENT_ID }")
 
 
+            Log.d("scannercodes",scannedModel.serviceUrl!!)
+            Log.d("scannercodes",scannedModel.url!!)
+            Log.d("scannercodes",scannedModel.clientId!!)
+            Log.d("scannercodes",scannedModel.ViewerUrl!!)
+
             val emailStr = username.text.toString().trim()
             val passwordStr = password.text.toString().trim()
 
@@ -151,14 +156,14 @@ class LoginActivity : AppCompatActivity() {
 
                         override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                             dialog!!.dismiss()
-                             if (t.message.toString().contains("failed to connect to")) {
-                                makeToast("check your current connected Wifi network")
+                             if (t.message.toString().contains("Failed to connect to")) {
+                                makeToast("Please check your current network Connection")
 
                             } else {
                                 makeToast(getString(R.string.network_error))
-
                             }
 
+                            Log.d("zaaaaaaaaaa",t.toString())
                         }
                     })
 

@@ -415,18 +415,26 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                     }
                                     viewModel.readLanguage() == "ar" -> {
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameAr"
-                                            }!!.value
-                                        if (structureName.isNullOrEmpty()){
-                                            structureItem.name =
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameAr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
+                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
+
 
                                     }
                                     viewModel.readLanguage() == "fr" -> {
@@ -624,9 +632,11 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                             //manageResponse(it,structuresArray)
 
                             val allUsersAndStructures = ArrayList<AllStructuresItem>()
-                            if (it.structures != null) {
-                                allUsersAndStructures.addAll(it.structures)
+
+                            if (it.structures.toString() != "null") {
+                                allUsersAndStructures.addAll(it.structures!!)
                             }
+                            Log.d("case1",it.structures.toString())
 
                             val enableTransferToUser =
                                 settings.find { it.keyword == "EnableTransferToUsers" }!!.content
@@ -758,16 +768,24 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                             }
 
 
+                            if (allUsersAndStructures.size > 0){
+                                arrayAdapter =
+                                    StructuresAdapter(
+                                        requireContext(),
+                                        R.layout.support_simple_spinner_dropdown_item,
+                                        allUsersAndStructures,
+                                        viewModel.readLanguage()
 
-                            arrayAdapter =
-                                StructuresAdapter(
-                                    requireContext(),
-                                    R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures,
-                                    viewModel.readLanguage()
+                                    )
 
-                                )
-                            actvTransferautocomplete.setAdapter(arrayAdapter)
+                                actvTransferautocomplete.setAdapter(arrayAdapter)
+                             }
+
+                            Log.d("case1arra",allUsersAndStructures.size.toString())
+                            Log.d("case1obj",allUsersAndStructures.toString())
+
+
+
                             if (actvTransferautocomplete.hasFocus()) {
                                 actvTransferautocomplete.showDropDown()
 
@@ -1074,10 +1092,10 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                             //manageResponse(it,structuresArray)
 
                             val allUsersAndStructures = ArrayList<AllStructuresItem>()
-                            if (it.structures != null) {
-                                allUsersAndStructures.addAll(it.structures)
+                            if (it.structures.toString() != "null") {
+                                allUsersAndStructures.addAll(it.structures!!)
                             }
-
+                            Log.d("case2",it.structures.toString())
 
                             val enableTransferToUser =
                                 settings.find { it.keyword == "EnableTransferToUsers" }!!.content
@@ -1209,15 +1227,24 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                 }
                             }
 
-                            arrayAdapter =
-                                StructuresAdapter(
-                                    requireContext(),
-                                    R.layout.support_simple_spinner_dropdown_item,
-                                    allUsersAndStructures,
-                                    viewModel.readLanguage()
 
-                                )
-                            actvTransferautocomplete.setAdapter(arrayAdapter)
+
+                            if (allUsersAndStructures.size > 0){
+                                arrayAdapter =
+                                    StructuresAdapter(
+                                        requireContext(),
+                                        R.layout.support_simple_spinner_dropdown_item,
+                                        allUsersAndStructures,
+                                        viewModel.readLanguage()
+
+                                    )
+                                actvTransferautocomplete.setAdapter(arrayAdapter)
+
+                            }
+
+                            Log.d("case2arra",allUsersAndStructures.size.toString())
+
+
                             if (actvTransferautocomplete.hasFocus()) {
                                 actvTransferautocomplete.showDropDown()
                             } else {

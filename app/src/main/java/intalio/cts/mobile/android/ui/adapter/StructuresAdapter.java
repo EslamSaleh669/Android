@@ -44,7 +44,12 @@ public class StructuresAdapter extends ArrayAdapter {
 
     @Override
     public int getCount() {
-        return dataList.size();
+        if (dataList!= null){
+            return dataList.size();
+
+        }else {
+            return 0 ;
+        }
     }
 
     @Override
@@ -77,19 +82,25 @@ public class StructuresAdapter extends ArrayAdapter {
 
                 case "ar":
                     List<AllStructuresAttributesItem> attributes = dataList.get(position).getAttributes();
-                    for (int i = 0; i < Objects.requireNonNull(attributes).size(); i++) {
-                        if (Objects.equals(attributes.get(i).getText(), "NameAr")) {
-                            String structureNameAr = attributes.get(i).getValue();
-                            if (structureNameAr.isEmpty()){
-                                strName.setText(dataList.get(position).getName());
+                    if (attributes.size() > 0){
+                        for (int i = 0; i < Objects.requireNonNull(attributes).size(); i++) {
+                            if (Objects.equals(attributes.get(i).getText(), "NameAr")) {
+                                String structureNameAr = attributes.get(i).getValue();
+                                if (structureNameAr.isEmpty()){
+                                    strName.setText(dataList.get(position).getName());
 
-                            }else {
-                                strName.setText(structureNameAr);
+                                }else {
+                                    strName.setText(structureNameAr);
+
+                                }
 
                             }
-
                         }
+                    }else {
+                        strName.setText(dataList.get(position).getName());
+
                     }
+
                     break;
 
                 case "fr":

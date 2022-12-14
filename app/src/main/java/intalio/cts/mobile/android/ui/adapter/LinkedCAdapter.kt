@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cts.mobile.android.R
 
 import intalio.cts.mobile.android.data.network.response.LinkedCorDataItem
+import intalio.cts.mobile.android.ui.fragment.linkedcorrespondence.LinkedCorrespondenceViewModel
 
 
 class LinkedCAdapter(
@@ -18,8 +19,9 @@ class LinkedCAdapter(
     private val onDeleteCLickListener: OnDeleteLinkedCClicked,
     private val Node_Inherit: String,
     private val canDoAction: Boolean,
-    private val  DOCUMENT_ID: Int,
-    private val TransferId: Int
+    private val DOCUMENT_ID: Int,
+    private val TransferId: Int,
+    private val  viewModel: LinkedCorrespondenceViewModel
 
 
 ) : RecyclerView.Adapter<LinkedCAdapter.AllNewsVHolder>() {
@@ -33,10 +35,34 @@ class LinkedCAdapter(
 
 
     override fun onBindViewHolder(holder: AllNewsVHolder, position: Int) {
- 
-        if (Node_Inherit != "Inbox" || !canDoAction || LinkedC[position].allowDelete == false){
-            holder.LinkedDelete.visibility = View.INVISIBLE
+
+        val LinkedDeleteForCreatorOnly =
+            viewModel.readSettings().find { it.keyword == "LinkedDeleteForCreatorOnly" }!!.content
+
+
+
+        if (LinkedDeleteForCreatorOnly == "false"){
+            if (Node_Inherit != "Inbox" || !canDoAction || LinkedC[position].allowDelete == false){
+
+                holder.LinkedDelete.visibility = View.INVISIBLE
+
+            }
+
+        }else if (LinkedDeleteForCreatorOnly == "true"){
+            if (LinkedC[position].linkedBy == viewModel.readUserinfo().fullName){
+                if (Node_Inherit != "Inbox" || !canDoAction || LinkedC[position].allowDelete == false){
+
+                    holder.LinkedDelete.visibility = View.INVISIBLE
+
+                }
+            }else{
+                holder.LinkedDelete.visibility = View.INVISIBLE
+
+            }
+
         }
+
+
 
 
         holder.LinkedRefNum.text = LinkedC[position].linkedDocumentReferenceNumber

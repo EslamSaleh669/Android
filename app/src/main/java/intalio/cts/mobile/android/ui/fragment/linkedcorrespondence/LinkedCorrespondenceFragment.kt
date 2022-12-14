@@ -21,7 +21,6 @@ import intalio.cts.mobile.android.ui.adapter.LinkedCAdapter
 import intalio.cts.mobile.android.ui.fragment.advancedsearch.AdvancedSearchFragment
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.allnotes_fragment.*
 import kotlinx.android.synthetic.main.fragment_linkedcorresp.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import timber.log.Timber
@@ -176,7 +175,7 @@ class LinkedCorrespondenceFragment : Fragment(), LinkedCAdapter.OnDeleteLinkedCC
             }else{
 
                 linkedrecycler.adapter =
-                    LinkedCAdapter(it.data, requireActivity(),this,Node_Inherit,canDoAction,DocumentId,TransferId)
+                    LinkedCAdapter(it.data, requireActivity(),this,Node_Inherit,canDoAction,DocumentId,TransferId,viewModel)
                 linkedrecycler.layoutManager =
                     LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
