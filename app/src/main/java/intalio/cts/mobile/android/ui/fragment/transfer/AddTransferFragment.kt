@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -17,14 +18,18 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.cts.mobile.android.R
 import intalio.cts.mobile.android.data.network.response.*
 import intalio.cts.mobile.android.ui.adapter.*
+import intalio.cts.mobile.android.ui.fragment.correspondence.CorrespondenceFragment
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.allnotes_fragment.*
 
 import kotlinx.android.synthetic.main.fragment_addtransfer.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
+import kotlinx.android.synthetic.main.transferlist_dialog.*
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -41,7 +46,8 @@ import kotlin.collections.ArrayList
 import org.json.JSONArray
 
 
-class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
+class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked,
+    TransferGrids_Adapter.OnTransferGridClicked {
 
     private var purposeSelectedId = 0
     private var purposeSelectedName = ""
@@ -70,6 +76,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
     private val Transfers = ArrayList<TransferRequestModel>()
     private var offlineId = 0
     private var structurePrivacyLevel = 0
+    var dialog: Dialog? = null
 
 
     @Inject
@@ -126,6 +133,12 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             model = result as CorrespondenceDataItem
 
         }
+
+        transfersgrids_recycler.adapter =
+            TransferGrids_Adapter(arrayListOf(), requireActivity(), this, viewModel, translator)
+        transfersgrids_recycler.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
 
         initDates()
         initPurposeComplete()
@@ -241,28 +254,28 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             if (Transfers.size == 0) {
                 requireActivity().makeToast(emptyTransfers)
             } else {
-                //showTransfersDialog()
+
+                sendTransfer()
 
 
-                val bundle = Bundle()
-                bundle.putSerializable(Constants.TRANSFER_MODEL, Transfers)
-                (activity as AppCompatActivity).supportFragmentManager.commit {
-                    replace(R.id.fragmentContainer,
-                        TransferListFragment().apply {
-                            arguments = bundleOf(
-                                Pair(Constants.TRANSFER_MODEL, Transfers)
-                            )
-
-
-                        }
-                    )
-                    addToBackStack("")
-
-                }
             }
 
         }
-
+//        val bundle = Bundle()
+//        bundle.putSerializable(Constants.TRANSFER_MODEL, Transfers)
+//        (activity as AppCompatActivity).supportFragmentManager.commit {
+//            replace(R.id.fragmentContainer,
+//                TransferListFragment().apply {
+//                    arguments = bundleOf(
+//                        Pair(Constants.TRANSFER_MODEL, Transfers)
+//                    )
+//
+//
+//                }
+//            )
+//            addToBackStack("")
+//
+//        }
     }
 
 
@@ -278,8 +291,11 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     translator.find { it.keyword == "Instruction" }!!.en
                 toreq.text = "(required)"
                 purposereq.text = "(required)"
-                btnsaveTransfer.text = translator.find { it.keyword == "Save" }!!.en
+                btnsaveTransfer.text = translator.find { it.keyword == "Add" }!!.en
                 btnTransferTransfer.text = translator.find { it.keyword == "Transfer" }!!.en
+                transfergrid_reciever_label.text = translator.find { it.keyword == "To" }!!.en
+                transfergrid_purpose_label.text = translator.find { it.keyword == "Purpose" }!!.en
+                transfergrid_duedate_label.text = translator.find { it.keyword == "DueDate" }!!.en
 
                 actvTransferautocomplete.hint = translator.find { it.keyword == "To" }!!.en
                 actvPurposesautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.en
@@ -299,8 +315,11 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     translator.find { it.keyword == "Instruction" }!!.ar
                 toreq.text = "(الزامي)"
                 purposereq.text = "(الزامي)"
-                btnsaveTransfer.text = translator.find { it.keyword == "Save" }!!.ar
+                btnsaveTransfer.text = translator.find { it.keyword == "Add" }!!.ar
                 btnTransferTransfer.text = translator.find { it.keyword == "Transfer" }!!.ar
+                transfergrid_reciever_label.text = translator.find { it.keyword == "To" }!!.ar
+                transfergrid_purpose_label.text = translator.find { it.keyword == "Purpose" }!!.ar
+                transfergrid_duedate_label.text = translator.find { it.keyword == "DueDate" }!!.ar
 
                 actvTransferautocomplete.hint = translator.find { it.keyword == "To" }!!.ar
                 actvPurposesautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.ar
@@ -318,9 +337,11 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                     translator.find { it.keyword == "Instruction" }!!.fr
                 toreq.text = "(requis)"
                 purposereq.text = "(requis)"
-                btnsaveTransfer.text = translator.find { it.keyword == "Save" }!!.fr
+                btnsaveTransfer.text = translator.find { it.keyword == "Add" }!!.fr
                 btnTransferTransfer.text = translator.find { it.keyword == "Transfer" }!!.fr
-
+                transfergrid_reciever_label.text = translator.find { it.keyword == "To" }!!.fr
+                transfergrid_purpose_label.text = translator.find { it.keyword == "Purpose" }!!.fr
+                transfergrid_duedate_label.text = translator.find { it.keyword == "DueDate" }!!.fr
 
                 actvTransferautocomplete.hint = translator.find { it.keyword == "To" }!!.fr
                 actvPurposesautocomplete.hint = translator.find { it.keyword == "Purposes" }!!.fr
@@ -415,35 +436,51 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                     }
                                     viewModel.readLanguage() == "ar" -> {
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameAr"
-                                            }!!.value
-                                        if (structureName.isNullOrEmpty()){
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameAr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
 
                                     }
                                     viewModel.readLanguage() == "fr" -> {
-                                        Log.d("aaaaaaaazz", it!!)
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameFr"
-                                            }!!.value
-                                        if (structureName.isNullOrEmpty()){
+
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameFr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
+
+
                                     }
                                 }
 
@@ -477,35 +514,47 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                     }
                                     viewModel.readLanguage() == "ar" -> {
 
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameAr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameAr"
-                                            }!!.value
-                                        if (structureName.isNullOrEmpty()){
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
 
                                     }
                                     viewModel.readLanguage() == "fr" -> {
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameFr"
-                                            }!!.value
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameFr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        if (structureName.isNullOrEmpty()){
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
                                     }
                                 }
@@ -649,33 +698,46 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                                             }
                                                             viewModel.readLanguage() == "ar" -> {
 
-                                                                val structureName =
-                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                        it!!.text == "NameAr"
-                                                                    }!!.value
-                                                                if (structureName.isNullOrEmpty()){
+                                                                val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                                                if (size > 0){
+                                                                    val structureName =
+                                                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                            it!!.text == "NameAr"
+                                                                        }!!.value
+                                                                    if (structureName.isNullOrEmpty()){
+                                                                        structureItem.name =
+                                                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                    }else{
+                                                                        structureItem.name =
+                                                                            "$structureName / ${item.fullName}"
+                                                                    }
+                                                                }else{
                                                                     structureItem.name =
                                                                         "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                }else{
-                                                                    structureItem.name =
-                                                                        "$structureName / ${item.fullName}"
                                                                 }
                                                             }
                                                             viewModel.readLanguage() == "fr" -> {
-                                                                Log.d("aaaaaaaazz", it!!)
 
-                                                                val structureName =
-                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                        it!!.text == "NameFr"
-                                                                    }!!.value
-                                                                if (structureName.isNullOrEmpty()){
+                                                                val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                                                if (size > 0){
+                                                                    val structureName =
+                                                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                            it!!.text == "NameFr"
+                                                                        }!!.value
+                                                                    if (structureName.isNullOrEmpty()){
+                                                                        structureItem.name =
+                                                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                    }else{
+                                                                        structureItem.name =
+                                                                            "$structureName / ${item.fullName}"
+                                                                    }
+                                                                }else{
                                                                     structureItem.name =
                                                                         "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                }else{
-                                                                    structureItem.name =
-                                                                        "$structureName / ${item.fullName}"
                                                                 }
                                                             }
                                                         }
@@ -708,33 +770,45 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                                             }
                                                             viewModel.readLanguage() == "ar" -> {
 
-                                                                val structureName =
-                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                        it!!.text == "NameAr"
-                                                                    }!!.value
-                                                                if (structureName.isNullOrEmpty()){
+                                                                val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                                                if (size > 0){
+                                                                    val structureName =
+                                                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                            it!!.text == "NameAr"
+                                                                        }!!.value
+                                                                    if (structureName.isNullOrEmpty()){
+                                                                        structureItem.name =
+                                                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                    }else{
+                                                                        structureItem.name =
+                                                                            "$structureName / ${item.fullName}"
+                                                                    }
+                                                                }else{
                                                                     structureItem.name =
                                                                         "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                }else{
-                                                                    structureItem.name =
-                                                                        "$structureName / ${item.fullName}"
                                                                 }
                                                             }
                                                             viewModel.readLanguage() == "fr" -> {
-                                                                Log.d("aaaaaaaazz", it!!)
+                                                                val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                                                if (size > 0){
+                                                                    val structureName =
+                                                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                            it!!.text == "NameFr"
+                                                                        }!!.value
+                                                                    if (structureName.isNullOrEmpty()){
+                                                                        structureItem.name =
+                                                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                val structureName =
-                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                        it!!.text == "NameFr"
-                                                                    }!!.value
-                                                                if (structureName.isNullOrEmpty()){
+                                                                    }else{
+                                                                        structureItem.name =
+                                                                            "$structureName / ${item.fullName}"
+                                                                    }
+                                                                }else{
                                                                     structureItem.name =
                                                                         "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                }else{
-                                                                    structureItem.name =
-                                                                        "$structureName / ${item.fullName}"
                                                                 }
                                                             }
                                                         }
@@ -869,33 +943,45 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                     }
                                     viewModel.readLanguage() == "ar" -> {
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameAr"
-                                            }!!.value
-                                        if (structureName.isNullOrEmpty()){
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameAr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
                                     }
                                     viewModel.readLanguage() == "fr" -> {
-                                        Log.d("aaaaaaaazz", it!!)
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameFr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameFr"
-                                            }!!.value
-                                        if (structureName.isNullOrEmpty()){
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
                                     }
                                 }
@@ -930,33 +1016,46 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                     }
                                     viewModel.readLanguage() == "ar" -> {
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameAr"
-                                            }!!.value
-                                        if (structureName.isNullOrEmpty()){
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameAr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
                                     }
                                     viewModel.readLanguage() == "fr" -> {
-                                        Log.d("aaaaaaaazz", it!!)
 
-                                        val structureName =
-                                            fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                it!!.text == "NameFr"
-                                            }!!.value
-                                        if (structureName.isNullOrEmpty()){
+                                        val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                        if (size > 0){
+                                            val structureName =
+                                                fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                    it!!.text == "NameFr"
+                                                }!!.value
+                                            if (structureName.isNullOrEmpty()){
+                                                structureItem.name =
+                                                    "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                            }else{
+                                                structureItem.name =
+                                                    "$structureName / ${item.fullName}"
+                                            }
+                                        }else{
                                             structureItem.name =
                                                 "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                        }else{
-                                            structureItem.name =
-                                                "$structureName / ${item.fullName}"
                                         }
                                     }
                                 }
@@ -1099,34 +1198,45 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                                                     "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
                                                             }
                                                             viewModel.readLanguage() == "ar" -> {
+                                                                val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                                                if (size > 0){
+                                                                    val structureName =
+                                                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                            it!!.text == "NameAr"
+                                                                        }!!.value
+                                                                    if (structureName.isNullOrEmpty()){
+                                                                        structureItem.name =
+                                                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                val structureName =
-                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                        it!!.text == "NameAr"
-                                                                    }!!.value
-                                                                if (structureName.isNullOrEmpty()){
+                                                                    }else{
+                                                                        structureItem.name =
+                                                                            "$structureName / ${item.fullName}"
+                                                                    }
+                                                                }else{
                                                                     structureItem.name =
                                                                         "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                }else{
-                                                                    structureItem.name =
-                                                                        "$structureName / ${item.fullName}"
                                                                 }
                                                             }
                                                             viewModel.readLanguage() == "fr" -> {
-                                                                Log.d("aaaaaaaazz", it!!)
+                                                                val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                                                if (size > 0){
+                                                                    val structureName =
+                                                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                            it!!.text == "NameFr"
+                                                                        }!!.value
+                                                                    if (structureName.isNullOrEmpty()){
+                                                                        structureItem.name =
+                                                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                val structureName =
-                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                        it!!.text == "NameFr"
-                                                                    }!!.value
-                                                                if (structureName.isNullOrEmpty()){
+                                                                    }else{
+                                                                        structureItem.name =
+                                                                            "$structureName / ${item.fullName}"
+                                                                    }
+                                                                }else{
                                                                     structureItem.name =
                                                                         "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                }else{
-                                                                    structureItem.name =
-                                                                        "$structureName / ${item.fullName}"
                                                                 }
                                                             }
                                                         }
@@ -1159,33 +1269,45 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                                                             }
                                                             viewModel.readLanguage() == "ar" -> {
 
-                                                                val structureName =
-                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                        it!!.text == "NameAr"
-                                                                    }!!.value
-                                                                if (structureName.isNullOrEmpty()){
+                                                                val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                                                if (size > 0){
+                                                                    val structureName =
+                                                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                            it!!.text == "NameAr"
+                                                                        }!!.value
+                                                                    if (structureName.isNullOrEmpty()){
+                                                                        structureItem.name =
+                                                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
+
+                                                                    }else{
+                                                                        structureItem.name =
+                                                                            "$structureName / ${item.fullName}"
+                                                                    }
+                                                                }else{
                                                                     structureItem.name =
                                                                         "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                }else{
-                                                                    structureItem.name =
-                                                                        "$structureName / ${item.fullName}"
                                                                 }
                                                             }
                                                             viewModel.readLanguage() == "fr" -> {
-                                                                Log.d("aaaaaaaazz", it!!)
+                                                                val size = fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.size
+                                                                if (size > 0){
+                                                                    val structureName =
+                                                                        fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
+                                                                            it!!.text == "NameFr"
+                                                                        }!!.value
+                                                                    if (structureName.isNullOrEmpty()){
+                                                                        structureItem.name =
+                                                                            "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                val structureName =
-                                                                    fullStructures.find { it.id == item.structureIds!![0] }!!.attributes!!.find {
-                                                                        it!!.text == "NameFr"
-                                                                    }!!.value
-                                                                if (structureName.isNullOrEmpty()){
+                                                                    }else{
+                                                                        structureItem.name =
+                                                                            "$structureName / ${item.fullName}"
+                                                                    }
+                                                                }else{
                                                                     structureItem.name =
                                                                         "${fullStructures.find { it.id == item.structureIds!![0] }!!.name} / ${item.fullName}"
 
-                                                                }else{
-                                                                    structureItem.name =
-                                                                        "$structureName / ${item.fullName}"
                                                                 }
                                                             }
                                                         }
@@ -1542,6 +1664,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
         Transfers.add(addedModel)
         offlineId += 1
+        (transfersgrids_recycler.adapter as TransferGrids_Adapter).addTransferGrid(addedModel)
 
         purposeSelectedId = 0
         purposeSelectedName = ""
@@ -1621,6 +1744,9 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             offlineId += 1
 
 
+            (transfersgrids_recycler.adapter as TransferGrids_Adapter).addTransferGrid(addedModel)
+
+
             purposeSelectedId = 0
             purposeSelectedName = ""
             structureSelectedId = 0
@@ -1628,6 +1754,8 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
             isPurposeCCED = false
             userSelectedId = 0
             itemType = ""
+
+
 
             actvTransferautocomplete.setText("")
             actvPurposesautocomplete.setText("")
@@ -1670,6 +1798,7 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
 
                         Transfers.add(addedModel)
                         offlineId += 1
+                        (transfersgrids_recycler.adapter as TransferGrids_Adapter).addTransferGrid(addedModel)
 
 
                         Log.d("selecteddatatype", itemType)
@@ -1962,5 +2091,87 @@ class AddTransferFragment : Fragment(), AddedStructuresAdapter.OnDeleteClicked {
                 }).show().window!!.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
 
     }
+
+
+    private fun sendTransfer() {
+
+
+        dialog = requireActivity().launchLoadingDialog()
+
+        var fileInUSe = ""
+        var originalDocumentInUse = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.en!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.en!!
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.ar!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.ar!!
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+
+                fileInUSe = translator.find { it.keyword == "FileInUse" }!!.fr!!
+                originalDocumentInUse = translator.find { it.keyword == "OriginalFileInUse" }!!.fr!!
+
+            }
+        }
+
+        autoDispose.add(
+            viewModel.transferTransfer(Transfers, delegationId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+
+                        if (it[0].updated == true) {
+                            Transfers.clear()
+
+                            (activity as AppCompatActivity).supportFragmentManager.commit {
+                                replace(R.id.fragmentContainer,
+                                    CorrespondenceFragment().apply {
+                                        arguments = bundleOf(
+                                            Pair(
+                                                Constants.NODE_INHERIT,
+                                                viewModel.readCurrentNode()
+                                            )
+                                        )
+                                    }
+                                )
+                            }
+                        } else if (it[0].updated == false && it[0].message == "OriginalFileInUse") {
+                            requireActivity().makeToast(originalDocumentInUse)
+
+                        } else if (it[0].updated == false && it[0].message == "FileInUse") {
+                            requireActivity().makeToast(fileInUSe)
+                        }
+
+                        dialog!!.dismiss()
+                    }, {
+                        dialog!!.dismiss()
+
+                        Timber.e(it)
+
+                    })
+        )
+    }
+
+    override fun onDeleteClicked(transferId: Int) {
+        (transfersgrids_recycler.adapter as TransferGrids_Adapter).removeTransferGrid(transferId)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Transfers.removeIf {
+                transferId == it.transferOfflineId
+            }
+        }
+
+    }
+
 }
 

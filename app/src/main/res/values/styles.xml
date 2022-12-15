@@ -55,7 +55,18 @@
     </style>
 
 
+    <style name="ConfirmationStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColor">@color/appcolor</item>
+        <item name="android:textColorPrimary">@color/black2</item>
+        <item name="fontFamily">@font/myriadpro_regular</item>
+        <item name="cardCornerRadius">10dp</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="windowFixedWidthMajor">95%</item>
+        <item name="windowFixedWidthMinor">95%</item>
+        <item name="android:windowAnimationStyle">@style/BottomDialogAnimation</item>
 
+    </style>
 
     <style name="Style_TextView">
         <item name="fontFamily">@font/myriadpro_regular</item>

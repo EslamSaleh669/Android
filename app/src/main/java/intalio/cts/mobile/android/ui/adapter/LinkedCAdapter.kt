@@ -38,7 +38,6 @@ class LinkedCAdapter(
             holder.LinkedDelete.visibility = View.INVISIBLE
         }
 
-
         holder.LinkedRefNum.text = LinkedC[position].linkedDocumentReferenceNumber
         holder.LinkedDate.text = LinkedC[position].createdDate
 
@@ -54,7 +53,6 @@ class LinkedCAdapter(
     }
 
     override fun getItemCount() = LinkedC.size
-
 
     class AllNewsVHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val LinkedRefNum : TextView =itemView.findViewById(R.id.linked_refnum)

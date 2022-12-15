@@ -60,7 +60,7 @@ class UserRepo @Inject constructor(
             "${Constants.BASE_URL}/TranslatorDictionary/List",
             1,
             0,
-            1000
+            10000
         ).subscribeOn(Schedulers.io())
     }
 

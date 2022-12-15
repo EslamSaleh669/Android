@@ -425,6 +425,11 @@ private fun getInbox(delegationId: Int) {
             } else {
                 if (it.isNotEmpty()) {
                     Timber.d("Data Loaded")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        it.removeIf {
+                            it.categoryId == 6
+                        }
+                    }
                     (correspondence_recyclerview.adapter as CorrespondenceAdapter).addMessages(
                         it
                     )
@@ -513,6 +518,12 @@ private fun getSent(delegationId: Int) {
         } else {
             if (it.isNotEmpty()) {
                 Timber.d("Data Loaded")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    it.removeIf {
+                        it.categoryId == 6
+                    }
+                }
+
                 (correspondence_recyclerview.adapter as CorrespondenceAdapter).addMessages(it)
 
             } else if (lastPosition > 10) {
@@ -597,6 +608,11 @@ private fun getICompleted(delegationId: Int) {
             } else {
                 if (it.isNotEmpty()) {
                     Timber.d("Data Loaded")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        it.removeIf {
+                            it.categoryId == 6
+                        }
+                    }
                     (correspondence_recyclerview.adapter as CorrespondenceAdapter).addMessages(
                         it
                     )
@@ -683,9 +699,12 @@ private fun getRequested(delegationId: Int) {
             } else {
                 if (it.isNotEmpty()) {
                     Timber.d("Data Loaded")
-                    (correspondence_recyclerview.adapter as CorrespondenceAdapter).addMessages(
-                        it
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        it.removeIf {
+                            it.categoryId == 6
+                        }
+                    }
+                    (correspondence_recyclerview.adapter as CorrespondenceAdapter).addMessages(it)
 
                 } else if (lastPosition > 10) {
                     requireContext().makeToast(noMoreData)
@@ -768,6 +787,11 @@ private fun getClosed(delegationId: Int) {
             } else {
                 if (it.isNotEmpty()) {
                     Timber.d("Data Loaded")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        it.removeIf {
+                            it.categoryId == 6
+                        }
+                    }
                     (correspondence_recyclerview.adapter as CorrespondenceAdapter).addMessages(
                         it
                     )

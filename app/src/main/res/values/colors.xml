@@ -83,5 +83,6 @@
     <color name="ellipse_color">#f32d13</color>
     <color name="light_green">#27c24c</color>
     <color name="light_greens">#343653</color>
+    <color name="delete_color">#f05050</color>
 
 </resources>
