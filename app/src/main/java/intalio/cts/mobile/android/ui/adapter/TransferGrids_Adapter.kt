@@ -70,11 +70,10 @@ class TransferGrids_Adapter(
         customDialog.setContentView(R.layout.instruction_dialog)
 
 
-
         when {
             viewModel.readLanguage() == "en" -> {
 
-                customDialog.findViewById<Button>(R.id.instruction_popupbtn).text =
+                customDialog.findViewById<TextView>(R.id.instruction_popupbtn).text =
                     translator.find { it.keyword == "Close" }!!.en
                 customDialog.findViewById<TextView>(R.id.instruction_popuptitle).text =
                     translator.find { it.keyword == "Instruction" }!!.en
@@ -99,7 +98,7 @@ class TransferGrids_Adapter(
         }
         customDialog.findViewById<TextView>(R.id.instruction_popupmsg).text = instruction
 
-        customDialog.findViewById<Button>(R.id.instruction_popupbtn).setOnClickListener {
+        customDialog.findViewById<TextView>(R.id.instruction_popupbtn).setOnClickListener {
             customDialog.dismiss()
 
         }

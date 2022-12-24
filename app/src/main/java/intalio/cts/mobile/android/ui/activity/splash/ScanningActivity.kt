@@ -49,26 +49,26 @@ class ScanningActivity : AppCompatActivity() {
         (application as MyApplication).appComponent?.inject(this)
         autoDispose.bindTo(this.lifecycle)
 
-//        loginlogo.setOnClickListener {
-////
-//            val  scannerModel = ScanResponse()
+        loginlogo.setOnClickListener {
 //
-//            scannerModel.serviceUrl = "http://192.168.1.11:6969"
-//            scannerModel.url = "http://192.168.1.11:9949"
-//            scannerModel.clientId = "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc"
-//            scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
-//
-//
-//
-////    makeToast("ServiceUrl:${scannerModel.serviceUrl} \n IAM : ${scannerModel.url} \n ClientID ${scannerModel.clientId}")
-//
-//            val sharedPref = getSharedPreferences(Constants.SCANNER_PREF,Context.MODE_PRIVATE)
-//            val editor = sharedPref.edit()
-//            editor.putString(Constants.SCANNER_MODEL, Gson().toJson(scannerModel))
-//            editor.apply()
-//
-//            launchActivityFinishCurrent(LoginActivity::class.java)
-//        }
+            val  scannerModel = ScanResponse()
+
+            scannerModel.serviceUrl = "http://192.168.1.11:6969"
+            scannerModel.url = "http://192.168.1.11:9949"
+            scannerModel.clientId = "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc"
+            scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
+
+
+
+//    makeToast("ServiceUrl:${scannerModel.serviceUrl} \n IAM : ${scannerModel.url} \n ClientID ${scannerModel.clientId}")
+
+            val sharedPref = getSharedPreferences(Constants.SCANNER_PREF,Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.putString(Constants.SCANNER_MODEL, Gson().toJson(scannerModel))
+            editor.apply()
+
+            launchActivityFinishCurrent(LoginActivity::class.java)
+        }
 
 
         if (ContextCompat.checkSelfPermission(this@ScanningActivity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
@@ -87,7 +87,7 @@ class ScanningActivity : AppCompatActivity() {
         codeScanner.autoFocusMode = AutoFocusMode.SAFE // or CONTINUOUS
         codeScanner.scanMode = ScanMode.SINGLE // or CONTINUOUS or PREVIEW
         codeScanner.isAutoFocusEnabled = true // Whether to enable auto focus or not
-        codeScanner.isFlashEnabled = false // Whether to enable flash or not
+        codeScanner.isFlashEnabled = false
 
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {

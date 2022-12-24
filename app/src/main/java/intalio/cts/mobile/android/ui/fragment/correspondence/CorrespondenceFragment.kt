@@ -733,7 +733,6 @@ private fun getRequested(delegationId: Int) {
 
 }
 
-
 private fun getClosed(delegationId: Int) {
 
     var noMoreData = ""
@@ -1268,6 +1267,7 @@ override fun getPosition(position: Int, status: Int, model: CorrespondenceDataIt
 }
 
 override fun refreshInbox(NodeInherit: String) {
+
     (activity as AppCompatActivity).supportFragmentManager.commit {
         replace(R.id.fragmentContainer,
             CorrespondenceFragment().apply {

@@ -88,9 +88,10 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/dialog_loading.xml" value="0.15353260869565216" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/edit_nonarch_layout.xml" value="0.264" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/edit_note_layout.xml" value="0.264" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/empty_or_lowlevel_structure.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/fragment_addnonarch.xml" value="0.264" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/fragment_addnote.xml" value="0.264" />
-        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/fragment_addtransfer.xml" value="0.264" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/fragment_addtransfer.xml" value="0.21616871704745166" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/fragment_advancedsearch.xml" value="0.264" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/fragment_attachments.xml" value="0.12182971014492754" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/fragment_change_language.xml" value="0.152" />
@@ -127,6 +128,7 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/notes_viewshape.xml" value="0.48359486447931527" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/parent_dir.xml" value="0.176" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/searchmenu_layout.xml" value="0.264" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/selected_user_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/signature_template_edit_list_item.xml" value="0.2246376811594203" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/signature_template_list_item.xml" value="0.2246376811594203" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/toolbar_layout.xml" value="0.12360688956433637" />

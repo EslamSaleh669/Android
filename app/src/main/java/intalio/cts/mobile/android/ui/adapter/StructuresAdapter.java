@@ -44,7 +44,12 @@ public class StructuresAdapter extends ArrayAdapter {
 
     @Override
     public int getCount() {
-        return dataList.size();
+        if (dataList!= null){
+            return dataList.size();
+
+        }else {
+            return 0 ;
+        }
     }
 
     @Override

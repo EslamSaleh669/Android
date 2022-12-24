@@ -463,6 +463,7 @@
                 android:paddingEnd="20dp"
                 android:paddingTop="21dp"
                 android:id="@+id/visual_tracking_btn"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
 

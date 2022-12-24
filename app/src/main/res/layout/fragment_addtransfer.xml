@@ -62,7 +62,6 @@
                 android:id="@+id/actvTransferautocomplete"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:layout_marginTop="6dp"
                 android:background="@drawable/edittext_background"
@@ -75,6 +74,18 @@
                 android:gravity="center_vertical"
                 android:paddingEnd="10dp"
                 android:textSize="15sp" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/multiSelecteduser"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layoutDirection="locale"
+                android:textDirection="locale"
+                android:background="@drawable/ic_recivers_background"
+                android:nestedScrollingEnabled="true"
+                android:padding="10dp" />
 
 
             <LinearLayout
