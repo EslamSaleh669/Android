@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Lenovo/.gradle/caches/transforms-3/450710a86d7bc2f56724d3dfc3c72980/transformed/appcompat-1.4.1/res/layout/support_simple_spinner_dropdown_item.xml" value="0.2223731884057971" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/calendarlibrary/src/main/res/layout/time_picker_widget.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/drawable-ar/ic_baseline_image_24.xml" value="0.2361111111111111" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/drawable-hdpi/ic_baseline_image_24.xml" value="0.2361111111111111" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/drawable-hdpi/ic_checkin.xml" value="0.2703125" />
@@ -138,6 +139,12 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/viewer_page_layout.xml" value="0.1947463768115942" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/viewerwebview.xml" value="0.18840579710144928" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/app/src/main/res/layout/visual_tracking_details_dialog.xml" value="0.2" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/calendarlibrary/src/main/res/drawable/hijri_date_picker_card_selected.xml" value="0.2564814814814815" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/calendarlibrary/src/main/res/drawable/rectangle_gray_ripple_effect.xml" value="0.2564814814814815" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/calendarlibrary/src/main/res/drawable/rectangle_ripple_effect.xml" value="0.2564814814814815" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/calendarlibrary/src/main/res/drawable/rectangle_white_ripple_effect.xml" value="0.2564814814814815" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/calendarlibrary/src/main/res/layout/dialog_hijri_calendar_with_time.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/Android/calendarlibrary/src/main/res/layout/time_picker_widget.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

@@ -108,7 +108,6 @@
                     android:fontFamily="@font/myriadpro_regular"
                     />
 
-
                 <Button
                     android:layout_width="284dp"
                     android:layout_height="50dp"
@@ -118,6 +117,16 @@
                     android:id="@+id/login"
                     android:textColor="@color/white"
                     android:fontFamily="@font/myriadpro_simibold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="can barcode?"
+                    android:id="@+id/scan_Qr"
+                    android:textColor="@color/appcolor"
+                    android:fontFamily="@font/myriadpro_bold"
                     />
             </LinearLayout>
 

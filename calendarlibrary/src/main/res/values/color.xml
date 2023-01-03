@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#009688</color>
+    <color name="hijri_date_picker_accent_color">#009688</color>
+    <color name="orange_light">#FB924C</color>
+    <color name="gray">#929292</color>
+    <color name="white">#FFFFFF</color>
+    <color name="light_gray">#B7B7B7</color>
+    <color name="layout_shadow_color">#F6F6F6</color>
+    <color name="black">@android:color/black</color>
+    <color name="colorPrimary">#00ae8d</color>
+    <color name="appcolor">#12A78A</color>
+
+</resources>

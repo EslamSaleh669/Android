@@ -232,7 +232,7 @@ class AllNotesFragment : Fragment(), AllNotesAdapter.OnDeleteNoteClicked {
     private fun showNoteDialog(position: Int, model: NotesDataItem) {
         val customDialog = Dialog(requireContext(), R.style.FullScreenDialog)
         customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        customDialog.setCancelable(false)
+        customDialog.setCancelable(true)
         customDialog.setContentView(R.layout.edit_note_layout)
 
         customDialog.findViewById<TextView>(R.id.centered_txt).setText(R.string.edit)

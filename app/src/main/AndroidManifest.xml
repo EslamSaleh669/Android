@@ -36,8 +36,6 @@
             android:name="intalio.cts.mobile.android.ui.HomeActivity"
             android:exported="false"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
-
-
             android:screenOrientation="unspecified"
             android:windowSoftInputMode="adjustPan" />
         <activity

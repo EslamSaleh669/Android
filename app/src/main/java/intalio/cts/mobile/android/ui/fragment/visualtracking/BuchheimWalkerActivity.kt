@@ -49,6 +49,7 @@ class BuchheimWalkerActivity : GraphActivity() {
     }
 
     public override fun createGraph(): Graph {
+
         val trackingList =
             intent.getSerializableExtra(Constants.TRACKING_MODEL) as VisualTrackingResponse
         val graph = Graph()

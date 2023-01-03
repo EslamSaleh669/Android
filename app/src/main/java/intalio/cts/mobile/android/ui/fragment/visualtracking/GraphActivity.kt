@@ -1,10 +1,14 @@
 package intalio.cts.mobile.android.ui.fragment.visualtracking.visualtrackingutil
 
+import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -14,6 +18,7 @@ import com.cts.mobile.android.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import intalio.cts.mobile.android.data.network.response.AllStructuresResponse
 import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
+import intalio.cts.mobile.android.data.network.response.VisualTrackingResponseItem
 import intalio.cts.mobile.android.ui.activity.auth.login.LoginViewModel
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Graph
 import intalio.cts.mobile.android.ui.fragment.visualtracking.graph.Node
@@ -479,145 +484,142 @@ abstract class GraphActivity : AppCompatActivity() {
 //                    Snackbar.LENGTH_SHORT).show()
                 val selectedNode = adapter.getSelectedNode(bindingAdapterPosition)
                 Log.d("selectedNode", selectedNode.toString())
-                //  showNoteDialog(bindingAdapterPosition,selectedNode)
+                showNoteDialog(bindingAdapterPosition, selectedNode)
             }
 
         }
     }
-//
-//    private fun showNoteDialog(
-//        position: Int,
-//        model: VisualTrackingResponseItem,
-//    ) {
-//        val customDialog = Dialog(this, R.style.FullScreenDialog)
-//        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-//        customDialog.setCancelable(true)
-//        customDialog.setContentView(R.layout.visual_tracking_details_dialog)
-//
-////        customDialog.findViewById<TextView>(R.id.centered_txt).setText(R.string.edit)
-////        customDialog.findViewById<ImageView>(R.id.back_icon).setOnClickListener {
-////            customDialog.dismiss()
-////        }
-//
-//        var requiredFields = ""
-//        val language = readLanguage()
-//        val translator = getDictionary()
-//
-//        when (language) {
-//            "en" -> {
-//
-//                customDialog.findViewById<TextView>(R.id.vt_title).text =
-//                    translator.data!!.find { it.keyword == "Transfer" }!!.en
-//
-//                customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
-//                    translator.data.find { it.keyword == "CreatedBy" }!!.en
-//
-//                customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
-//                    translator.data.find { it.keyword == "DueDate" }!!.en
-//
-//                customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
-//                    translator.data.find { it.keyword == "OpenedDate" }!!.en
-//
-//                customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
-//                    translator.data.find { it.keyword == "CreatedDate" }!!.en
-//
-//                customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
-//                    translator.data.find { it.keyword == "Instruction" }!!.en
-//
-//
-//            }
-//            "ar" -> {
-//
-//                customDialog.findViewById<TextView>(R.id.vt_title).text =
-//                    translator.data!!.find { it.keyword == "Transfer" }!!.ar
-//
-//                customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
-//                    translator.data.find { it.keyword == "CreatedBy" }!!.ar
-//
-//                customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
-//                    translator.data.find { it.keyword == "DueDate" }!!.ar
-//
-//                customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
-//                    translator.data.find { it.keyword == "OpenedDate" }!!.ar
-//
-//                customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
-//                    translator.data.find { it.keyword == "CreatedDate" }!!.ar
-//
-//                customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
-//                    translator.data.find { it.keyword == "Instruction" }!!.ar
-//
-//
-//            }
-//            "fr" -> {
-//                customDialog.findViewById<TextView>(R.id.vt_title).text =
-//                    translator.data!!.find { it.keyword == "Transfer" }!!.fr
-//
-//                customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
-//                    translator.data.find { it.keyword == "CreatedBy" }!!.fr
-//
-//                customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
-//                    translator.data.find { it.keyword == "DueDate" }!!.fr
-//
-//                customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
-//                    translator.data.find { it.keyword == "OpenedDate" }!!.fr
-//
-//                customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
-//                    translator.data.find { it.keyword == "CreatedDate" }!!.fr
-//
-//                customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
-//                    translator.data.find { it.keyword == "Instruction" }!!.fr
-//
-//
-//            }
-//        }
-//
-//        val vt_createdby_value = customDialog.findViewById(R.id.vt_createdby_value) as TextView
-//        val vt_duedate_value = customDialog.findViewById(R.id.vt_duedate_value) as TextView
-//        val vt_opendate_value = customDialog.findViewById(R.id.vt_opendate_label) as TextView
-//        val vt_createddate_value = customDialog.findViewById(R.id.vt_createddate_value) as TextView
-//        val vt_instruction_value = customDialog.findViewById(R.id.vt_instructions_value) as TextView
-//
-//        if (model.createdBy != null){
-//            vt_createdby_value.text = model.createdBy
-//        }else{
-//            vt_createdby_value.text = "---"
-//        }
-//
-//        if (model.dueDate != null){
-//            vt_duedate_value.text = model.dueDate.toString()
-//        }else{
-//            vt_duedate_value.text = "---"
-//        }
-//
-//        if (model.openedDate != null){
-//            vt_opendate_value.text = model.openedDate.toString()
-//        }else{
-//            vt_opendate_value.text = "---"
-//        }
-//
-//        if (model.createdDate != null){
-//            vt_createddate_value.text = model.createdDate
-//        }else{
-//            vt_createddate_value.text = "---"
-//        }
-//
-//
-//        if (model.instruction != null){
-//            vt_instruction_value.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                Html.fromHtml(model.instruction.toString(), Html.FROM_HTML_MODE_COMPACT)
-//            } else {
-//                Html.fromHtml(model.instruction.toString())
-//            }
-//
-//
-//        }else{
-//            vt_instruction_value.text = "---"
-//        }
-//
-//
-//        customDialog.show()
-//
-//    }
+
+    private fun showNoteDialog(
+        position: Int,
+        model: VisualTrackingResponseItem,
+    ) {
+
+        val customDialog = Dialog(this, R.style.FullScreenDialog)
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        customDialog.setCancelable(true)
+        customDialog.setContentView(R.layout.visual_tracking_details_dialog)
+
+        val language = viewModel.readLanguage()
+        val translator = viewModel.readDictionary()!!.data!!
+
+        when (language) {
+            "en" -> {
+
+                customDialog.findViewById<TextView>(R.id.centered_txt).text =
+                    translator.find { it.keyword == "Transfer" }!!.en
+
+                customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
+                    translator.find { it.keyword == "CreatedBy" }!!.en
+
+                customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
+                    translator.find { it.keyword == "DueDate" }!!.en
+
+                customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
+                    translator.find { it.keyword == "OpenedDate" }!!.en
+
+                customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
+                    translator.find { it.keyword == "CreatedDate" }!!.en
+
+                customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
+                    translator.find { it.keyword == "Instruction" }!!.en
+
+
+            }
+            "ar" -> {
+
+                customDialog.findViewById<TextView>(R.id.centered_txt).text =
+                    translator.find { it.keyword == "Transfer" }!!.ar
+
+                customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
+                    translator.find { it.keyword == "CreatedBy" }!!.ar
+
+                customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
+                    translator.find { it.keyword == "DueDate" }!!.ar
+
+                customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
+                    translator.find { it.keyword == "OpenedDate" }!!.ar
+
+                customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
+                    translator.find { it.keyword == "CreatedDate" }!!.ar
+
+                customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
+                    translator.find { it.keyword == "Instruction" }!!.ar
+
+
+            }
+            "fr" -> {
+                customDialog.findViewById<TextView>(R.id.centered_txt).text =
+                    translator.find { it.keyword == "Transfer" }!!.fr
+
+                customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
+                    translator.find { it.keyword == "CreatedBy" }!!.fr
+
+                customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
+                    translator.find { it.keyword == "DueDate" }!!.fr
+
+                customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
+                    translator.find { it.keyword == "OpenedDate" }!!.fr
+
+                customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
+                    translator.find { it.keyword == "CreatedDate" }!!.fr
+
+                customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
+                    translator.find { it.keyword == "Instruction" }!!.fr
+
+
+            }
+        }
+
+        val vt_createdby_value = customDialog.findViewById(R.id.vt_createdby_value) as TextView
+        val vt_duedate_value = customDialog.findViewById(R.id.vt_duedate_value) as TextView
+        val vt_opendate_value = customDialog.findViewById(R.id.vt_opendate_value) as TextView
+        val vt_createddate_value = customDialog.findViewById(R.id.vt_createddate_value) as TextView
+        val vt_instruction_value = customDialog.findViewById(R.id.vt_instructions_value) as TextView
+
+        if (model.createdBy != null) {
+            vt_createdby_value.text = model.createdBy
+        } else {
+            vt_createdby_value.text = "---"
+        }
+
+        if (model.dueDate != null) {
+            vt_duedate_value.text = model.dueDate.toString()
+        } else {
+            vt_duedate_value.text = "---"
+        }
+
+        if (model.openedDate != null) {
+            vt_opendate_value.text = model.openedDate.toString()
+        } else {
+            vt_opendate_value.text = "---"
+        }
+
+        if (model.transferDate != null) {
+            vt_createddate_value.text = model.transferDate.toString()
+        } else {
+            vt_createddate_value.text = "---"
+        }
+
+        if (model.instruction != null) {
+            vt_instruction_value.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(model.instruction.toString(), Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml(model.instruction.toString())
+            }
+
+
+        } else {
+            vt_instruction_value.text = "---"
+        }
+
+
+        customDialog.findViewById<ImageView>(R.id.back_icon).setOnClickListener {
+            customDialog.dismiss()
+        }
+        customDialog.show()
+
+    }
 
 
     protected val nodeText: String

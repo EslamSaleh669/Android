@@ -299,7 +299,7 @@ class NonArchAttachmentsFragment : Fragment() , NonArchAdapter.OnDeleteNoteClick
 
         val customDialog = Dialog(requireContext(),R.style.FullScreenDialog)
         customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        customDialog.setCancelable(false)
+        customDialog.setCancelable(true)
         customDialog.setContentView(R.layout.edit_nonarch_layout)
 
          customDialog.findViewById<ImageView>(R.id.back_icon).setOnClickListener {

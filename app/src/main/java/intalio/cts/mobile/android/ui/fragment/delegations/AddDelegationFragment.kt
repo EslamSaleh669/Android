@@ -38,6 +38,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import intalio.cts.mobile.android.data.network.response.DictionaryDataItem
+import intalio.cts.mobile.calendarlibrary.MyCalendarView
 import kotlinx.android.synthetic.main.fragment_addnote.*
 import kotlinx.android.synthetic.main.fragment_addnote.btnCancelnote
 import kotlinx.android.synthetic.main.fragment_addnote.btnaddnote
@@ -47,10 +48,12 @@ import kotlinx.android.synthetic.main.fragment_addtransfer.*
 import kotlinx.android.synthetic.main.toolbar_layout.centered_txt
 
 
-class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked {
+class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked,
+    MyCalendarView.OnDateSetListener {
 
     private var userSelectedId = 0
     private lateinit var editedModel: DelegationDataItem
+    private lateinit var myCalendarView: MyCalendarView
 
     private var datePickerDialog: DatePickerDialog? = null
     private var dateListener: OnDateSetListener? = null
@@ -103,6 +106,9 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
 
 
         translator = viewModel.readDictionary()!!.data!!
+        etDateFrom = requireActivity().findViewById<View>(R.id.delegateFrom) as EditText?
+        etDateTo = requireActivity().findViewById<View>(R.id.delegateTo) as EditText?
+
         setLabels()
 
         back_icon.setOnClickListener {
@@ -136,7 +142,6 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
         }
 
 
-
         val result = arguments?.getSerializable(Constants.Delegation_Model)
         if (result.toString() == "null") {
 
@@ -144,7 +149,7 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
             initDates()
             initUserAutoComplete("add")
             initCategoriesAutoComplete("add")
-
+            initOtherDate()
         } else {
             editedModel = (result as? DelegationDataItem)!!
             centered_txt.text = edit
@@ -158,11 +163,11 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
 
         delgatetomanagercheckbox.setOnClickListener {
 
-            if (delgatetomanagercheckbox.isChecked){
+            if (delgatetomanagercheckbox.isChecked) {
                 fullnamelin.visibility = View.GONE
                 userautocomopletetextview.visibility = View.GONE
                 userSelectedId = viewModel.readUserinfo().managerId!!
-            }else{
+            } else {
                 fullnamelin.visibility = View.VISIBLE
                 userautocomopletetextview.visibility = View.VISIBLE
                 userSelectedId = 0
@@ -310,8 +315,10 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
 
         addallcategories.setOnClickListener {
             (multiSelectedcategory.adapter as AddedCategoriesAdapter).removeAllCategory()
-            (multiSelectedcategory.adapter as AddedCategoriesAdapter).addAllCategories(categoriesArray)
-            for (item in categoriesArray){
+            (multiSelectedcategory.adapter as AddedCategoriesAdapter).addAllCategories(
+                categoriesArray
+            )
+            for (item in categoriesArray) {
                 addedCategoriesIds.add(item.id!!)
 
             }
@@ -353,6 +360,27 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
 
                 }
             }
+    }
+
+    private fun initOtherDate() {
+
+        myCalendarView = MyCalendarView.getInstance(requireActivity(), true)
+
+        myCalendarView.setOnDateSetListener(this)
+        myCalendarView.setMinMaxHijriYear(1430, 1450)
+        myCalendarView.setMinMaxGregorianYear(2013, 2020)
+        myCalendarView.setMode(MyCalendarView.Mode.Hijri)
+        myCalendarView.setUILanguage(MyCalendarView.Language.English)
+//                myCalendarView.setDaysOfWeekTextColor(getResources().getColor(R.color.orange_light));
+//                myCalendarView.setDatePickerMonthlyDaysBckground(getResources().getColor(R.color.orange_light));
+//                        .setDefaultHijriDate(8, 0, 1437)//months start from 0
+        //                myCalendarView.setDaysOfWeekTextColor(getResources().getColor(R.color.orange_light));
+//                myCalendarView.setDatePickerMonthlyDaysBckground(getResources().getColor(R.color.orange_light));
+//                        .setDefaultHijriDate(8, 0, 1437)//months start from 0
+        myCalendarView.setEnableScrolling(false)
+
+        myCalendarView.showDialog()
+
     }
 
     private fun initDates() {
@@ -830,18 +858,19 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
     private fun setLabels() {
 
         val managerId = viewModel.readUserinfo().managerId.toString()
-        if (managerId == "null"){
+        if (managerId == "null") {
             delgatetomanagercheckboxlin.visibility = View.GONE
         }
 
-         when {
+        when {
             viewModel.readLanguage() == "en" -> {
 
                 fullname_label.text = translator.find { it.keyword == "FullName" }!!.en
                 delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.en
                 delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.en
                 categories_label.text = translator.find { it.keyword == "Categories" }!!.en
-                delgatetomanagercheckbox.text = translator.find { it.keyword == "DelegateToManager" }!!.en
+                delgatetomanagercheckbox.text =
+                    translator.find { it.keyword == "DelegateToManager" }!!.en
 
                 requiredfullname_label.text = "(required)"
                 requredfromdate_label.text = "(required)"
@@ -866,7 +895,8 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.ar
                 delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.ar
                 categories_label.text = translator.find { it.keyword == "Categories" }!!.ar
-                delgatetomanagercheckbox.text = translator.find { it.keyword == "DelegateToManager" }!!.ar
+                delgatetomanagercheckbox.text =
+                    translator.find { it.keyword == "DelegateToManager" }!!.ar
 
                 requiredfullname_label.text = "(الزامي)"
                 requredfromdate_label.text = "(الزامي)"
@@ -892,7 +922,8 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
                 delgationfromdatedate_label.text = translator.find { it.keyword == "FromDate" }!!.fr
                 delegationtodate_label.text = translator.find { it.keyword == "ToDate" }!!.fr
                 categories_label.text = translator.find { it.keyword == "Categories" }!!.fr
-                delgatetomanagercheckbox.text = translator.find { it.keyword == "DelegateToManager" }!!.fr
+                delgatetomanagercheckbox.text =
+                    translator.find { it.keyword == "DelegateToManager" }!!.fr
 
                 requiredfullname_label.text = "(requis)"
                 requredfromdate_label.text = "(requis)"
@@ -913,5 +944,17 @@ class AddDelegationFragment : Fragment(), AddedCategoriesAdapter.OnDeleteClicked
 
             }
         }
+    }
+
+    override fun onDateSet(
+        year: Int,
+        month: Int,
+        day: Int,
+        hour: Int,
+        minute: Int,
+        seconds: Int,
+        ampm: String?
+    ) {
+        etDateTo!!.setText("$day/$month/$year")
     }
 }
