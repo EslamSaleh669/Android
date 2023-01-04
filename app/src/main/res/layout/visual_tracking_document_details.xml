@@ -25,7 +25,7 @@
 
 
             <RelativeLayout
-                android:id="@+id/createdby_lin"
+                android:id="@+id/sending_entity_lin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layoutDirection="locale"
@@ -36,15 +36,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/myriadpro_simibold"
-                    android:text="@string/created_by"
-                    android:id="@+id/vt_createdby_label"
+                    android:text="@string/sending_entity"
+                    android:id="@+id/vt_sending_entity_label"
                     android:layoutDirection="locale"
                     android:textDirection="locale"
                     android:textColor="@color/appcolor"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/vt_createdby_value"
+                    android:id="@+id/vt_sending_entity_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -57,27 +57,27 @@
 
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/duedate_lin"
+                android:id="@+id/receiving_entity_lin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layoutDirection="locale"
                 android:layout_marginTop="12dp"
-                android:layout_below="@+id/createdby_lin"
+                android:layout_below="@+id/sending_entity_lin"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/myriadpro_simibold"
-                    android:text="@string/due_date"
-                    android:id="@+id/vt_duedate_label"
+                    android:text="@string/receiving_entity"
+                    android:id="@+id/vt_receiving_entity_label"
                     android:layoutDirection="locale"
                     android:textDirection="locale"
                     android:textColor="@color/appcolor"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/vt_duedate_value"
+                    android:id="@+id/vt_receiving_entity_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -92,19 +92,19 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/duedate_lin"
+                android:layout_below="@+id/receiving_entity_lin"
                 android:layout_marginTop="12dp"
-                android:id="@+id/opendatelin"
+                android:id="@+id/subject_lin"
                 android:layoutDirection="locale"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/vt_opendate_label"
+                    android:id="@+id/vt_subject_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/myriadpro_simibold"
                     android:layoutDirection="locale"
-                    android:text="@string/opened_date"
+                    android:text="@string/subject"
                     android:textColor="@color/appcolor"
                     android:textDirection="locale"
                     android:textSize="16sp" />
@@ -118,7 +118,7 @@
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/myriadpro_regular"
                     android:textColor="@color/ApplicationDarkColor"
-                    android:id="@+id/vt_opendate_value"
+                    android:id="@+id/vt_subject_value"
                     />
 
 
@@ -127,9 +127,9 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/opendatelin"
+                android:layout_below="@+id/subject_lin"
                 android:layout_marginTop="12dp"
-                android:id="@+id/createddatelin"
+                android:id="@+id/priority_lin"
                 android:layoutDirection="locale"
                 android:orientation="horizontal">
 
@@ -139,8 +139,8 @@
                     android:layoutDirection="locale"
                     android:textDirection="locale"
                     android:fontFamily="@font/myriadpro_simibold"
-                    android:id="@+id/vt_createddate_label"
-                    android:text="@string/created_date"
+                    android:id="@+id/vt_priority_label"
+                    android:text="@string/priorityCategory"
                     android:textColor="@color/appcolor"
                     android:textSize="16sp" />
 
@@ -153,44 +153,46 @@
                     android:textDirection="locale"
                     android:fontFamily="@font/myriadpro_regular"
                     android:textColor="@color/ApplicationDarkColor"
-                    android:id="@+id/vt_createddate_value"
+                    android:id="@+id/vt_priority_value"
                     />
 
 
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/vt_instructions_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/createddatelin"
-                android:layout_marginTop="12dp"
-                android:fontFamily="@font/myriadpro_simibold"
-                android:layoutDirection="locale"
-                android:text="@string/instructionss"
-                android:textColor="@color/appcolor"
-                android:textDirection="locale"
-                android:textSize="16sp" />
-
-            <com.borjabravo.readmoretextview.ReadMoreTextView
-                android:id="@+id/vt_instructions_value"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/vt_instructions_label"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="@font/myriadpro_regular"
-                android:lineSpacingExtra="5dp"
-                android:textColor="@color/ApplicationDarkColor"
-                android:textSize="16sp"
-                android:gravity="start"
+                android:layout_below="@+id/priority_lin"
+                android:layout_marginTop="12dp"
+                android:id="@+id/privacy_lin"
                 android:layoutDirection="locale"
-                android:textDirection="locale"
-                app:colorClickableText="@color/appcolor"
-                app:trimCollapsedText="@string/read_more"
-                app:trimExpandedText="@string/read_less"
-                app:trimLength="100"
-                app:trimMode="trimModeLength" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="locale"
+                    android:textDirection="locale"
+                    android:fontFamily="@font/myriadpro_simibold"
+                    android:id="@+id/vt_privacy_label"
+                    android:text="@string/privacy"
+                    android:textColor="@color/appcolor"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layoutDirection="locale"
+                    android:layout_centerInParent="true"
+                    android:textDirection="locale"
+                    android:fontFamily="@font/myriadpro_regular"
+                    android:textColor="@color/ApplicationDarkColor"
+                    android:id="@+id/vt_privacy_value"
+                    />
+
+
+            </RelativeLayout>
 
 
         </RelativeLayout>

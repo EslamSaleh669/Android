@@ -26,6 +26,7 @@ import intalio.cts.mobile.android.ui.fragment.visualtracking.layouts.AbstractGra
 import intalio.cts.mobile.android.util.AutoDispose
 import intalio.cts.mobile.android.util.MyApplication
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_mytransfers.*
 import timber.log.Timber
 
 import java.util.*
@@ -254,34 +255,113 @@ abstract class GraphActivity : AppCompatActivity() {
 
         autoDispose.add(
             viewModel.getTransferDetails(transferId, delegationId).observeOn(Schedulers.io())
-                .subscribe({
+                .subscribe(
+                    { transferDetails ->
 
 
-                    Log.d("transferdee", it.toString())
+                    Log.d("transferdee", transferDetails.toString())
 
-                    if (it.lockedByDelegatedUser.isNullOrEmpty()) {
-                        if (loggedUser == it.lockedBy) {
-                            holder.CreatedBy.text = you
-                        } else {
-                            holder.CreatedBy.text = it.lockedBy
-                        }
-
-                    } else {
-                        if (loggedUser == it.lockedByDelegatedUser) {
-                            holder.CreatedBy.text = "$you $onBehalfOf ${it.lockedBy}"
-
-                        }
-//                        else if (loggedUser == it.lockedBy) {
-//                            holder.CreatedBy.text = "${it.lockedByDelegatedUser} $onBehalfOf $you"
+//                    if (it.lockedByDelegatedUser.isNullOrEmpty()) {
+//                        if (loggedUser == it.lockedBy) {
+//                            holder.CreatedBy.text = you
+//                        } else {
+//                            holder.CreatedBy.text = it.lockedBy
+//                        }
+//
+//                    } else {
+//                        if (loggedUser == it.lockedByDelegatedUser) {
+//                            holder.CreatedBy.text = "$you $onBehalfOf ${it.lockedBy}"
 //
 //                        }
-                        else {
-                            holder.CreatedBy.text =
-                                "${it.lockedByDelegatedUser} $onBehalfOf ${it.lockedBy}"
+////                        else if (loggedUser == it.lockedBy) {
+////                            holder.CreatedBy.text = "${it.lockedByDelegatedUser} $onBehalfOf $you"
+////
+////                        }
+//                        else {
+//                            holder.CreatedBy.text =
+//                                "${it.lockedByDelegatedUser} $onBehalfOf ${it.lockedBy}"
+//
+//                        }
+//
+//                    }
+
+                    viewModel.readSavedDelegator().let {
+
+                        if (it != null) {
+
+                            if (it.fromUserId == 0) {
+                                if (transferDetails.ownerDelegatedUserId!!.equals(null)) {
+                                    if (loggedUser == transferDetails.lockedBy){
+                                        holder.CreatedBy.text = you
+                                    }else{
+                                        holder.CreatedBy.text = transferDetails.lockedBy
+                                    }
+
+
+                                } else {
+
+                                    if (loggedUser == transferDetails.lockedBy){
+
+                                        holder.CreatedBy.text =
+                                            "${transferDetails.lockedByDelegatedUser} $onBehalfOf $you"
+                                    }else{
+
+                                        holder.CreatedBy.text =
+                                            "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+                                    }
+
+                                }
+                            }else {
+
+                                if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+
+                                    holder.CreatedBy.text = transferDetails.lockedBy
+
+
+                                } else {
+
+                                    if (loggedUser == transferDetails.lockedByDelegatedUser) {
+                                        holder.CreatedBy.text =
+                                            "$you $onBehalfOf ${transferDetails.lockedBy}"
+
+                                    } else {
+                                        holder.CreatedBy.text =
+                                            "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+
+                                    }
+
+                                }
+
+
+                            }
+
+                        } else {
+
+                            if (transferDetails.lockedByDelegatedUser.isNullOrEmpty()) {
+                                if (loggedUser == transferDetails.lockedBy){
+                                    holder.CreatedBy.text = you
+                                }else{
+                                    holder.CreatedBy.text = transferDetails.lockedBy
+                                }
+
+
+                            } else {
+
+                                if (loggedUser == transferDetails.lockedBy){
+
+                                    holder.CreatedBy.text =
+                                        "${transferDetails.lockedByDelegatedUser} $onBehalfOf $you"
+                                }else{
+
+                                    holder.CreatedBy.text =
+                                        "${transferDetails.lockedByDelegatedUser} $onBehalfOf ${transferDetails.lockedBy}"
+                                }
+
+                            }
 
                         }
-
                     }
+
 
                 }, {
                     Timber.e(it)
@@ -410,6 +490,7 @@ abstract class GraphActivity : AppCompatActivity() {
                             Objects.requireNonNull(getCreatedByDelegatorID(position))
 
                         val loggedUser = viewModel.readUserinfo().fullName
+                        val loggedUserid = viewModel.readUserinfo().id
 
                         val transferId = Objects.requireNonNull(getTransferId(position))
 //                        fullUserName(
@@ -422,7 +503,7 @@ abstract class GraphActivity : AppCompatActivity() {
 //                        )
 
 
-                        val transferAsInt = transferId!!.substringAfter("_")?.toInt()
+                        val transferAsInt = transferId!!.substringAfter("_").toInt()
                         getTransferDetails(transferAsInt, holder, you, onBehalfOf, loggedUser)
 
 
@@ -479,19 +560,19 @@ abstract class GraphActivity : AppCompatActivity() {
 
             nodeItem.setOnClickListener {
 
-                //  currentNode = adapter.getNode(bindingAdapterPosition)
-//                Snackbar.make(itemView, "Clicked on " + adapter.getSelectedNode(bindingAdapterPosition)?.toString(),
-//                    Snackbar.LENGTH_SHORT).show()
                 val selectedNode = adapter.getSelectedNode(bindingAdapterPosition)
-                Log.d("selectedNode", selectedNode.toString())
-                showNoteDialog(bindingAdapterPosition, selectedNode)
-            }
 
+                if (bindingAdapterPosition == 0){
+                    showDocumentDetailsDialog(selectedNode)
+                }else{
+                    showTransferDetailsDialog(selectedNode)
+
+                }
+            }
         }
     }
 
-    private fun showNoteDialog(
-        position: Int,
+    private fun showTransferDetailsDialog(
         model: VisualTrackingResponseItem,
     ) {
 
@@ -510,19 +591,18 @@ abstract class GraphActivity : AppCompatActivity() {
                     translator.find { it.keyword == "Transfer" }!!.en
 
                 customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
-                    translator.find { it.keyword == "CreatedBy" }!!.en
+                    "${translator.find { it.keyword == "CreatedBy" }!!.en}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
-                    translator.find { it.keyword == "DueDate" }!!.en
-
+                "${translator.find { it.keyword == "DueDate" }!!.en}: "
                 customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
-                    translator.find { it.keyword == "OpenedDate" }!!.en
+                "${translator.find { it.keyword == "OpenedDate" }!!.en}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
-                    translator.find { it.keyword == "CreatedDate" }!!.en
+                "${translator.find { it.keyword == "CreatedDate" }!!.en}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
-                    translator.find { it.keyword == "Instruction" }!!.en
+                "${translator.find { it.keyword == "Instruction" }!!.en}: "
 
 
             }
@@ -532,19 +612,18 @@ abstract class GraphActivity : AppCompatActivity() {
                     translator.find { it.keyword == "Transfer" }!!.ar
 
                 customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
-                    translator.find { it.keyword == "CreatedBy" }!!.ar
+                    "${translator.find { it.keyword == "CreatedBy" }!!.ar}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
-                    translator.find { it.keyword == "DueDate" }!!.ar
-
+                    "${translator.find { it.keyword == "DueDate" }!!.ar}: "
                 customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
-                    translator.find { it.keyword == "OpenedDate" }!!.ar
+                    "${translator.find { it.keyword == "OpenedDate" }!!.ar}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
-                    translator.find { it.keyword == "CreatedDate" }!!.ar
+                    "${translator.find { it.keyword == "CreatedDate" }!!.ar}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
-                    translator.find { it.keyword == "Instruction" }!!.ar
+                    "${translator.find { it.keyword == "Instruction" }!!.ar}: "
 
 
             }
@@ -553,20 +632,18 @@ abstract class GraphActivity : AppCompatActivity() {
                     translator.find { it.keyword == "Transfer" }!!.fr
 
                 customDialog.findViewById<TextView>(R.id.vt_createdby_label).text =
-                    translator.find { it.keyword == "CreatedBy" }!!.fr
+                    "${translator.find { it.keyword == "CreatedBy" }!!.fr}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_duedate_label).text =
-                    translator.find { it.keyword == "DueDate" }!!.fr
-
+                    "${translator.find { it.keyword == "DueDate" }!!.fr}: "
                 customDialog.findViewById<TextView>(R.id.vt_opendate_label).text =
-                    translator.find { it.keyword == "OpenedDate" }!!.fr
+                    "${translator.find { it.keyword == "OpenedDate" }!!.fr}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_createddate_label).text =
-                    translator.find { it.keyword == "CreatedDate" }!!.fr
+                    "${translator.find { it.keyword == "CreatedDate" }!!.fr}: "
 
                 customDialog.findViewById<TextView>(R.id.vt_instructions_label).text =
-                    translator.find { it.keyword == "Instruction" }!!.fr
-
+                    "${translator.find { it.keyword == "Instruction" }!!.fr}: "
 
             }
         }
@@ -621,6 +698,131 @@ abstract class GraphActivity : AppCompatActivity() {
 
     }
 
+
+    private fun showDocumentDetailsDialog(
+        model: VisualTrackingResponseItem,
+    ) {
+
+        val customDialog = Dialog(this, R.style.FullScreenDialog)
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        customDialog.setCancelable(true)
+        customDialog.setContentView(R.layout.visual_tracking_document_details)
+
+        val language = viewModel.readLanguage()
+        val translator = viewModel.readDictionary()!!.data!!
+
+        when (language) {
+            "en" -> {
+
+                customDialog.findViewById<TextView>(R.id.centered_txt).text =
+                    translator.find { it.keyword == "Document" }!!.en
+
+                customDialog.findViewById<TextView>(R.id.vt_sending_entity_label).text =
+                    "${translator.find { it.keyword == "SendingEntity" }!!.en}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_receiving_entity_label).text =
+                    "${translator.find { it.keyword == "ReceivingEntity" }!!.en}: "
+                customDialog.findViewById<TextView>(R.id.vt_subject_label).text =
+                    "${translator.find { it.keyword == "Subject" }!!.en}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_priority_label).text =
+                    "${translator.find { it.keyword == "Priority" }!!.en}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_privacy_label).text =
+                    "${translator.find { it.keyword == "Privacy" }!!.en}: "
+
+
+            }
+            "ar" -> {
+
+
+                customDialog.findViewById<TextView>(R.id.centered_txt).text =
+                    translator.find { it.keyword == "Document" }!!.ar
+
+                customDialog.findViewById<TextView>(R.id.vt_sending_entity_label).text =
+                    "${translator.find { it.keyword == "SendingEntity" }!!.ar}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_receiving_entity_label).text =
+                    "${translator.find { it.keyword == "ReceivingEntity" }!!.ar}: "
+                customDialog.findViewById<TextView>(R.id.vt_subject_label).text =
+                    "${translator.find { it.keyword == "Subject" }!!.ar}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_priority_label).text =
+                    "${translator.find { it.keyword == "Priority" }!!.ar}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_privacy_label).text =
+                    "${translator.find { it.keyword == "Privacy" }!!.ar}: "
+
+
+            }
+            "fr" -> {
+
+                customDialog.findViewById<TextView>(R.id.centered_txt).text =
+                    translator.find { it.keyword == "Document" }!!.fr
+
+                customDialog.findViewById<TextView>(R.id.vt_sending_entity_label).text =
+                    "${translator.find { it.keyword == "SendingEntity" }!!.fr}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_receiving_entity_label).text =
+                    "${translator.find { it.keyword == "ReceivingEntity" }!!.fr}: "
+                customDialog.findViewById<TextView>(R.id.vt_subject_label).text =
+                    "${translator.find { it.keyword == "Subject" }!!.fr}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_priority_label).text =
+                    "${translator.find { it.keyword == "Priority" }!!.fr}: "
+
+                customDialog.findViewById<TextView>(R.id.vt_privacy_label).text =
+                    "${translator.find { it.keyword == "Privacy" }!!.fr}: "
+
+
+            }
+        }
+
+        val vt_sendingentity_value = customDialog.findViewById(R.id.vt_sending_entity_value) as TextView
+        val vt_recievingentity_value = customDialog.findViewById(R.id.vt_receiving_entity_value) as TextView
+        val vt_subject_value = customDialog.findViewById(R.id.vt_subject_value) as TextView
+        val vt_priority_value = customDialog.findViewById(R.id.vt_priority_value) as TextView
+        val vt_privacy_value = customDialog.findViewById(R.id.vt_privacy_value) as TextView
+
+        if (model.sendingEntity != null) {
+            vt_sendingentity_value.text = model.sendingEntity
+        } else {
+            vt_sendingentity_value.text = "---"
+        }
+
+        if (model.receivingEntity != null) {
+            vt_recievingentity_value.text = model.receivingEntity.toString()
+        } else {
+            vt_recievingentity_value.text = "---"
+        }
+
+        if (model.subject != null) {
+            vt_subject_value.text = model.subject.toString()
+        } else {
+            vt_subject_value.text = "---"
+        }
+
+        if (model.priority != null) {
+            vt_priority_value.text = model.priority.toString()
+        } else {
+            vt_priority_value.text = "---"
+        }
+
+        if (model.privacy != null) {
+            vt_privacy_value.text = model.privacy.toString()
+        } else {
+            vt_privacy_value.text = "---"
+        }
+
+
+
+
+        customDialog.findViewById<ImageView>(R.id.back_icon).setOnClickListener {
+            customDialog.dismiss()
+        }
+        customDialog.show()
+
+    }
 
     protected val nodeText: String
         get() = "Incoming " + nodeCount++
