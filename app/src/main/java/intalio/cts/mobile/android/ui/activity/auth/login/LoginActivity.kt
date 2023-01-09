@@ -2,9 +2,13 @@ package intalio.cts.mobile.android.ui.activity.auth.login
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.load.HttpException
 import com.cts.mobile.android.R
@@ -19,9 +23,11 @@ import intalio.cts.mobile.android.data.network.response.LoginResponseError
 import intalio.cts.mobile.android.data.network.response.TokenResponse
 import intalio.cts.mobile.android.data.network.response.UserFullDataResponseItem
 import intalio.cts.mobile.android.ui.HomeActivity
+import intalio.cts.mobile.android.ui.activity.splash.SplashActivity
 import intalio.cts.mobile.android.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -56,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
 
         val lan = viewModel.readLanguage()
         Lingver.getInstance().setLocale(this, Locale(lan))
+
 
 
 
@@ -212,6 +219,15 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        lang_icon.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra(Constants.INTENT_TYPE, "lang")
+            startActivity(intent)
+        }
+
+        scan_Qr.setOnClickListener {
+            scanNewQRCode()
+        }
     }
 
 
@@ -235,7 +251,11 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.saveDictionary(it)
                 dialog!!.dismiss()
 
-                launchActivityFinishCurrent(HomeActivity::class.java)
+                val intent = Intent(this, HomeActivity::class.java)
+                intent.putExtra(Constants.INTENT_TYPE, "login")
+                startActivity(intent)
+
+//                launchActivityFinishCurrent(HomeActivity::class.java)
             }, {
                 Timber.e(it)
                 makeToast(it.toString())
@@ -263,4 +283,68 @@ class LoginActivity : AppCompatActivity() {
         return jsonString
     }
 
+    private fun scanNewQRCode() {
+
+
+        var continueConfirmatiuon = ""
+        var yes = ""
+        var no = ""
+
+        when {
+            viewModel.readLanguage() == "en" -> {
+
+                continueConfirmatiuon = "Are you sure that you want to proceed?"
+                yes = "Yes"
+                no = "No"
+
+
+            }
+            viewModel.readLanguage() == "ar" -> {
+
+                continueConfirmatiuon = "هل أنت متأكد أنك تريد المتابعة؟"
+                yes = "نعم"
+                no = "لا"
+
+            }
+            viewModel.readLanguage() == "fr" -> {
+
+                continueConfirmatiuon = "Êtes-vous sûr de vouloir continuer?"
+                yes = "Oui"
+                no = "Non"
+
+            }
+        }
+
+
+        val width = (resources.displayMetrics.widthPixels * 0.99).toInt()
+        val alertDialog = android.app.AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setMessage(continueConfirmatiuon)
+            .setPositiveButton(
+                yes,
+                DialogInterface.OnClickListener { dialogg, i ->
+                    dialogg.dismiss()
+                    viewModel.logout()
+
+                    launchActivityFinishCurrent(SplashActivity::class.java)
+                    val sharedPref =
+                        getSharedPreferences(Constants.SCANNER_PREF, Context.MODE_PRIVATE)
+                    sharedPref.edit().clear().apply()
+
+
+                })
+            .setNegativeButton(
+                no,
+                DialogInterface.OnClickListener { dialogInterface, i ->
+                    dialogInterface.dismiss()
+
+                }).show().window!!.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
+
+
+    }
+
+    override fun onBackPressed() {
+        moveTaskToBack(true)
+
+    }
 }

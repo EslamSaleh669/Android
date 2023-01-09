@@ -21,6 +21,16 @@
             android:textDirection="locale"
             android:layoutDirection="locale">
 
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_margin="15dp"
+                android:id="@+id/lang_icon"
+                android:src="@drawable/language_icon" />
+
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="can barcode?"
+                    android:text="@string/scan_barcode"
                     android:id="@+id/scan_Qr"
                     android:textColor="@color/appcolor"
                     android:fontFamily="@font/myriadpro_bold"

@@ -7,7 +7,7 @@ class Constants {
 
 
     companion object {
-
+        const val INTENT_TYPE = "intenttype"
         var BASE_URL = "http://xxxx:6969"
         var BASE_URL2 = "http://xxxx:9949"
         var VIEWER_URL = "xxxxxxxx"

@@ -53,8 +53,8 @@ class ScanningActivity : AppCompatActivity() {
 //
             val  scannerModel = ScanResponse()
 
-            scannerModel.serviceUrl = "http://192.168.224.1:6969"
-            scannerModel.url = "http://192.168.224.1:9949"
+            scannerModel.serviceUrl = "http://192.168.1.11:6969"
+            scannerModel.url = "http://192.168.1.11:9949"
             scannerModel.clientId = "5d2c8fa5-9f58-430c-bcf2-5f4366d425dc"
             scannerModel.ViewerUrl = "http://192.168.1.11:8080/VIEWER"
 

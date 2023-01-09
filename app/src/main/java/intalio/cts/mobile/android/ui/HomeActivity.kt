@@ -54,7 +54,8 @@ import kotlin.collections.ArrayList
 
 class HomeActivity : AppCompatActivity() {
 
-    private lateinit var translator:  ArrayList<DictionaryDataItem>
+    private lateinit var translator: ArrayList<DictionaryDataItem>
+
     @Inject
     @field:Named("login")
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -73,26 +74,37 @@ class HomeActivity : AppCompatActivity() {
         (application as MyApplication).appComponent?.inject(this)
         autoDispose.bindTo(this.lifecycle)
 
-        val lan = viewModel.readLanguage()
-//        Lingver.getInstance().setLocale(this, Locale(lan))
-        Lingver.getInstance().setLocale(applicationContext, Locale(lan))
 
-        val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, mainToolbar, 0, 0
-        )
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
-        translator = viewModel.readDictionary()!!.data!!
+        val extras = intent.extras ?: return
 
-        setUpNavMenu()
+        val intentType = extras.getString(Constants.INTENT_TYPE)
 
 
+        if (intentType == "lang") {
+            supportFragmentManager.commit {
+                replace(R.id.fragmentContainer, ChangeLanguageFragment())
+            }
+
+        }
+        else {
+            translator = viewModel.readDictionary()!!.data!!
+
+            val lan = viewModel.readLanguage()
+            Lingver.getInstance().setLocale(applicationContext, Locale(lan))
+
+            val toggle = ActionBarDrawerToggle(
+                this, drawer_layout, mainToolbar, 0, 0
+            )
+            drawer_layout.addDrawerListener(toggle)
+            toggle.syncState()
+
+            setUpNavMenu()
 
 
-
-        supportFragmentManager.commit {
-            replace(R.id.fragmentContainer, MainFragment())
-            addToBackStack("")
+            supportFragmentManager.commit {
+                replace(R.id.fragmentContainer, MainFragment())
+                addToBackStack("")
+            }
         }
 
 
@@ -106,30 +118,45 @@ class HomeActivity : AppCompatActivity() {
         when {
             viewModel.readLanguage() == "en" -> {
 //                findViewById<TextView>(R.id.menuhometxt).text = translator.find { it.keyword == "Home" }!!.en
-                findViewById<TextView>(R.id.menudelegationtxt).text = translator.find { it.keyword == "Delegation" }!!.en
-                findViewById<TextView>(R.id.menudashboardtxt).text = translator.find { it.keyword == "Dashboard" }!!.en
-                findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.en
-                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.en
-                findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.en
+                findViewById<TextView>(R.id.menudelegationtxt).text =
+                    translator.find { it.keyword == "Delegation" }!!.en
+                findViewById<TextView>(R.id.menudashboardtxt).text =
+                    translator.find { it.keyword == "Dashboard" }!!.en
+                findViewById<TextView>(R.id.menutodolisttxt).text =
+                    translator.find { it.keyword == "ToDoList" }!!.en
+                findViewById<TextView>(R.id.menuadvancedstxt).text =
+                    translator.find { it.keyword == "Search" }!!.en
+                findViewById<TextView>(R.id.menusignouttxt).text =
+                    translator.find { it.keyword == "Logout" }!!.en
                 lang.text = "English"
             }
             viewModel.readLanguage() == "ar" -> {
 //                findViewById<TextView>(R.id.menuhometxt).text = translator.find { it.keyword == "Home" }!!.ar
-                findViewById<TextView>(R.id.menudelegationtxt).text = translator.find { it.keyword == "Delegation" }!!.ar
-                findViewById<TextView>(R.id.menudashboardtxt).text = translator.find { it.keyword == "Dashboard" }!!.ar
-                findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.ar
-                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.ar
-                findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.ar
+                findViewById<TextView>(R.id.menudelegationtxt).text =
+                    translator.find { it.keyword == "Delegation" }!!.ar
+                findViewById<TextView>(R.id.menudashboardtxt).text =
+                    translator.find { it.keyword == "Dashboard" }!!.ar
+                findViewById<TextView>(R.id.menutodolisttxt).text =
+                    translator.find { it.keyword == "ToDoList" }!!.ar
+                findViewById<TextView>(R.id.menuadvancedstxt).text =
+                    translator.find { it.keyword == "Search" }!!.ar
+                findViewById<TextView>(R.id.menusignouttxt).text =
+                    translator.find { it.keyword == "Logout" }!!.ar
                 lang.text = "العربية"
 
             }
             viewModel.readLanguage() == "fr" -> {
 //                findViewById<TextView>(R.id.menuhometxt).text = translator.find { it.keyword == "Home" }!!.fr
-                findViewById<TextView>(R.id.menudelegationtxt).text = translator.find { it.keyword == "Delegation" }!!.fr
-                findViewById<TextView>(R.id.menudashboardtxt).text = translator.find { it.keyword == "Dashboard" }!!.fr
-                findViewById<TextView>(R.id.menutodolisttxt).text = translator.find { it.keyword == "ToDoList" }!!.fr
-                findViewById<TextView>(R.id.menuadvancedstxt).text = translator.find { it.keyword == "Search" }!!.fr
-                findViewById<TextView>(R.id.menusignouttxt).text = translator.find { it.keyword == "Logout" }!!.fr
+                findViewById<TextView>(R.id.menudelegationtxt).text =
+                    translator.find { it.keyword == "Delegation" }!!.fr
+                findViewById<TextView>(R.id.menudashboardtxt).text =
+                    translator.find { it.keyword == "Dashboard" }!!.fr
+                findViewById<TextView>(R.id.menutodolisttxt).text =
+                    translator.find { it.keyword == "ToDoList" }!!.fr
+                findViewById<TextView>(R.id.menuadvancedstxt).text =
+                    translator.find { it.keyword == "Search" }!!.fr
+                findViewById<TextView>(R.id.menusignouttxt).text =
+                    translator.find { it.keyword == "Logout" }!!.fr
                 lang.text = "Français"
 
             }
@@ -215,14 +242,15 @@ class HomeActivity : AppCompatActivity() {
 
     private fun scanNewQRCode() {
 
-        var continueConfirmatiuon = ""
+        var continueConfirmation = ""
         var yes = ""
         var no = ""
 
         when {
             viewModel.readLanguage() == "en" -> {
 
-                continueConfirmatiuon = translator.find { it.keyword == "ProceedConfirmation" }!!.en!!
+                continueConfirmation =
+                    translator.find { it.keyword == "ProceedConfirmation" }!!.en!!
                 yes = translator.find { it.keyword == "Yes" }!!.en!!
                 no = translator.find { it.keyword == "No" }!!.en!!
 
@@ -230,14 +258,16 @@ class HomeActivity : AppCompatActivity() {
             }
             viewModel.readLanguage() == "ar" -> {
 
-                continueConfirmatiuon = translator.find { it.keyword == "ProceedConfirmation" }!!.ar!!
+                continueConfirmation =
+                    translator.find { it.keyword == "ProceedConfirmation" }!!.ar!!
                 yes = translator.find { it.keyword == "Yes" }!!.ar!!
                 no = translator.find { it.keyword == "No" }!!.ar!!
 
             }
             viewModel.readLanguage() == "fr" -> {
 
-                continueConfirmatiuon = translator.find { it.keyword == "ProceedConfirmation" }!!.fr!!
+                continueConfirmation =
+                    translator.find { it.keyword == "ProceedConfirmation" }!!.fr!!
                 yes = translator.find { it.keyword == "Yes" }!!.fr!!
                 no = translator.find { it.keyword == "No" }!!.fr!!
 
@@ -245,12 +275,10 @@ class HomeActivity : AppCompatActivity() {
         }
 
 
-
-
         val width = (resources.displayMetrics.widthPixels * 0.99).toInt()
         val alertDialog = android.app.AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setMessage(continueConfirmatiuon)
+            .setMessage(continueConfirmation)
             .setPositiveButton(
                 yes,
                 DialogInterface.OnClickListener { dialogg, i ->
@@ -265,7 +293,6 @@ class HomeActivity : AppCompatActivity() {
 
 
                     drawer_layout.closeDrawer(GravityCompat.START)
-
 
 
                 })
@@ -325,14 +352,14 @@ class HomeActivity : AppCompatActivity() {
                 supportFragmentManager.commit {
                     replace(R.id.fragmentContainer, MainFragment())
                 }
-             }
+            }
 
             supportFragmentManager.fragments.last() is CorrespondenceDetailsFragment -> {
-                 supportFragmentManager.commit {
+                supportFragmentManager.commit {
                     replace(R.id.fragmentContainer,
                         CorrespondenceFragment().apply {
                             arguments = bundleOf(
-                                Pair(Constants.NODE_INHERIT,viewModel.readCurrentNode())
+                                Pair(Constants.NODE_INHERIT, viewModel.readCurrentNode())
                             )
                         }
                     )
